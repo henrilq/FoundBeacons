@@ -24,14 +24,14 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Map"
-            android:id="@+id/mapButton" />
+            android:text="Settings"
+            android:id="@+id/settingsButton" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Settings"
-            android:id="@+id/settingsButton" />
+            android:text="Map"
+            android:id="@+id/mapButton" />
 
         <Button
             android:layout_width="wrap_content"
