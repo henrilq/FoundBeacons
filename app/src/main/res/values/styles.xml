@@ -20,4 +20,8 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="objectsStyle">
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
 </resources>
