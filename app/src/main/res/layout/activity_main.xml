@@ -1,43 +1,58 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-
-    <android.support.v4.view.ViewPager
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/viewPager"
-        android:layout_above="@+id/menu"
-        android:layout_centerHorizontal="true" />
+    android:background="#736ca4"
+    tools:context="com.hlq.tests.FullscreenActivity">
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/menu">
-
-        <Button
+        android:id="@+id/bottom"
+        android:gravity="center"
+        android:background="@drawable/background_with_swadow">
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Settings"
-            android:id="@+id/settingsButton" />
+            android:padding="10dp">
+            <ImageButton
+                android:id="@+id/b1"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/settings2x"
+                android:background="@null"
+                android:scaleType="fitXY"
+                android:layout_marginRight="50dp"
+                />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Map"
-            android:id="@+id/mapButton" />
+            <ImageButton
+                android:id="@+id/b2"
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/location2x"
+                android:scaleType="fitXY"
+                android:background="@null"
+                android:layout_marginRight="50dp"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Objets"
-            android:id="@+id/objectsButton" />
+            <ImageButton
+                android:id="@+id/b3"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/add2x"
+                android:scaleType="fitXY"
+                android:background="@null"/>
+        </LinearLayout>
     </LinearLayout>
 
+    <FrameLayout
+        android:id="@+id/central"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_above="@id/bottom">
+    </FrameLayout>
 </RelativeLayout>

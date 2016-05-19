@@ -10,6 +10,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.ButtonBarLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,71 +26,74 @@ import com.jaalee.sdk.ServiceReadyCallback;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 
 /**
  * Created by zoz on 17/05/2016.
  */
-public class ObjectsFragment extends Fragment implements Observer{
+public class ObjectsFragment extends Fragment {
 
     private static final Region ALL_BEACONS_REGION = new Region("rid", null, null, null);
-    private Handler handler;
+
+    private RecyclerView beaconsView;
+    private Button addButton;
+    private List<Beacon> beacons;
+    private LinearLayoutManager layoutManager;
     private BeaconManager beaconManager;
-    private List<ItemFragment> fragments = new ArrayList<>();
-    private Map<String, String> beaconNames = new LinkedHashMap<>();
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.objects_fragment,container,false);
-
-        Button button = (Button) view.findViewById(R.id.addButton);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                ItemFragment item = new ItemFragment();
-                fragments.add(item);
-                item.setObserver(ObjectsFragment.this);
-                fragmentTransaction.add(R.id.objects, item, "TEST");
-                fragmentTransaction.commit();
-            }
-        });
-        connectToService();
-        return view;
-    }
+    private BeaconAdapter adapter;
+    public Handler handler;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         handler = new Handler();
         beaconManager = new BeaconManager(ObjectsFragment.this.getContext());
+        ActivityCompat.requestPermissions(this.getActivity(), new String[] { Manifest.permission.ACCESS_COARSE_LOCATION },1);
+        ActivityCompat.requestPermissions(this.getActivity(), new String[] { Manifest.permission.ACCESS_FINE_LOCATION },1);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view =  inflater.inflate(R.layout.objects_fragment,container,false);
+        beacons = new ArrayList<>();
+        adapter = new BeaconAdapter(beacons);
+        beaconsView = (RecyclerView) view.findViewById(R.id.beaconsView);
+        beaconsView.setHasFixedSize(true);
+
+        addButton = (Button) view.findViewById(R.id.addButton);
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Beacon beacon = new Beacon();
+                beacon.setName("New Beacon");
+                beacons.add(beacon);
+                adapter.notifyDataSetChanged();
+            }
+        });
+        layoutManager = new LinearLayoutManager(this.getContext());
+        beaconsView.setLayoutManager(layoutManager);
+        beaconsView.setAdapter(adapter);
         beaconManager.setRangingListener(new RangingListener() {
             @Override
             public void onBeaconsDiscovered(Region region, final List beacons) {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        addBeacons(filterBeacons(beacons));
+                        addBeacons(beacons);
                     }
                 });
             }
         });
-        Thread backgroundThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });
-        ActivityCompat.requestPermissions(this.getActivity(), new String[] { Manifest.permission.ACCESS_COARSE_LOCATION },1);
-        ActivityCompat.requestPermissions(this.getActivity(), new String[] { Manifest.permission.ACCESS_FINE_LOCATION },1);
-        //backgroundThread.start();
+        connectToService();
+        return view;
     }
 
     private void connectToService() {
@@ -100,56 +105,25 @@ public class ObjectsFragment extends Fragment implements Observer{
                     beaconManager.startRangingAndDiscoverDevice(ALL_BEACONS_REGION);
                 } catch (RemoteException e) {
                     Log.e("","",e);
-                    e.printStackTrace();
                 }
             }
         });
     }
 
-    private List<Beacon> filterBeacons(List<Beacon> beacons) {
-        List<Beacon> filteredBeacons = new ArrayList<>(beacons.size());
-        for (Beacon beacon : beacons)
-        {
-            Log.i("Beacon", beacon.getName()+"  "+beacon.getMacAddress()+"   "+beacon.getRssi());
-            String name = beaconNames.get(beacon.getMacAddress());
-            if(name == null){
-                beaconNames.put(beacon.getMacAddress(), beacon.getName());
-                filteredBeacons.add(beacon);
+
+    private void addBeacons(List<Beacon> newBeacons){
+        for (Beacon beacon: newBeacons){
+            if (! beacons.contains(beacon)){
+                beacons.add(beacon);
             }
         }
-        return filteredBeacons;
-    }
-
-    private void addBeacons(List<Beacon> beacons){
-        for (Beacon beacon: beacons){
-            FragmentManager fragmentManager = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            ItemFragment item = new ItemFragment();
-            item.setText(beacon.getName());
-            fragments.add(item);
-            item.setObserver(ObjectsFragment.this);
-            fragmentTransaction.add(R.id.objects, item, "TEST");
-            fragmentTransaction.commit();
-        }
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onDestroy() {
-        beaconManager.disconnect();
         super.onDestroy();
-    }
-
-    @Override
-    public void update(Observable observable, Object data) {
-        ItemFragment item = (ItemFragment)data;
-        for (ItemFragment f: fragments){
-            if(!f.equals(item)){
-                f.setEnabled(false);
-            }
-        }
-        if(!item.isEnabled()){
-
-        }
+        beaconManager.disconnect();
     }
 }
 

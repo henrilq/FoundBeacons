@@ -13,14 +13,14 @@ import com.jaalee.sdk.internal.Objects;
  public class Beacon
    implements Parcelable
  {
-   private final String proximityUUID;
-   private final String name;
-   private final String macAddress;
-   private final int major;
-   private final int minor;
-   private final int measuredPower;
-   private final int rssi;
-   private final int battLevel;
+   private String proximityUUID;
+   private String name;
+   private String macAddress;
+   private int major;
+   private int minor;
+   private int measuredPower;
+   private int rssi;
+   private int battLevel;
    
    public static final Creator<Beacon> CREATOR = new Creator<Beacon>()
    {
@@ -33,6 +33,10 @@ import com.jaalee.sdk.internal.Objects;
         return new Beacon[size];
      }
     };
+
+     public Beacon(){
+
+     }
  
    public Beacon(String proximityUUID, String name, String macAddress, int major, int minor, int measuredPower, int rssi, int batt)
    {
@@ -55,8 +59,12 @@ import com.jaalee.sdk.internal.Objects;
    {
       return this.name;
    }
- 
-   public String getMacAddress()
+
+     public void setName(String name) {
+         this.name = name;
+     }
+
+     public String getMacAddress()
    {
       return this.macAddress;
    }
@@ -80,8 +88,12 @@ import com.jaalee.sdk.internal.Objects;
    {
 	   return this.rssi;
    }
-   
-   public int getBattLevel()
+
+     public void setRssi(int rssi) {
+         this.rssi = rssi;
+     }
+
+     public int getBattLevel()
    {
 	   return this.battLevel;
    }
@@ -142,4 +154,6 @@ import com.jaalee.sdk.internal.Objects;
 	   dest.writeInt(this.rssi);
 	   dest.writeInt(this.battLevel);
    }
+
+
  }
