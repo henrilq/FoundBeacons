@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#736ca4"
-    tools:context="com.hlq.tests.FullscreenActivity">
+    tools:context="com.a60circuits.foundbeacons.MainActivity">
 
     <LinearLayout
         android:orientation="horizontal"
