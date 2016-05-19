@@ -112,12 +112,16 @@ public class ObjectsFragment extends Fragment {
 
 
     private void addBeacons(List<Beacon> newBeacons){
+        boolean changed = false;
         for (Beacon beacon: newBeacons){
             if (! beacons.contains(beacon)){
                 beacons.add(beacon);
+                changed = true;
             }
         }
-        adapter.notifyDataSetChanged();
+        if(changed){
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
