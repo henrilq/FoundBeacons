@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.a60circuits.foundbeacons.dao.BeaconDao;
 import com.jaalee.sdk.Beacon;
 import com.jaalee.sdk.BeaconManager;
 import com.jaalee.sdk.RangingListener;
@@ -47,13 +48,15 @@ public class ObjectsFragment extends Fragment {
     private LinearLayoutManager layoutManager;
     private BeaconManager beaconManager;
     private BeaconAdapter adapter;
-    public Handler handler;
+    private Handler handler;
+    private BeaconDao dao;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         handler = new Handler();
-        beaconManager = new BeaconManager(ObjectsFragment.this.getContext());
+        beaconManager = new BeaconManager(getContext());
+        dao = new BeaconDao(getContext());
         ActivityCompat.requestPermissions(this.getActivity(), new String[] { Manifest.permission.ACCESS_COARSE_LOCATION },1);
         ActivityCompat.requestPermissions(this.getActivity(), new String[] { Manifest.permission.ACCESS_FINE_LOCATION },1);
     }
@@ -92,6 +95,12 @@ public class ObjectsFragment extends Fragment {
                 });
             }
         });
+        List<Beacon> savedBeacons = dao.findAll();
+        if(savedBeacons != null && ! savedBeacons.isEmpty()){
+            beacons.clear();
+            beacons.addAll(savedBeacons);
+            adapter.notifyDataSetChanged();
+        }
         connectToService();
         return view;
     }

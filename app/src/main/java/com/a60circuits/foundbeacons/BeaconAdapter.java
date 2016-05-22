@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import com.a60circuits.foundbeacons.dao.BeaconDao;
 import com.jaalee.sdk.Beacon;
 
 import java.util.List;
@@ -21,6 +22,9 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconViewHolder>{
     private Context context;
     private List<Beacon> beacons;
     private InputMethodManager imm;
+    private BeaconDao dao;
+
+
     public BeaconAdapter(List<Beacon> beacons){
         this.beacons = beacons;
     }
@@ -28,6 +32,8 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconViewHolder>{
     @Override
     public BeaconViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
+        dao = new BeaconDao(context);
+        List<Beacon> savedBeacons = dao.findAll();
         imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         View view = (View)LayoutInflater.from(parent.getContext()).inflate(R.layout.beacon_item, parent, false);
         return new BeaconViewHolder(view);
@@ -51,6 +57,7 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconViewHolder>{
                 }else{
                     beacon.setName(holder.editText.getText().toString());
                     holder.editButton.setColorFilter(null);
+                    dao.save(beacons);
                 }
             }
         });

@@ -5,7 +5,9 @@
 
 import com.jaalee.sdk.internal.Objects;
 
-/**  
+ import java.util.Date;
+
+ /**
 *Immutable representations of single beacon.
 *Two beacons are considered equal if their proximity UUID, major and minor are equal.
 *This mimics CLBeacon from iOS.  
@@ -18,9 +20,12 @@ import com.jaalee.sdk.internal.Objects;
    private String macAddress;
    private int major;
    private int minor;
-   private int measuredPower;
+   private transient int measuredPower;
    private int rssi;
-   private int battLevel;
+   private transient int battLevel;
+   private Date date;
+     private double latitude;
+     private double longitude;
    
    public static final Creator<Beacon> CREATOR = new Creator<Beacon>()
    {
@@ -35,7 +40,7 @@ import com.jaalee.sdk.internal.Objects;
     };
 
      public Beacon(){
-
+         this.date = new Date();
      }
  
    public Beacon(String proximityUUID, String name, String macAddress, int major, int minor, int measuredPower, int rssi, int batt)
@@ -48,6 +53,7 @@ import com.jaalee.sdk.internal.Objects;
       this.measuredPower = measuredPower;
       this.rssi = rssi;
       this.battLevel = batt;
+       this.date = new Date();
    }
  
    public String getProximityUUID()
@@ -97,8 +103,32 @@ import com.jaalee.sdk.internal.Objects;
    {
 	   return this.battLevel;
    }
- 
-   public String toString()
+
+     public Date getDate() {
+         return date;
+     }
+
+     public void setDate(Date date) {
+         this.date = date;
+     }
+
+     public void setLatitude(double latitude) {
+         this.latitude = latitude;
+     }
+
+     public double getLatitude() {
+         return latitude;
+     }
+
+     public void setLongitude(double longitude) {
+         this.longitude = longitude;
+     }
+
+     public double getLongitude() {
+         return longitude;
+     }
+
+     public String toString()
    {
 	   return Objects.toStringHelper(this).add("macAddress", this.macAddress).add("proximityUUID", this.proximityUUID).add("major", this.major).add("minor", this.minor).add("measuredPower", this.measuredPower)
 			   .add("rssi", this.rssi)

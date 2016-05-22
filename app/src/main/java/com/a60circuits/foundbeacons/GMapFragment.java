@@ -73,7 +73,6 @@ public class GMapFragment extends Fragment{
             Location myLocation = locationManager.getLastKnownLocation(provider);
             myPosition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
         }
-        // adding marker
         // create marker
         MarkerOptions marker = new MarkerOptions().title("Hello Maps").snippet("Twitter HQ").icon(BitmapDescriptorFactory
                 .defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).position(latLng);
@@ -87,24 +86,32 @@ public class GMapFragment extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
-        mMapView.onResume();
+        if(mMapView != null){
+            mMapView.onResume();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mMapView.onPause();
+        if(mMapView != null){
+            mMapView.onPause();
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mMapView.onDestroy();
+        if(mMapView != null){
+            mMapView.onDestroy();
+        }
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        mMapView.onLowMemory();
+        if(mMapView != null){
+            mMapView.onLowMemory();
+        }
     }
 }

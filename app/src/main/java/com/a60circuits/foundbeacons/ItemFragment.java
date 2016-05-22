@@ -26,7 +26,6 @@ public class ItemFragment extends Fragment{
     private Beacon beacon;
     private Button textButton;
     private EditText textEdit;
-    private Observer observer;
     private boolean editionMode;
 
     @Nullable
@@ -66,9 +65,6 @@ public class ItemFragment extends Fragment{
                     beacon.setName(textEdit.getText().toString());
                     editionMode = false;
                 }
-                if(observer != null){
-                    observer.update(null, ItemFragment.this);
-                }
             }
         });
 
@@ -89,10 +85,6 @@ public class ItemFragment extends Fragment{
 
     public void setEnabled(boolean enabled) {
         textEdit.setEnabled(enabled);
-    }
-
-    public void setObserver(Observer observer){
-        this.observer = observer;
     }
 
     public void setBeacon(Beacon beacon) {
