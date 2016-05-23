@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.a60circuits.foundbeacons.dao.BeaconDao;
 import com.jaalee.sdk.Beacon;
 import com.jaalee.sdk.BeaconManager;
@@ -45,18 +46,18 @@ public class ObjectsFragment extends Fragment {
     private RecyclerView beaconsView;
     private Button addButton;
     private List<Beacon> beacons;
+    private Set<String> beaconsAddress;
     private LinearLayoutManager layoutManager;
     private BeaconManager beaconManager;
     private BeaconAdapter adapter;
     private Handler handler;
-    private BeaconDao dao;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         handler = new Handler();
         beaconManager = new BeaconManager(getContext());
-        dao = new BeaconDao(getContext());
+        beaconsAddress = new HashSet<>();
         ActivityCompat.requestPermissions(this.getActivity(), new String[] { Manifest.permission.ACCESS_COARSE_LOCATION },1);
         ActivityCompat.requestPermissions(this.getActivity(), new String[] { Manifest.permission.ACCESS_FINE_LOCATION },1);
     }
@@ -71,7 +72,6 @@ public class ObjectsFragment extends Fragment {
         beaconsView.setHasFixedSize(true);
 
         addButton = (Button) view.findViewById(R.id.addButton);
-
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,6 +81,14 @@ public class ObjectsFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
         });
+        Button deleteButton = (Button) view.findViewById(R.id.deleteButton);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BeaconCacheManager.getInstance().deleteData();
+            }
+        });
+
         layoutManager = new LinearLayoutManager(this.getContext());
         beaconsView.setLayoutManager(layoutManager);
         beaconsView.setAdapter(adapter);
@@ -95,10 +103,10 @@ public class ObjectsFragment extends Fragment {
                 });
             }
         });
-        List<Beacon> savedBeacons = dao.findAll();
+        List<Beacon> savedBeacons = BeaconCacheManager.getInstance().getData();
         if(savedBeacons != null && ! savedBeacons.isEmpty()){
             beacons.clear();
-            beacons.addAll(savedBeacons);
+            addBeacons(savedBeacons);
             adapter.notifyDataSetChanged();
         }
         connectToService();
@@ -123,13 +131,27 @@ public class ObjectsFragment extends Fragment {
     private void addBeacons(List<Beacon> newBeacons){
         boolean changed = false;
         for (Beacon beacon: newBeacons){
-            if (! beacons.contains(beacon)){
+            String mac = beacon.getMacAddress();
+            if(! beaconsAddress.contains(mac)){
                 beacons.add(beacon);
+                beaconsAddress.add(mac);
                 changed = true;
             }
         }
         if(changed){
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        try {
+            beaconManager.stopRanging(ALL_BEACONS_REGION);
+        } catch (RemoteException e) {
+            Log.e("","",e);
+        }finally {
+            beaconManager.disconnect();
         }
     }
 

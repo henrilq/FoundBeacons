@@ -27,4 +27,8 @@ public class BeaconDao {
     public List<Beacon> findAll(){
         return converter.parseFromFile(file);
     }
+
+    public boolean deleteAll(){
+        return file.delete();
+    }
 }

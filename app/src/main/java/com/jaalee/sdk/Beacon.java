@@ -21,7 +21,7 @@ import com.jaalee.sdk.internal.Objects;
    private int major;
    private int minor;
    private transient int measuredPower;
-   private int rssi;
+   private transient int rssi;
    private transient int battLevel;
    private Date date;
      private double latitude;

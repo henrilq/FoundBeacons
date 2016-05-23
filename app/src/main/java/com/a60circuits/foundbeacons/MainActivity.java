@@ -1,5 +1,7 @@
 package com.a60circuits.foundbeacons;
 
+import android.app.NotificationManager;
+import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -9,12 +11,14 @@ import android.os.IBinder;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,8 +28,11 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 
+import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
+import com.a60circuits.foundbeacons.dao.BeaconDao;
 import com.a60circuits.foundbeacons.service.NotificationService;
 import com.a60circuits.foundbeacons.service.PermanentScheduledService;
+import com.jaalee.sdk.BeaconManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initBeaconCache();
 
         final ImageButton b1 = (ImageButton)findViewById(R.id.b1);
         final ImageButton b2 = (ImageButton)findViewById(R.id.b2);
@@ -80,8 +88,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
         startService(new Intent(getApplicationContext(), NotificationService.class));
         doBindService();
+    }
+
+    private void initBeaconCache(){
+        BeaconCacheManager cache = BeaconCacheManager.getInstance();
+        BeaconDao dao = new BeaconDao(getApplicationContext());
+        cache.setDao(dao);
+        cache.loadData();
     }
 
     public void killNoficationService() {
@@ -117,6 +133,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        doUnbindService();
+        BeaconCacheManager.getInstance().deleteObservers();
     }
 
     private boolean isServiceBound() {

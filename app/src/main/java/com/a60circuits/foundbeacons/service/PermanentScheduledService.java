@@ -14,6 +14,10 @@ import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.jaalee.sdk.Beacon;
+
+import java.util.List;
+
 /**
  * Created by zoz on 21/05/2016.
  */
@@ -26,6 +30,8 @@ public abstract class PermanentScheduledService extends Service{
 
     private final Handler handler = new Handler();
     private final IBinder mBinder = new LocalBinder();
+
+    private List<Beacon> beacons;
 
     private int delay;
 
