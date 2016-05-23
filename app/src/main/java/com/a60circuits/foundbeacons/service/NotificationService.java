@@ -78,8 +78,8 @@ public class NotificationService extends PermanentScheduledService implements Ob
         dao = new BeaconDao(getApplicationContext());
         if(beacons == null){
             beacons = dao.findAll();
-            beaconManager = new BeaconManager(getApplicationContext());
         }
+        beaconManager = new BeaconManager(getApplicationContext());
         BluetoothManager manager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         BluetoothAdapter mBluetoothAdapter = manager.getAdapter();
         scanner = mBluetoothAdapter.getBluetoothLeScanner();
