@@ -33,7 +33,13 @@
     <style name="action_bar_style" parent="@style/Widget.AppCompat.Light.ActionBar">
         <item name="android:background">@drawable/found2x</item>
     </style>
-        <!-- Customize your theme here. -->
+
+    <style name="CustomFullScreenTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
 
 
 
