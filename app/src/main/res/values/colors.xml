@@ -8,4 +8,7 @@
     <color name="colorTextItemBlue">#7383a4</color>
     <color name="colorSelectionBlue">#007bf7</color>
     <color name="bottom_bar">#f3f0eb</color>
+    <color name="strokeGrey">#aab2c2</color>
+    <color name="webBlue">#0376f7</color>
+    <color name="letterGrey">#8694b0</color>
 </resources>
