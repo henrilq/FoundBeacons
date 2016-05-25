@@ -1,19 +1,18 @@
 package com.a60circuits.foundbeacons;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
-import com.a60circuits.foundbeacons.dao.BeaconDao;
 import com.jaalee.sdk.Beacon;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by zoz on 19/05/2016.
@@ -40,23 +39,24 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconViewHolder>{
     @Override
     public void onBindViewHolder(final BeaconViewHolder holder, int position) {
         final Beacon beacon = beacons.get(position);
-        holder.editText.setText(beacon.getName()+" "+beacon.getRssi());
+        holder.setItem(beacon);
+        holder.editText.setText(beacon.getName());
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean enabled = !holder.editText.isEnabled();
-                holder.editText.setEnabled(enabled);
+                boolean enabled = !holder.editText.isFocusable();
+                holder.editText.setEnabled(true);
                 holder.editText.setFocusable(enabled);
                 holder.editText.setFocusableInTouchMode(enabled);
                 if(enabled){
-                    holder.editButton.setColorFilter(Color.argb(255, 0, 123, 247)); // Blue Tint
+                    int selectionColor = ContextCompat.getColor(context,R.color.colorSelectionBlue);
+                    holder.editButton.setColorFilter(selectionColor); // Blue Tint
                     holder.editText.requestFocus();
                     holder.editText.setSelection(holder.editText.getText().length());
                 }else{
                     beacon.setName(holder.editText.getText().toString());
                     holder.editButton.setColorFilter(null);
-                    BeaconCacheManager.getInstance().addBeacon(beacon);
-                    BeaconCacheManager.getInstance().saveData();
+                    BeaconCacheManager.getInstance().save(beacon);
                 }
             }
         });
@@ -78,4 +78,5 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconViewHolder>{
     public int getItemCount() {
         return beacons.size();
     }
+
 }

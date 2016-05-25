@@ -1,8 +1,11 @@
 package com.a60circuits.foundbeacons.cache;
 
 import android.content.Context;
+import android.location.Location;
 
 import com.a60circuits.foundbeacons.dao.BeaconDao;
+import com.a60circuits.foundbeacons.utils.LocationUtils;
+import com.google.android.gms.maps.model.LatLng;
 import com.jaalee.sdk.Beacon;
 
 import java.io.File;
@@ -21,18 +24,23 @@ public class BeaconCacheManager extends Observable{
 
     private BeaconDao dao;
 
+    private Context context;
+
+    private boolean empty;
+
     private volatile long version;
 
     public BeaconCacheManager(){
         version = 0;
+        data = new ArrayList<>();
+        empty = true;
     }
 
     public void loadData(){
         List<Beacon> loadedData = dao.findAll();
-        if(loadedData == null){
-            data = Collections.synchronizedList(new ArrayList<Beacon>());
-        }else{
+        if(loadedData != null){
             data = Collections.synchronizedList(loadedData);
+            empty = false;
         }
         notifyChanges();
     }
@@ -42,12 +50,23 @@ public class BeaconCacheManager extends Observable{
         notifyChanges();
     }
 
-    public synchronized void saveData(){
+    public void save(Beacon beacon){
+        Location location = LocationUtils.getLocation(context);
+        beacon.setLatitude(location.getLatitude());
+        beacon.setLongitude(location.getLongitude());
+        data.add(beacon);
+        dao.save(data);
+        notifyChanges();
+    }
+
+    public synchronized void saveAll(){
         dao.save(data);
     }
 
-    public synchronized void deleteData(){
+    public synchronized void deleteAll(){
+        data.clear();
         dao.deleteAll();
+        empty = true;
     }
 
     public void notifyChanges(){
@@ -59,12 +78,20 @@ public class BeaconCacheManager extends Observable{
         this.dao = dao;
     }
 
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
     public long getVersion() {
         return version;
     }
 
     public List<Beacon> getData() {
         return data;
+    }
+
+    public boolean isEmpty() {
+        return empty;
     }
 
     public static BeaconCacheManager getInstance() {

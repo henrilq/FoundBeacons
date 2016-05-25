@@ -25,7 +25,11 @@ public class BeaconDao {
     }
 
     public List<Beacon> findAll(){
-        return converter.parseFromFile(file);
+        List<Beacon> list = null;
+        if(file.exists()){
+            list = converter.parseFromFile(file);
+        }
+        return list;
     }
 
     public boolean deleteAll(){

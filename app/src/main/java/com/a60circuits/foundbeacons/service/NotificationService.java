@@ -76,6 +76,7 @@ public class NotificationService extends PermanentScheduledService implements Ob
         BeaconCacheManager.getInstance().addObserver(this);
         foundBeacons = new HashSet<>();
         dao = new BeaconDao(getApplicationContext());
+        beacons = BeaconCacheManager.getInstance().getData();
         if(beacons == null){
             beacons = dao.findAll();
         }

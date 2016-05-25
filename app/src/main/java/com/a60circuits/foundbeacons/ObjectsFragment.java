@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -71,6 +72,12 @@ public class ObjectsFragment extends Fragment {
         beaconsView = (RecyclerView) view.findViewById(R.id.beaconsView);
         beaconsView.setHasFixedSize(true);
 
+        beaconsView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
+            @Override public void onItemClick(View view, int position) {
+                Log.i("TEST ", "CLICKED "+beacons.get(position).getName());
+            }
+        }));
+
         addButton = (Button) view.findViewById(R.id.addButton);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +92,9 @@ public class ObjectsFragment extends Fragment {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BeaconCacheManager.getInstance().deleteData();
+                BeaconCacheManager.getInstance().deleteAll();
+                beacons.clear();
+                adapter.notifyDataSetChanged();
             }
         });
 
@@ -109,7 +118,7 @@ public class ObjectsFragment extends Fragment {
             addBeacons(savedBeacons);
             adapter.notifyDataSetChanged();
         }
-        connectToService();
+        //connectToService();
         return view;
     }
 

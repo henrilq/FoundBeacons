@@ -37,12 +37,11 @@ import android.widget.ImageButton;
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.a60circuits.foundbeacons.dao.BeaconDao;
 import com.a60circuits.foundbeacons.service.NotificationService;
+import com.a60circuits.foundbeacons.service.NotificationServiceManager;
 import com.a60circuits.foundbeacons.service.PermanentScheduledService;
 import com.jaalee.sdk.BeaconManager;
 
 public class MainActivity extends AppCompatActivity {
-
-    private PermanentScheduledService notificationService;
 
     private ImageButton[] menuButtons;
 
@@ -62,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         ab.setDisplayShowTitleEnabled(false);
 
         initBeaconCache();
+        NotificationServiceManager.getInstance().setActivity(this);
 
         final ImageButton settingsButton = (ImageButton)findViewById(R.id.b1);
         final ImageButton mapButton = (ImageButton)findViewById(R.id.b2);
@@ -88,12 +88,9 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     replaceFragment(objectsButton, new ObjectsFragment());
-                    killNoficationService();
                 }
             });
         }
-        startService(new Intent(getApplicationContext(), NotificationService.class));
-        doBindService();
     }
 
     private void replaceFragment(ImageButton button, Fragment fragment){
@@ -118,47 +115,19 @@ public class MainActivity extends AppCompatActivity {
         BeaconCacheManager cache = BeaconCacheManager.getInstance();
         BeaconDao dao = new BeaconDao(getApplicationContext());
         cache.setDao(dao);
+        cache.setContext(getApplicationContext());
         cache.loadData();
     }
 
-    public void killNoficationService() {
-        if (isServiceBound())
-            notificationService.stopActionEvent();
-        doUnbindService();
-        stopService(new Intent(getApplicationContext(), NotificationService.class));
-    }
 
 
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            notificationService = ((PermanentScheduledService.LocalBinder)service).getService();
-            //chkUseAlarm.setChecked(NotificationService.getUseAlarm());
-        }
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            notificationService = null;
-        }
-    };
-    private void doBindService() {
-        bindService(new Intent(getApplicationContext(), NotificationService.class), serviceConnection, Context.BIND_AUTO_CREATE);
-    }
-    private void doUnbindService() {
-        if (notificationService != null) {
-            unbindService(serviceConnection);
-            notificationService = null;
-        }
-    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        doUnbindService();
+        NotificationServiceManager.getInstance().doUnbindService();
         BeaconCacheManager.getInstance().deleteObservers();
     }
 
-    private boolean isServiceBound() {
-        return notificationService != null;
-    }
 }

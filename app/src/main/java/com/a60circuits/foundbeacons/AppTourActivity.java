@@ -23,11 +23,11 @@ public class AppTourActivity extends AppTour{
         doneSlideButton.setText("Continuer");
 
         //Custom slide
-        addSlide(createSlide(R.drawable.tuto1x2), customSlideColor);
-        addSlide(createSlide(R.drawable.tuto2x2), customSlideColor);
-        addSlide(createSlide(R.drawable.tuto3x2), customSlideColor);
-        addSlide(createSlide(R.drawable.tuto4x2), customSlideColor);
-        addSlide(createSlide(R.drawable.tuto5x2), customSlideColor);
+        addSlide(createSlide(R.drawable.tuto_1), customSlideColor);
+        addSlide(createSlide(R.drawable.tuto_2), customSlideColor);
+        addSlide(createSlide(R.drawable.tuto_3), customSlideColor);
+        addSlide(createSlide(R.drawable.tuto_4), customSlideColor);
+        addSlide(createSlide(R.drawable.tuto_5), customSlideColor);
 
         //Customize tour
         setSkipButtonTextColor(Color.WHITE);
