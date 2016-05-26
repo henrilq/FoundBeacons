@@ -109,8 +109,9 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
                 googleMap.addMarker(createMarker(b));
             }
         }
-
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        if(myPosition != null){
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
+        }
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         return v;
     }

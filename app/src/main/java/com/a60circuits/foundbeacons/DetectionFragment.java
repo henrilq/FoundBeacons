@@ -33,6 +33,7 @@ public class DetectionFragment extends Fragment {
     private int currentPosition;
     private double value;
     private boolean stop = false;
+    private boolean detectionStarted;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,6 +45,7 @@ public class DetectionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.detection_fragment,container,false);
         progressBar = (ProgressBar) view.findViewById(R.id.circleProgress);
+        textView = (TextView) view.findViewById(R.id.nbText);
         final ImageButton detectionButton = (ImageButton) view.findViewById(R.id.detectionButton);
         final ImageButton lastPositionButton = (ImageButton) view.findViewById(R.id.lastPositionButton);
 
@@ -60,14 +62,20 @@ public class DetectionFragment extends Fragment {
             }
         });
 
-
         ObjectAnimator animation = ObjectAnimator.ofInt (progressBar, "progress", 0, 1000);
-        animation.setDuration (200); //in milliseconds
+        animation.setDuration (300); //in milliseconds
         animation.setInterpolator (new DecelerateInterpolator());
         animation.start ();
 
-        textView = (TextView) view.findViewById(R.id.nbText);
-        initThread();
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!detectionStarted){
+                    initThread();
+                }
+            }
+        });
+
         return view;
     }
 
@@ -89,6 +97,7 @@ public class DetectionFragment extends Fragment {
             }
         });
         th.start();
+        detectionStarted = true;
     }
 
     private void random(){
