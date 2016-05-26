@@ -47,7 +47,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
 
-public class NotificationService extends JobService implements Observer{
+public class AppService extends JobService implements Observer{
 
     public static final String TAG = "NOTIFICATION_SERVICE";
     private static final Region ALL_BEACONS_REGION = new Region("rid", null, null, null);
@@ -60,7 +60,7 @@ public class NotificationService extends JobService implements Observer{
     private static Set<String> foundBeacons;
     private BeaconDao dao;
 
-    public NotificationService() {
+    public AppService() {
 
     }
 

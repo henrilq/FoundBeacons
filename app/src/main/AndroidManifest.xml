@@ -13,6 +13,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BIND_JOB_SERVICE" />
 
     <uses-sdk android:minSdkVersion="21" />
     <!-- Declaration that this app is usable on phones with Bluetooth Low Energy. -->
@@ -55,19 +59,26 @@
         <!-- Jaalee service responsible for scanning beacons.-->
         <service android:name="com.jaalee.sdk.service.BeaconService"
             android:exported="false"/>
-
-        <service
-            android:name=".service.NotificationService"
-            android:label="Notifications" >
-        </service>
         <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/.
-        -->
+                <service
+                    android:name=".service.NotificationService"
+                    android:label="Notifications" >
+                </service>-->
+
+                <service android:name=".service.forever.NotificationService"
+                    android:permission="android.permission.BIND_JOB_SERVICE"
+                    android:exported="true"
+                    ></service>
+
+
+                <!--
+                     The API key for Google Maps-based APIs is defined as a string resource.
+                     (See the file "res/values/google_maps_api.xml").
+                     Note that the API key is linked to the encryption key used to sign the APK.
+                     You need a different API key for each encryption key, including the release key that is used to
+                     sign the APK for publishing.
+                     You can define the keys for the debug and release targets in src/debug/ and src/release/.
+                -->
 
         <!--
                 <activity

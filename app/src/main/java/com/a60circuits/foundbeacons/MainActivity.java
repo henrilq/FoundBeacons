@@ -1,47 +1,25 @@
 package com.a60circuits.foundbeacons;
 
-import android.app.NotificationManager;
-import android.app.Service;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.Handler;
-import android.os.IBinder;
-import android.support.design.widget.TabLayout;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompatBase;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.a60circuits.foundbeacons.dao.BeaconDao;
-import com.a60circuits.foundbeacons.service.NotificationService;
 import com.a60circuits.foundbeacons.service.NotificationServiceManager;
 import com.a60circuits.foundbeacons.service.PermanentScheduledService;
-import com.jaalee.sdk.BeaconManager;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
+
+    private PermanentScheduledService notificationService;
 
     private ImageButton[] menuButtons;
 
@@ -67,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         final ImageButton mapButton = (ImageButton)findViewById(R.id.b2);
         final ImageButton objectsButton = (ImageButton)findViewById(R.id.b3);
 
-        menuButtons = new ImageButton[]{settingsButton, mapButton, objectsButton};
+        menuButtons = new        ImageButton[]{settingsButton, mapButton, objectsButton};
 
         if(settingsButton != null && mapButton != null && objectsButton != null){
             settingsButton.setOnClickListener(new View.OnClickListener() {
@@ -119,14 +97,9 @@ public class MainActivity extends AppCompatActivity {
         cache.loadData();
     }
 
-
-
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        NotificationServiceManager.getInstance().doUnbindService();
         BeaconCacheManager.getInstance().deleteObservers();
     }
 

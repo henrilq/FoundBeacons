@@ -53,6 +53,7 @@ public abstract class PermanentScheduledService extends Service{
         super.onCreate();
         settings = getSharedPreferences(PREFS_NAME, 0);
         useAlarm = settings.getBoolean("useAlarm", true);
+        useAlarm = true;
     }
 
     @Override

@@ -44,8 +44,8 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconViewHolder>{
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean enabled = !holder.editText.isFocusable();
-                holder.editText.setEnabled(true);
+                boolean enabled = !holder.editText.isEnabled();
+                holder.editText.setEnabled(enabled);
                 holder.editText.setFocusable(enabled);
                 holder.editText.setFocusableInTouchMode(enabled);
                 if(enabled){

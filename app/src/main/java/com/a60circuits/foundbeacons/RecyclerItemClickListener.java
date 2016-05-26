@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
 
 public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
     private OnItemClickListener mListener;
@@ -33,10 +34,11 @@ public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListen
     public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
         View childView = view.findChildViewUnder(e.getX(), e.getY());
         if (childView != null && mListener != null && mGestureDetector.onTouchEvent(e)) {
-            Log.i(" TOUCHED ", ""+childView.getId());
-            Log.i(" FOCUS ", ""+ childView.findFocus());
-            Log.i("", ""+e.getX()+"  "+e.getY());
-            mListener.onItemClick(childView, view.getChildAdapterPosition(childView));
+            ImageButton button = (ImageButton) childView.findViewById(R.id.editButton);
+            if(e.getX()<button.getX()){
+                mListener.onItemClick(childView, view.getChildAdapterPosition(childView));
+            }
+            Log.i("TEST0", ""+e.getX()+"  "+e.getY()+"  "+button.getX());
         }
         return false;
     }

@@ -118,7 +118,7 @@ public class ObjectsFragment extends Fragment {
             addBeacons(savedBeacons);
             adapter.notifyDataSetChanged();
         }
-        //connectToService();
+        connectToService();
         return view;
     }
 
