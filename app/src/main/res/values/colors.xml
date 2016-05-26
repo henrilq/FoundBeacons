@@ -11,4 +11,6 @@
     <color name="strokeGrey">#aab2c2</color>
     <color name="webBlue">#0376f7</color>
     <color name="letterGrey">#8694b0</color>
+    <color name="circleBlue">#7682a4</color>
+    <color name="circleGrey">#dadcde</color>
 </resources>

@@ -11,10 +11,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.a60circuits.foundbeacons.utils.LocationUtils;
@@ -56,6 +59,22 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         View v = inflater.inflate(R.layout.map_fragment, container,
                 false);
         mMapView = (MapView) v.findViewById(R.id.mapView);
+        final ImageButton detectionButton = (ImageButton) v.findViewById(R.id.detectionButton);
+        final ImageButton lastPositionButton = (ImageButton) v.findViewById(R.id.lastPositionButton);
+
+        detectionButton.setColorFilter(null);
+        lastPositionButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
+
+        detectionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = GMapFragment.this.getFragmentManager().beginTransaction();
+                transaction.replace(R.id.central, new DetectionFragment());
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+
         mMapView.onCreate(savedInstanceState);
 
         mMapView.onResume();// needed to get the map to display immediately

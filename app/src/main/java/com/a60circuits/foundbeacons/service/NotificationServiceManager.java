@@ -5,13 +5,8 @@ import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.IBinder;
-import android.util.Log;
 
-import com.a60circuits.foundbeacons.service.forever.AppService;
-import com.a60circuits.foundbeacons.service.forever.NotificationService;
+
 
 /**
  * Created by zoz on 25/05/2016.

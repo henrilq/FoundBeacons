@@ -1,4 +1,4 @@
-package com.a60circuits.foundbeacons.service.forever;
+package com.a60circuits.foundbeacons.service;
 
 /***
  Copyright (c) 2008-2012 CommonsWare, LLC
@@ -121,7 +121,7 @@ public class NotificationService extends JobService implements Observer{
                 (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.add2x)
+                        .setSmallIcon(R.drawable.logo)
                         .setContentTitle("My notification")
                         .setContentText("not found MAC : "+message);
         notificationManager.notify(1988,mBuilder.build());
