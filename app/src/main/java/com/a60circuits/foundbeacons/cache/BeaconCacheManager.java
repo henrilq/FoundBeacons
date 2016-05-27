@@ -52,8 +52,10 @@ public class BeaconCacheManager extends Observable{
 
     public void save(Beacon beacon){
         Location location = LocationUtils.getLocation(context);
-        beacon.setLatitude(location.getLatitude());
-        beacon.setLongitude(location.getLongitude());
+        if(location != null){
+            beacon.setLatitude(location.getLatitude());
+            beacon.setLongitude(location.getLongitude());
+        }
         data.add(beacon);
         dao.save(data);
         notifyChanges();
@@ -71,6 +73,7 @@ public class BeaconCacheManager extends Observable{
 
     public void notifyChanges(){
         version++;
+        setChanged();
         notifyObservers(data);
     }
 

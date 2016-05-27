@@ -74,8 +74,12 @@ import com.jaalee.sdk.internal.Objects;
    {
       return this.macAddress;
    }
- 
-   public int getMajor()
+
+     public void setMacAddress(String macAddress) {
+         this.macAddress = macAddress;
+     }
+
+     public int getMajor()
    {
       return this.major;
    }

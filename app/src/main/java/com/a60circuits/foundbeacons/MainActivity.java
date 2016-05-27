@@ -1,5 +1,6 @@
 package com.a60circuits.foundbeacons;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -12,6 +13,8 @@ import android.widget.ImageButton;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.a60circuits.foundbeacons.dao.BeaconDao;
+import com.a60circuits.foundbeacons.service.BeaconConnectionService;
+import com.a60circuits.foundbeacons.service.BeaconScannerService;
 import com.a60circuits.foundbeacons.service.NotificationServiceManager;
 import com.a60circuits.foundbeacons.service.PermanentScheduledService;
 
@@ -100,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stopService(new Intent(this,BeaconScannerService.class));
+        stopService(new Intent(this,BeaconConnectionService.class));
         BeaconCacheManager.getInstance().deleteObservers();
     }
 

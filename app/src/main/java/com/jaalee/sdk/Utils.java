@@ -27,61 +27,11 @@ import com.jaalee.sdk.internal.Preconditions;
 //	 private static final int MANUFACTURER_SPECIFIC_DATA = 255;
 	 
 	 public static Beacon beaconFromLeScan(BluetoothDevice device, int rssi, byte[] scanRecord)
-	 {		 
+	 {
 		 String scanRecordAsHex = HashCode.fromBytes(scanRecord).toString();
-		 
-//		 Log.i("JAALEE BEACON" + device.getName(), "JAALEE BEACON"+ scanRecordAsHex);
-		 
-		 if (rssi < -75)
-		 {
-			 return null;
-		 }
-		 
-		 Log.i("JAALEE BEACON" + device.getName(), "JAALEE BEACON"+ scanRecordAsHex);
-		 for (int i = 0; i < scanRecord.length; i++) 
-		 {
-			 int payloadLength = unsignedByteToInt(scanRecord[i]);
-			 
-			 if ((payloadLength == 0) || (i + 1 >= scanRecord.length))
-			 {
-				 break;
-			 }
- 
-			 if (unsignedByteToInt(scanRecord[(i + 1)]) != 255) 
-			 {
-				 i += payloadLength; 
-			 }
-			 else 
-			 {
-				 if (payloadLength == 26 || payloadLength == 27 ) 
-				 {
-					 if ((unsignedByteToInt(scanRecord[(i + 2)]) == 76) && (unsignedByteToInt(scanRecord[(i + 3)]) == 0) && (unsignedByteToInt(scanRecord[(i + 4)]) == 2) && ((unsignedByteToInt(scanRecord[(i + 5)]) == 21) || (unsignedByteToInt(scanRecord[(i + 5)]) == 22) ) )
-					 {
-
-						 String proximityUUID = String.format("%s-%s-%s-%s-%s", new Object[] { scanRecordAsHex.substring(18, 26), scanRecordAsHex.substring(26, 30), scanRecordAsHex.substring(30, 34), scanRecordAsHex.substring(34, 38), scanRecordAsHex.substring(38, 50) });
- 
-						 int major = unsignedByteToInt(scanRecord[(i + 22)]) * 256 + unsignedByteToInt(scanRecord[(i + 23)]);
-						 int minor = unsignedByteToInt(scanRecord[(i + 24)]) * 256 + unsignedByteToInt(scanRecord[(i + 25)]);
-						 int measuredPower = scanRecord[(i + 26)];
-						 
-						 if (payloadLength == 27)
-						 {
-							 int BattLevel = scanRecord[(i + 27)];
-							 return new Beacon(proximityUUID, device.getName(), device.getAddress(), major, minor, measuredPower, rssi, BattLevel);
-						 }
-//						 Log.i(TAG, "New Beacon:"+proximityUUID);	 
-						 return new Beacon(proximityUUID, device.getName(), device.getAddress(), major, minor, measuredPower, rssi, -1);
-					 }
-					 Log.v(TAG, "Manufacturer specific data does not start with 0x4C000215, " + scanRecordAsHex);
-					 return null;
-				 }
- 
-				 Log.w(TAG, "Manufacturer specific data should have 26 bytes length: " + scanRecordAsHex);
-				 return null;
-			 }
-		 }
- 
-		 return null;
+		 Log.i("BEACON" + device.getName(), "JAALEE BEACON"+ scanRecordAsHex);
+		 String proximityUUID = String.format("%s-%s-%s-%s-%s", new Object[] { scanRecordAsHex.substring(18, 26), scanRecordAsHex.substring(26, 30), scanRecordAsHex.substring(30, 34), scanRecordAsHex.substring(34, 38), scanRecordAsHex.substring(38, 50) });
+		 return new Beacon(proximityUUID, device.getName(), device.getAddress(), 0, 0, 0, rssi, -1);
 	 }	 
  
 	 public static BLEDevice BLEDeviceFromLeScan(BluetoothDevice device, int rssi, byte[] scanRecord)
