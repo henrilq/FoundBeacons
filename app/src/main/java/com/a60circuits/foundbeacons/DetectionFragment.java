@@ -19,6 +19,10 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
+import com.jaalee.sdk.Beacon;
+
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -26,7 +30,10 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class DetectionFragment extends Fragment {
 
+    public static final String BEACON_ARGUMENT = "Beacon";
+
     private ProgressBar progressBar;
+    private TextView beaconName;
     private TextView textView;
     private int animationDuration = 300;
 
@@ -34,6 +41,8 @@ public class DetectionFragment extends Fragment {
     private double value;
     private boolean stop = false;
     private boolean detectionStarted;
+
+    private Beacon beacon;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,8 +53,20 @@ public class DetectionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.detection_fragment,container,false);
+        if(getArguments() == null){
+            beacon = BeaconCacheManager.getInstance().findLastDetectedBeacon();
+        }else{
+            beacon = getArguments().getParcelable(BEACON_ARGUMENT);
+        }
+        if(beacon == null){
+            //TODO message
+        }else{
+            beaconName = (TextView) view.findViewById(R.id.beaconName);
+            beaconName.setText(beacon.getName());
+        }
         progressBar = (ProgressBar) view.findViewById(R.id.circleProgress);
         textView = (TextView) view.findViewById(R.id.nbText);
+
         final ImageButton detectionButton = (ImageButton) view.findViewById(R.id.detectionButton);
         final ImageButton lastPositionButton = (ImageButton) view.findViewById(R.id.lastPositionButton);
 

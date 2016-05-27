@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         final ImageButton mapButton = (ImageButton)findViewById(R.id.b2);
         final ImageButton objectsButton = (ImageButton)findViewById(R.id.b3);
 
-        menuButtons = new        ImageButton[]{settingsButton, mapButton, objectsButton};
+        menuButtons = new ImageButton[]{settingsButton, mapButton, objectsButton};
 
         if(settingsButton != null && mapButton != null && objectsButton != null){
             settingsButton.setOnClickListener(new View.OnClickListener() {
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void replaceFragment(ImageButton button, Fragment fragment){
         if(selectedButton == null || ! button.equals(selectedButton)){
-            selectImageButton(button);
+            selectMenuButton(button);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.central, fragment);
             transaction.addToBackStack(null);
@@ -104,10 +104,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void selectImageButton(ImageButton button){
+    public void selectMenuButton(ImageButton button){
         selectedButton = button;
         for(ImageButton b: menuButtons){
             b.setColorFilter(null);
+        }
+        selectedButton.setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.colorSelectionBlue));
+    }
+
+    public void selectMenuButton(int position){
+        for (int i = 0; i < menuButtons.length; i++) {
+            if(position == i){
+                selectedButton = menuButtons[i];
+            }else{
+                menuButtons[i].setColorFilter(null);
+            }
         }
         selectedButton.setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.colorSelectionBlue));
     }

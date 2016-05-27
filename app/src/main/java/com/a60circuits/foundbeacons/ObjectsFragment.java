@@ -31,7 +31,7 @@ import java.util.Set;
 /**
  * Created by zoz on 17/05/2016.
  */
-public class ObjectsFragment extends Fragment implements Observer{
+public class ObjectsFragment extends ReplacerFragment implements Observer{
 
     private static final Region ALL_BEACONS_REGION = new Region("rid", null, null, null);
 
@@ -64,7 +64,12 @@ public class ObjectsFragment extends Fragment implements Observer{
 
         beaconsView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override public void onItemClick(View view, int position) {
-                Log.i("TEST ", "CLICKED "+beacons.get(position).getName());
+                Beacon selectedBeacon = beacons.get(position);
+                Log.i("TEST ", "CLICKED "+selectedBeacon.getName());
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(DetectionFragment.BEACON_ARGUMENT, selectedBeacon);
+                replaceByFragment(new DetectionFragment(), bundle);
+                selectMenuButton(1);
             }
         }));
 

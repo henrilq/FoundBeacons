@@ -47,6 +47,21 @@ public class BeaconCacheManager extends Observable{
         notifyChanges();
     }
 
+    public Beacon findLastDetectedBeacon(){
+        Beacon beacon = null;
+        if(data != null && ! data.isEmpty()){
+            beacon = data.get(0);
+            Date lastDetected = beacon.getDate();
+            for (Beacon b: data){
+                if(b.getDate().after(lastDetected)){
+                    beacon = b;
+                    lastDetected = b.getDate();
+                }
+            }
+        }
+        return beacon;
+    }
+
     public void addBeacon(Beacon beacon){
         data.add(beacon);
         notifyChanges();
