@@ -20,8 +20,8 @@ public class BeaconDao {
         file = new File(context.getFilesDir(), "beacons");
     }
 
-    public void save(List<Beacon> beacons){
-        converter.formatToFile(beacons, file);
+    public boolean save(List<Beacon> beacons){
+        return converter.formatToFile(beacons, file);
     }
 
     public List<Beacon> findAll(){

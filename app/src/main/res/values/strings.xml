@@ -4,4 +4,10 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_maps">Carte</string>
     <string name="settings_message">Autoriser l\'application à m\'alerter dès que mon accessoire dépasse la distance de détection</string>
+    <string name="scanned_beacon_saved">Accessoire enregistré avec succès</string>
+    <string name="scanned_beacon_already_saved">L\'accessoire à proximité déjà enregistré</string>
+    <string name="scanned_beacon_saving_technical_error">Erreur, impossible d\'enregistrer l\'accessoire</string>
+    <string name="scanned_beacon_saving_error">Erreur, l\'accessoire doit être à proximité de votre smartphone</string>
+    <string name="scanned_beacon_connection_error">Erreur, impossible de se connecter à l\'accessoire</string>
+    <string name="scanned_beacon_activation_error">Erreur, impossible d\'activer l\'accessoire</string>
 </resources>

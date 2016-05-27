@@ -1,7 +1,10 @@
 package com.a60circuits.foundbeacons;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -12,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.a60circuits.foundbeacons.dao.BeaconDao;
@@ -23,14 +27,16 @@ import com.a60circuits.foundbeacons.service.PermanentScheduledService;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-
-    private PermanentScheduledService notificationService;
+    public static final String SCAN_RESULT = "com.a60circuits.foundbeacons.result";
 
     private ImageButton[] menuButtons;
-
     private ImageButton selectedButton;
-
+    private ImageButton scanButton;
     private boolean scanning;
+
+    private IntentFilter filter;
+    private BroadcastReceiver broadcastReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar tb = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(tb);
 
-        final ImageButton scanButton = (ImageButton) tb.findViewById(R.id.scanButton);
+        scanButton = (ImageButton) tb.findViewById(R.id.scanButton);
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
 
         initPermissions();
         initBeaconCache();
+        initBroadcastReceiver();
+
         NotificationServiceManager.getInstance().setActivity(this);
 
         final ImageButton settingsButton = (ImageButton)findViewById(R.id.b1);
@@ -134,6 +142,29 @@ public class MainActivity extends AppCompatActivity {
     private void initPermissions(){
         ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.ACCESS_COARSE_LOCATION },1);
         ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION },1);
+    }
+
+    private void initBroadcastReceiver(){
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                scanning = false;
+                scanButton.setColorFilter(null);
+                String message = intent.getStringExtra(BeaconConnectionService.TAG);
+                if(message != null){
+                    Toast.makeText(MainActivity.this.getBaseContext(),message, Toast.LENGTH_LONG).show();
+                }
+            }
+        };
+
+        filter = new IntentFilter();
+        filter.addAction(SCAN_RESULT);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(broadcastReceiver, filter);
     }
 
     @Override

@@ -60,14 +60,16 @@ public class BeaconJSonConverter {
         return beacons;
     }
 
-    public void formatToFile(List<Beacon> beacons, File file){
+    public boolean formatToFile(List<Beacon> beacons, File file){
         FileWriter writer = null;
+        boolean success = true;
         try {
             writer = new FileWriter(file);
             String str = gson.toJson(beacons, COLLECTION_TYPE);
             writer.write(str);
         } catch (IOException e) {
             Log.e("","",e);
+            success = false;
         }finally {
             try {
                 if(writer != null){
@@ -77,6 +79,7 @@ public class BeaconJSonConverter {
                 Log.e("","",e);
             }
         }
+        return success;
     }
 
 

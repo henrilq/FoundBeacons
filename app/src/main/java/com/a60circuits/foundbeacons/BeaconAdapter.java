@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.jaalee.sdk.Beacon;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -56,7 +57,7 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconViewHolder>{
                 }else{
                     beacon.setName(holder.editText.getText().toString());
                     holder.editButton.setColorFilter(null);
-                    BeaconCacheManager.getInstance().save(beacon);
+                    BeaconCacheManager.getInstance().update(beacon);
                 }
             }
         });

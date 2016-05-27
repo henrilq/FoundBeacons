@@ -47,7 +47,56 @@ public class BeaconCacheManager extends Observable{
         notifyChanges();
     }
 
-    public Beacon findLastDetectedBeacon(){
+    public void addBeacon(Beacon beacon){
+        Beacon found = findInCacheByMacAddress(beacon);
+        if(found == null){
+            data.add(beacon);
+            notifyChanges();
+        }
+    }
+
+    public boolean update(Beacon beacon){
+        Beacon beaconStored = findInCacheByMacAddress(beacon);
+        beaconStored.setDate(beacon.getDate());
+        beaconStored.setName(beacon.getName());
+        beaconStored.setLatitude(beacon.getLatitude());
+        beaconStored.setLongitude(beacon.getLongitude());
+        return saveAll();
+    }
+
+    public boolean save(Beacon beacon){
+        boolean success = false;
+        Beacon found = findInCacheByMacAddress(beacon);
+        if(found == null){
+            Location location = LocationUtils.getLastKnownLocation(activity);
+            if(location != null){
+                beacon.setLatitude(location.getLatitude());
+                beacon.setLongitude(location.getLongitude());
+            }
+            beacon.setDate(new Date());
+            data.add(beacon);
+            success = saveAll();
+        }else{
+            success = update(beacon);
+        }
+        return success;
+    }
+
+    public Beacon findInCacheByMacAddress(Beacon beacon){
+        Beacon found = null;
+        String macAddress = beacon.getMacAddress();
+        if(macAddress != null){
+            for (Beacon b: data){
+                if(macAddress.equals(b.getMacAddress())){
+                    found = b;
+                    break;
+                }
+            }
+        }
+        return found;
+    }
+
+    public Beacon findInCacheLastDetectedBeacon(){
         Beacon beacon = null;
         if(data != null && ! data.isEmpty()){
             beacon = data.get(0);
@@ -62,31 +111,17 @@ public class BeaconCacheManager extends Observable{
         return beacon;
     }
 
-    public void addBeacon(Beacon beacon){
-        data.add(beacon);
+    public synchronized boolean saveAll(){
+        boolean success = dao.save(data);
         notifyChanges();
-    }
-
-    public void save(Beacon beacon){
-        Location location = LocationUtils.getLastKnownLocation(activity);
-        if(location != null){
-            beacon.setLatitude(location.getLatitude());
-            beacon.setLongitude(location.getLongitude());
-        }
-        beacon.setDate(new Date());
-        data.add(beacon);
-        dao.save(data);
-        notifyChanges();
-    }
-
-    public synchronized void saveAll(){
-        dao.save(data);
+        return success;
     }
 
     public synchronized void deleteAll(){
         data.clear();
         dao.deleteAll();
         empty = true;
+        notifyChanges();
     }
 
     public void notifyChanges(){

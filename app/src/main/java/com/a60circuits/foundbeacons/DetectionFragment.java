@@ -54,7 +54,7 @@ public class DetectionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.detection_fragment,container,false);
         if(getArguments() == null){
-            beacon = BeaconCacheManager.getInstance().findLastDetectedBeacon();
+            beacon = BeaconCacheManager.getInstance().findInCacheLastDetectedBeacon();
         }else{
             beacon = getArguments().getParcelable(BEACON_ARGUMENT);
         }

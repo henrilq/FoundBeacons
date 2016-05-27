@@ -7,6 +7,8 @@ import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.a60circuits.foundbeacons.MainActivity;
+import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.jaalee.sdk.Beacon;
 import com.jaalee.sdk.BeaconManager;
 import com.jaalee.sdk.RangingListener;
