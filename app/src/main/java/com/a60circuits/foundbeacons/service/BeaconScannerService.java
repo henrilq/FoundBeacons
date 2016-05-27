@@ -7,6 +7,7 @@ import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.a60circuits.foundbeacons.DetectionFragment;
 import com.a60circuits.foundbeacons.MainActivity;
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.jaalee.sdk.Beacon;
@@ -24,31 +25,43 @@ import java.util.List;
  */
 public class BeaconScannerService extends Service {
 
-    private static final String TAG = "BeaconsScannerService";
+    public static final String TAG = "BeaconScannerService";
 
     private static final Region ALL_BEACONS_REGION = new Region("rid", null, null, null);
 
-    private static final String DETECTION_MODE = "detectionMode";
+    public static final String DETECTION_MODE = "detectionMode";
 
-    private static final String BINDING_MODE = "bindingMode";
+    public static final String CONNECTION_MODE = "connectionMode";
 
-    private BeaconConnection connection;
+    public static final String BEACON_ARGUMENT = "beacon";
 
     private BeaconManager beaconManager;
 
-    private volatile boolean stateChanged;
-
-    private volatile boolean waitingResponse;
-
+    private Intent broadcastIntent;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, " START BEACON SCANNER SERVICE ");
-        //boolean isDetectionMode = intent.getBooleanExtra(DETECTION_MODE, false);
-        //boolean isBindingMode = intent.getBooleanExtra(BINDING_MODE, false);
+        boolean isDetectionMode = intent.getBooleanExtra(DETECTION_MODE, false);
+        boolean isConnectionMode = intent.getBooleanExtra(CONNECTION_MODE, false);
         List<Beacon> beacons = new ArrayList<>();
         beaconManager = new BeaconManager(getApplicationContext());
-        beaconManager.setRangingListener(new RangingListener() {
+        if(isConnectionMode){
+            beaconManager.setRangingListener(createConnectionRangingListener());
+        }else if(isDetectionMode){
+            broadcastIntent = new Intent();
+            broadcastIntent.setAction(DetectionFragment.DETECTION_RESULT);
+            Beacon beacon = intent.getParcelableExtra(BEACON_ARGUMENT);
+            if(beacon != null){
+                beaconManager.setRangingListener(createDetectionRangingListener(beacon));
+            }
+        }
+        connectToService();
+        return Service.START_NOT_STICKY;
+    }
+
+    private RangingListener createConnectionRangingListener(){
+        return new RangingListener() {
             @Override
             public void onBeaconsDiscovered(Region region, final List<Beacon> beacons) {
                 for (final Beacon beacon: beacons){
@@ -62,10 +75,26 @@ public class BeaconScannerService extends Service {
                     }
                 }
             }
-        });
-        connectToService();
-        return Service.START_NOT_STICKY;
+        };
     }
+
+    private RangingListener createDetectionRangingListener(final Beacon beacon){
+        return new RangingListener() {
+            @Override
+            public void onBeaconsDiscovered(Region region, final List<Beacon> beacons) {
+                String macAddress = beacon.getMacAddress();
+                if(macAddress != null){
+                    for (Beacon b: beacons){
+                        if(macAddress.equals(b.getMacAddress())){
+                            broadcastIntent.putExtra(TAG, b.getRssi());
+                            sendBroadcast(broadcastIntent);
+                        }
+                    }
+                }
+            }
+        };
+    }
+
 
     private void connectToService() {
         beaconManager.connect(new ServiceReadyCallback() {
@@ -94,6 +123,7 @@ public class BeaconScannerService extends Service {
         if(beaconManager != null){
             stopRanging();
         }
+        beaconManager.disconnect();
         super.onDestroy();
     }
 

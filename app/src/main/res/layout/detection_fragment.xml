@@ -26,7 +26,7 @@
         android:id="@+id/nbText"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:text="LANCER DETECTION"
+        android:text="@string/run_detection"
         android:textColor="@color/circleGrey"
         android:layout_centerInParent="true"
         android:textAlignment="center"

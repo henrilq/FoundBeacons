@@ -1,6 +1,10 @@
 package com.a60circuits.foundbeacons;
 
 import android.animation.ObjectAnimator;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -18,8 +22,11 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
+import com.a60circuits.foundbeacons.service.BeaconConnectionService;
+import com.a60circuits.foundbeacons.service.BeaconScannerService;
 import com.jaalee.sdk.Beacon;
 
 import java.util.List;
@@ -31,6 +38,9 @@ import java.util.concurrent.ThreadLocalRandom;
 public class DetectionFragment extends Fragment {
 
     public static final String BEACON_ARGUMENT = "Beacon";
+    public static final String DETECTION_RESULT = "detectionResult";
+
+    private static final double MAX_DISTANCE = 10;
 
     private ProgressBar progressBar;
     private TextView beaconName;
@@ -38,11 +48,12 @@ public class DetectionFragment extends Fragment {
     private int animationDuration = 300;
 
     private int currentPosition;
-    private double value;
-    private boolean stop = false;
     private boolean detectionStarted;
 
     private Beacon beacon;
+    private BroadcastReceiver broadcastReceiver;
+    private IntentFilter filter;
+    private Handler handler = new Handler();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,6 +74,7 @@ public class DetectionFragment extends Fragment {
         }else{
             beaconName = (TextView) view.findViewById(R.id.beaconName);
             beaconName.setText(beacon.getName());
+            initBroadcastReceiver();
         }
         progressBar = (ProgressBar) view.findViewById(R.id.circleProgress);
         textView = (TextView) view.findViewById(R.id.nbText);
@@ -92,7 +104,7 @@ public class DetectionFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(!detectionStarted){
-                    initThread();
+                    startDetectionService();
                 }
             }
         });
@@ -100,37 +112,44 @@ public class DetectionFragment extends Fragment {
         return view;
     }
 
-    private void initThread(){
-        final Handler handler = new Handler();
-        Thread th = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < 100; i++) {
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            random();
-                        }
-                    });
-                    sleep(1000);
-                    if(stop){break;}
-                }
-            }
-        });
-        th.start();
+    private void startDetectionService(){
+        Intent i = new Intent(getActivity(),BeaconScannerService.class);
+        i.putExtra(BeaconScannerService.DETECTION_MODE, true);
+        i.putExtra(BeaconScannerService.BEACON_ARGUMENT, beacon);
+        getActivity().startService(i);
         detectionStarted = true;
     }
 
-    private void random(){
-        double min = 0;
-        double max = 5;
-        double val = ThreadLocalRandom.current().nextDouble(min,max);
-        updateValue(val);
+    private void initBroadcastReceiver(){
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                int rssi = intent.getIntExtra(BeaconScannerService.TAG, 0);
+                updateValue(computeDistance(rssi));
+            }
+        };
+
+        filter = new IntentFilter();
+        filter.addAction(DetectionFragment.DETECTION_RESULT);
+    }
+
+    private double computeDistance(int rssi){
+        int absRssi = Math.abs(rssi);
+        int measuredPower = 59;
+        if (absRssi == 0.0D) {
+            return -1.0D;
+        }
+
+        double ratio = absRssi * 1.0D / measuredPower;
+        if (ratio < 1.0D) {
+            return Math.pow(ratio, 8.0D);
+        }
+
+        return 0.69976D * Math.pow(ratio, 7.7095D) + 0.111D;
     }
 
     private void updateValue(double distance){
-        double distanceMax = 5;
-        double res = distance / distanceMax * progressBar.getMax();
+        double res = distance / MAX_DISTANCE * progressBar.getMax();
         res = Math.min(res, progressBar.getMax());
         Long resInt = Math.abs(Math.round(res) - progressBar.getMax());
         changeToPosition(resInt.intValue());
@@ -138,12 +157,17 @@ public class DetectionFragment extends Fragment {
         updateTextView(roundToString(distance,2), "METRES");
     }
 
-    private void changeToPosition(int newPosition){
-        ObjectAnimator animation = ObjectAnimator.ofInt (progressBar, "secondaryProgress", currentPosition, newPosition);
-        animation.setDuration (animationDuration); //in milliseconds
-        animation.setInterpolator (new DecelerateInterpolator());
-        animation.start ();
-        currentPosition = newPosition;
+    private void changeToPosition(final int newPosition){
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                ObjectAnimator animation = ObjectAnimator.ofInt (progressBar, "secondaryProgress", currentPosition, newPosition);
+                animation.setDuration (animationDuration); //in milliseconds
+                animation.setInterpolator (new DecelerateInterpolator());
+                animation.start ();
+                currentPosition = newPosition;
+            }
+        });
     }
 
     private void updateTextView(String distance, String unit){
@@ -175,8 +199,19 @@ public class DetectionFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(broadcastReceiver, filter);
+        if(detectionStarted){
+            startDetectionService();
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
-        stop = true;
+        getActivity().stopService(new Intent(getActivity(),BeaconScannerService.class));
+        //textView.setText(getResources().getString(R.string.run_detection));
     }
+
 }

@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 if(scanning){
                     scanButton.setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.colorSelectionBlue));
                     Intent i = new Intent(MainActivity.this,BeaconScannerService.class);
+                    i.putExtra(BeaconScannerService.CONNECTION_MODE, true);
                     MainActivity.this.startService(i);
                 }else{
                     scanButton.setColorFilter(null);
