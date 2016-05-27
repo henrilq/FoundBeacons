@@ -38,7 +38,7 @@ public class BeaconConnectionService extends Service {
             connection = new BeaconConnection(getApplicationContext(), beacon, createConnectionCallback());
             connection.connectBeaconWithPassword("666666");
         }
-        return super.onStartCommand(intent, flags, startId);
+        return Service.START_NOT_STICKY;
     }
 
     private ConnectionCallback createConnectionCallback() {

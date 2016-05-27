@@ -1,20 +1,6 @@
 package com.a60circuits.foundbeacons.service;
 
-/***
- Copyright (c) 2008-2012 CommonsWare, LLC
- Licensed under the Apache License, Version 2.0 (the "License"); you may not
- use this file except in compliance with the License. You may obtain a copy
- of the License at http://www.apache.org/licenses/LICENSE-2.0. Unless required
- by applicable law or agreed to in writing, software distributed under the
- License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
- OF ANY KIND, either express or implied. See the License for the specific
- language governing permissions and limitations under the License.
 
- From _The Busy Coder's Guide to Advanced Android Development_
- http://commonsware.com/AdvAndroid
- */
-
-import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.app.job.JobParameters;
@@ -27,9 +13,6 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -37,7 +20,6 @@ import com.a60circuits.foundbeacons.R;
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.a60circuits.foundbeacons.dao.BeaconDao;
 import com.jaalee.sdk.Beacon;
-import com.jaalee.sdk.BeaconManager;
 import com.jaalee.sdk.Region;
 
 import java.util.ArrayList;
@@ -88,7 +70,6 @@ public class NotificationService extends JobService implements Observer{
                 try{
                     Log.i("SCAN ", " Results "+results.size());
                     Log.i("Beacons ", ""+beacons.size());
-                    //List<Beacon> tempList = new ArrayList<>(beacons);
                     Set<String> macAddresses = new HashSet<String>();
                     for (ScanResult sc: results) {
                         macAddresses.add(sc.getDevice().getAddress());
@@ -134,7 +115,7 @@ public class NotificationService extends JobService implements Observer{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i("WORKING" , "I'm working !!");
+        Log.i(TAG , "On start command");
         return Service.START_STICKY;
     }
 

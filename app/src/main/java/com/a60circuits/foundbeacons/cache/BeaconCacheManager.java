@@ -1,5 +1,6 @@
 package com.a60circuits.foundbeacons.cache;
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 
@@ -12,6 +13,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Observable;
 
@@ -24,7 +26,7 @@ public class BeaconCacheManager extends Observable{
 
     private BeaconDao dao;
 
-    private Context context;
+    private Activity activity;
 
     private boolean empty;
 
@@ -51,11 +53,12 @@ public class BeaconCacheManager extends Observable{
     }
 
     public void save(Beacon beacon){
-        Location location = LocationUtils.getLocation(context);
+        Location location = LocationUtils.getLastKnownLocation(activity);
         if(location != null){
             beacon.setLatitude(location.getLatitude());
             beacon.setLongitude(location.getLongitude());
         }
+        beacon.setDate(new Date());
         data.add(beacon);
         dao.save(data);
         notifyChanges();
@@ -81,8 +84,8 @@ public class BeaconCacheManager extends Observable{
         this.dao = dao;
     }
 
-    public void setContext(Context context) {
-        this.context = context;
+    public void setActivity(Activity activity) {
+        this.activity = activity;
     }
 
     public long getVersion() {

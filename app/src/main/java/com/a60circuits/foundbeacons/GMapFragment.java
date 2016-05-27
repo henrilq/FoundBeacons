@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.nfc.Tag;
 import android.os.Bundle;
 
 import android.support.annotation.Nullable;
@@ -86,7 +87,7 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         }
 
         googleMap = mMapView.getMap();
-        if (PermissionUtils.checkPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)){
+        if (PermissionUtils.checkPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)){
             googleMap.setMyLocationEnabled(true);
         }
 
@@ -95,10 +96,17 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         double longitude = 78.486671;
         LatLng latLng = new LatLng(latitude, longitude);
         LatLng myPosition = null;
-
-        Location location = LocationUtils.getLocation(getContext());
-        myPosition = new LatLng(location.getLatitude(), location.getLongitude());
-
+        Log.i("TEST", " "+ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION));
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Should we show an explanation?
+            if (! ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(this.getActivity(), new String[] { Manifest.permission.ACCESS_COARSE_LOCATION },1);
+                ActivityCompat.requestPermissions(this.getActivity(), new String[] { Manifest.permission.ACCESS_FINE_LOCATION },1);
+            }
+        }
         // create marker
         MarkerOptions marker = new MarkerOptions().title("Hello Maps").snippet("Twitter HQ").icon(BitmapDescriptorFactory
                 .defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).position(latLng);
@@ -109,7 +117,9 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
                 googleMap.addMarker(createMarker(b));
             }
         }
-        if(myPosition != null){
+        Location location = LocationUtils.getLastKnownLocation(getActivity());
+        if(location != null){
+            myPosition = new LatLng(location.getLatitude(), location.getLongitude());
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
         }
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));

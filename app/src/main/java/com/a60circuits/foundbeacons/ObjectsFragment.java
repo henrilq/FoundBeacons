@@ -97,9 +97,6 @@ public class ObjectsFragment extends Fragment implements Observer{
         if(savedBeacons != null && ! savedBeacons.isEmpty()){
             setBeacons(savedBeacons);
         }
-
-        Intent i = new Intent(getContext(),BeaconScannerService.class);
-        getActivity().startService(i);
         return view;
     }
 

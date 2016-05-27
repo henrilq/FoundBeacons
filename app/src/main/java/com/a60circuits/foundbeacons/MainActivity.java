@@ -1,7 +1,9 @@
 package com.a60circuits.foundbeacons;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageButton selectedButton;
 
+    private boolean scanning;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,12 +38,29 @@ public class MainActivity extends AppCompatActivity {
         Toolbar tb = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(tb);
 
+        final ImageButton scanButton = (ImageButton) tb.findViewById(R.id.scanButton);
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scanning = !scanning;
+                if(scanning){
+                    scanButton.setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.colorSelectionBlue));
+                    Intent i = new Intent(MainActivity.this,BeaconScannerService.class);
+                    MainActivity.this.startService(i);
+                }else{
+                    scanButton.setColorFilter(null);
+                    stopService(new Intent(MainActivity.this,BeaconScannerService.class));
+                }
+            }
+        });
+
         final ActionBar ab = getSupportActionBar();
         ab.setDisplayShowHomeEnabled(true); // show or hide the default home button
         ab.setDisplayHomeAsUpEnabled(false);
         ab.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
         ab.setDisplayShowTitleEnabled(false);
 
+        initPermissions();
         initBeaconCache();
         NotificationServiceManager.getInstance().setActivity(this);
 
@@ -96,8 +116,13 @@ public class MainActivity extends AppCompatActivity {
         BeaconCacheManager cache = BeaconCacheManager.getInstance();
         BeaconDao dao = new BeaconDao(getApplicationContext());
         cache.setDao(dao);
-        cache.setContext(getApplicationContext());
+        cache.setActivity(this);
         cache.loadData();
+    }
+
+    private void initPermissions(){
+        ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.ACCESS_COARSE_LOCATION },1);
+        ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION },1);
     }
 
     @Override
