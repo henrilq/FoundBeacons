@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -45,8 +44,6 @@ public class MainActivity extends AppCompatActivity {
     private IntentFilter filter;
     private BroadcastReceiver broadcastReceiver;
 
-    private View.OnClickListener clickListener;
-    private SharedPreferences settings;
     private ImageButton settingsButton;
     private ImageButton mapButton;
     private ImageButton objectsButton;
@@ -68,8 +65,6 @@ public class MainActivity extends AppCompatActivity {
         mapButton = (ImageButton)findViewById(R.id.b2);
         objectsButton = (ImageButton)findViewById(R.id.b3);
         scanButton = (ImageButton) tb.findViewById(R.id.scanButton);
-
-        settings = getSharedPreferences(MainActivity.PREF_FILE, 0);
 
         initMapButton();
         initPermissions();
