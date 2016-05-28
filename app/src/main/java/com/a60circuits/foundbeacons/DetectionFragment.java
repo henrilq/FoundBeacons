@@ -69,13 +69,11 @@ public class DetectionFragment extends Fragment {
         }else{
             beacon = getArguments().getParcelable(BEACON_ARGUMENT);
         }
-        if(beacon == null){
-            //TODO message
-        }else{
+        if(beacon != null){
             beaconName = (TextView) view.findViewById(R.id.beaconName);
             beaconName.setText(beacon.getName());
-            initBroadcastReceiver();
         }
+        initBroadcastReceiver();
         progressBar = (ProgressBar) view.findViewById(R.id.circleProgress);
         textView = (TextView) view.findViewById(R.id.nbText);
 
@@ -103,7 +101,9 @@ public class DetectionFragment extends Fragment {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!detectionStarted){
+                if(beacon == null){
+                    Toast.makeText(getActivity().getBaseContext(),getResources().getString(R.string.no_beacon_saved), Toast.LENGTH_LONG).show();
+                }else if(!detectionStarted){
                     startDetectionService();
                 }
             }
@@ -131,6 +131,7 @@ public class DetectionFragment extends Fragment {
 
         filter = new IntentFilter();
         filter.addAction(DetectionFragment.DETECTION_RESULT);
+        getActivity().registerReceiver(broadcastReceiver, filter);
     }
 
     private double computeDistance(int rssi){
@@ -201,17 +202,13 @@ public class DetectionFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().registerReceiver(broadcastReceiver, filter);
-        if(detectionStarted){
-            startDetectionService();
-        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        getActivity().unregisterReceiver(broadcastReceiver);
         getActivity().stopService(new Intent(getActivity(),BeaconScannerService.class));
-        //textView.setText(getResources().getString(R.string.run_detection));
     }
 
 }

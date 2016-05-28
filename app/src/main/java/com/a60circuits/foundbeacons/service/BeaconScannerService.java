@@ -2,20 +2,18 @@ package com.a60circuits.foundbeacons.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.a60circuits.foundbeacons.DetectionFragment;
-import com.a60circuits.foundbeacons.MainActivity;
-import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.jaalee.sdk.Beacon;
 import com.jaalee.sdk.BeaconManager;
 import com.jaalee.sdk.RangingListener;
 import com.jaalee.sdk.Region;
 import com.jaalee.sdk.ServiceReadyCallback;
-import com.jaalee.sdk.connection.BeaconConnection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +36,8 @@ public class BeaconScannerService extends Service {
     private BeaconManager beaconManager;
 
     private Intent broadcastIntent;
+
+    private Handler handler = new Handler();
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {

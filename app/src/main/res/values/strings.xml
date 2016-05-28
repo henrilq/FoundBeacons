@@ -11,4 +11,6 @@
     <string name="scanned_beacon_connection_error">Erreur, impossible de se connecter à l\'accessoire</string>
     <string name="scanned_beacon_activation_error">Erreur, impossible d\'activer l\'accessoire</string>
     <string name="run_detection">LANCER DETECTION</string>
+    <string name="no_beacon_saved">Aucun accessoire enregistré</string>
+
 </resources>

@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -13,29 +14,42 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
+import com.a60circuits.foundbeacons.cache.CacheVariable;
 import com.a60circuits.foundbeacons.dao.BeaconDao;
 import com.a60circuits.foundbeacons.service.BeaconConnectionService;
 import com.a60circuits.foundbeacons.service.BeaconScannerService;
 import com.a60circuits.foundbeacons.service.NotificationServiceManager;
-import com.a60circuits.foundbeacons.service.PermanentScheduledService;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    public static final String PREF_FILE = "prefFile";
+    public static final String BUTTON_POSITION = "buttonPosition";
     public static final String SCAN_RESULT = "com.a60circuits.foundbeacons.result";
 
-    private ImageButton[] menuButtons;
+    private Map<ImageButton, Class<? extends Fragment>> map;
     private ImageButton selectedButton;
     private ImageButton scanButton;
+    private int buttonPosition;
     private boolean scanning;
 
     private IntentFilter filter;
     private BroadcastReceiver broadcastReceiver;
+
+    private View.OnClickListener clickListener;
+    private SharedPreferences settings;
+    private ImageButton settingsButton;
+    private ImageButton mapButton;
+    private ImageButton objectsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +58,24 @@ public class MainActivity extends AppCompatActivity {
         Toolbar tb = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(tb);
 
+        final ActionBar ab = getSupportActionBar();
+        ab.setDisplayShowHomeEnabled(true); // show or hide the default home button
+        ab.setDisplayHomeAsUpEnabled(false);
+        ab.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
+        ab.setDisplayShowTitleEnabled(false);
+
+        settingsButton = (ImageButton) findViewById(R.id.b1);
+        mapButton = (ImageButton)findViewById(R.id.b2);
+        objectsButton = (ImageButton)findViewById(R.id.b3);
         scanButton = (ImageButton) tb.findViewById(R.id.scanButton);
+
+        settings = getSharedPreferences(MainActivity.PREF_FILE, 0);
+
+        initMapButton();
+        initPermissions();
+        initBeaconCache();
+        initBroadcastReceiver();
+
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,49 +88,30 @@ public class MainActivity extends AppCompatActivity {
                 }else{
                     scanButton.setColorFilter(null);
                     stopService(new Intent(MainActivity.this,BeaconScannerService.class));
+                    stopService(new Intent(MainActivity.this,BeaconConnectionService.class));
                 }
             }
         });
 
-        final ActionBar ab = getSupportActionBar();
-        ab.setDisplayShowHomeEnabled(true); // show or hide the default home button
-        ab.setDisplayHomeAsUpEnabled(false);
-        ab.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
-        ab.setDisplayShowTitleEnabled(false);
-
-        initPermissions();
-        initBeaconCache();
-        initBroadcastReceiver();
-
         NotificationServiceManager.getInstance().setActivity(this);
+        Object lastPosition = CacheVariable.get(BUTTON_POSITION);
+        if(lastPosition == null){
+            replaceFragment(settingsButton);
 
-        final ImageButton settingsButton = (ImageButton)findViewById(R.id.b1);
-        final ImageButton mapButton = (ImageButton)findViewById(R.id.b2);
-        final ImageButton objectsButton = (ImageButton)findViewById(R.id.b3);
+        }else{
+            selectMenuButton(Integer.valueOf(""+lastPosition));
+        }
+        settingsButton.setOnClickListener(createButtonListener(settingsButton));
+        mapButton.setOnClickListener(createButtonListener(mapButton));
+        objectsButton.setOnClickListener(createButtonListener(objectsButton));
+    }
 
-        menuButtons = new ImageButton[]{settingsButton, mapButton, objectsButton};
-
-        if(settingsButton != null && mapButton != null && objectsButton != null){
-            settingsButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    replaceFragment(settingsButton, new SettingsFragment());
-                }
-            });
-
-            mapButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    replaceFragment(mapButton, new GMapFragment());
-                }
-            });
-
-            objectsButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    replaceFragment(objectsButton, new ObjectsFragment());
-                }
-            });
+    private void replaceFragment(ImageButton button){
+        try {
+            Fragment fragment = map.get(button).newInstance();
+            replaceFragment(button, fragment);
+        } catch (Exception e) {
+            Log.e(TAG,"",e);
         }
     }
 
@@ -113,23 +125,35 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void selectMenuButton(ImageButton button){
+    public ImageButton selectMenuButton(ImageButton button){
         selectedButton = button;
-        for(ImageButton b: menuButtons){
-            b.setColorFilter(null);
+        int index = 0;
+        for(ImageButton imageButton: map.keySet()){
+            if(button.equals(imageButton)){
+                buttonPosition = index;
+            }
+            imageButton.setColorFilter(null);
+            index++;
         }
         selectedButton.setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.colorSelectionBlue));
+        return selectedButton;
     }
 
-    public void selectMenuButton(int position){
-        for (int i = 0; i < menuButtons.length; i++) {
-            if(position == i){
-                selectedButton = menuButtons[i];
-            }else{
-                menuButtons[i].setColorFilter(null);
+    public ImageButton selectMenuButton(int position){
+        if(position >= 0){
+            buttonPosition = position;
+            int index = 0;
+            for (ImageButton imageButton: map.keySet()){
+                if(position == index){
+                    selectedButton = imageButton;
+                }else{
+                    imageButton.setColorFilter(null);
+                }
+                index++;
             }
+            selectedButton.setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.colorSelectionBlue));
         }
-        selectedButton.setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.colorSelectionBlue));
+        return selectedButton;
     }
 
     private void initBeaconCache(){
@@ -138,6 +162,13 @@ public class MainActivity extends AppCompatActivity {
         cache.setDao(dao);
         cache.setActivity(this);
         cache.loadData();
+    }
+
+    private void initMapButton(){
+        map = new LinkedHashMap<>();
+        map.put(settingsButton, SettingsFragment.class);
+        map.put(mapButton, GMapFragment.class);
+        map.put(objectsButton, ObjectsFragment.class);
     }
 
     private void initPermissions(){
@@ -157,9 +188,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-
         filter = new IntentFilter();
         filter.addAction(SCAN_RESULT);
+    }
+
+    private View.OnClickListener createButtonListener(final ImageButton button){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replaceFragment(button);
+            }
+        };
     }
 
     @Override
@@ -171,9 +210,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
         stopService(new Intent(this,BeaconScannerService.class));
         stopService(new Intent(this,BeaconConnectionService.class));
         BeaconCacheManager.getInstance().deleteObservers();
+        CacheVariable.put(BUTTON_POSITION, buttonPosition);
     }
 
 }

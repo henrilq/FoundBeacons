@@ -1,5 +1,6 @@
 package com.a60circuits.foundbeacons;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,8 @@ import com.a60circuits.foundbeacons.service.NotificationServiceManager;
  * Created by zoz on 17/05/2016.
  */
 public class SettingsFragment extends Fragment{
+
+    public static final String NOTIFICATION_ENABLED = "notificationEnabled";
 
     private Switch gpsSwitch;
     private Switch notificationSwitch;
@@ -32,15 +35,22 @@ public class SettingsFragment extends Fragment{
             }
         });
 
+        final SharedPreferences settings = getActivity().getSharedPreferences(MainActivity.PREF_FILE, 0);
+        boolean notificationEnabled = settings.getBoolean(NOTIFICATION_ENABLED, false);
+        notificationSwitch.setChecked(notificationEnabled);
+
         notificationSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences.Editor editor = settings.edit();
                 if(notificationSwitch.isChecked()){
                     NotificationServiceManager.getInstance().startNotificationService();
-                    //NotificationServiceManager.getInstance().doBindService();
+                    editor.putBoolean(NOTIFICATION_ENABLED, true);
                 }else{
                     NotificationServiceManager.getInstance().killNoficationService();
+                    editor.putBoolean(NOTIFICATION_ENABLED, false);
                 }
+                editor.commit();
             }
         });
 

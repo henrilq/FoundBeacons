@@ -65,7 +65,6 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
         beaconsView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override public void onItemClick(View view, int position) {
                 Beacon selectedBeacon = beacons.get(position);
-                Log.i("TEST ", "CLICKED "+selectedBeacon.getName());
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(DetectionFragment.BEACON_ARGUMENT, selectedBeacon);
                 replaceByFragment(new DetectionFragment(), bundle);
