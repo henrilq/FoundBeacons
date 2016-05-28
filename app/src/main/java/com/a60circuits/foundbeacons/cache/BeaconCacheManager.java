@@ -56,12 +56,16 @@ public class BeaconCacheManager extends Observable{
     }
 
     public boolean update(Beacon beacon){
+        boolean success = false;
         Beacon beaconStored = findInCacheByMacAddress(beacon);
-        beaconStored.setDate(beacon.getDate());
-        beaconStored.setName(beacon.getName());
-        beaconStored.setLatitude(beacon.getLatitude());
-        beaconStored.setLongitude(beacon.getLongitude());
-        return saveAll();
+        if(beaconStored != null){
+            beaconStored.setDate(beacon.getDate());
+            beaconStored.setName(beacon.getName());
+            beaconStored.setLatitude(beacon.getLatitude());
+            beaconStored.setLongitude(beacon.getLongitude());
+            success = saveAll();
+        }
+        return success;
     }
 
     public boolean save(Beacon beacon){
