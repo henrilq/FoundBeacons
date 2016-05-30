@@ -20,7 +20,8 @@
         >
         <ImageButton
             android:id="@+id/detectionButton"
-            android:layout_width="150dp"
+            android:layout_width="0dp"
+            android:layout_weight=".45"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
@@ -31,7 +32,8 @@
 
         <ImageButton
             android:id="@+id/lastPositionButton"
-            android:layout_width="150dp"
+            android:layout_width="0dp"
+            android:layout_weight=".45"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"

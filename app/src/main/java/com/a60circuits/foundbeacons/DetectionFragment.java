@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -21,14 +22,17 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.a60circuits.foundbeacons.service.BeaconConnectionService;
 import com.a60circuits.foundbeacons.service.BeaconScannerService;
+import com.a60circuits.foundbeacons.utils.LocationUtils;
 import com.jaalee.sdk.Beacon;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -64,6 +68,17 @@ public class DetectionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.detection_fragment,container,false);
+        progressBar = (ProgressBar) view.findViewById(R.id.circleProgress);
+        textView = (TextView) view.findViewById(R.id.nbText);
+        final ImageButton detectionButton = (ImageButton) view.findViewById(R.id.detectionButton);
+        final ImageButton lastPositionButton = (ImageButton) view.findViewById(R.id.lastPositionButton);
+        final RelativeLayout progressLayout = (RelativeLayout) view.findViewById(R.id.circleProgressLayout);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.getLayoutParams().height = progressBar.getWidth();
+            }
+        });
         if(getArguments() == null){
             beacon = BeaconCacheManager.getInstance().findInCacheLastDetectedBeacon();
         }else{
@@ -74,11 +89,6 @@ public class DetectionFragment extends Fragment {
             beaconName.setText(beacon.getName());
         }
         initBroadcastReceiver();
-        progressBar = (ProgressBar) view.findViewById(R.id.circleProgress);
-        textView = (TextView) view.findViewById(R.id.nbText);
-
-        final ImageButton detectionButton = (ImageButton) view.findViewById(R.id.detectionButton);
-        final ImageButton lastPositionButton = (ImageButton) view.findViewById(R.id.lastPositionButton);
 
         lastPositionButton.setColorFilter(null);
         detectionButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
@@ -87,13 +97,17 @@ public class DetectionFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = DetectionFragment.this.getFragmentManager().beginTransaction();
-                transaction.replace(R.id.central, new GMapFragment());
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(GMapFragment.BEACON_ARGUMENT, beacon);
+                GMapFragment mapFragment = new GMapFragment();
+                mapFragment.setArguments(bundle);
+                transaction.replace(R.id.central, mapFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
         });
 
-        ObjectAnimator animation = ObjectAnimator.ofInt (progressBar, "progress", 0, 1000);
+        ObjectAnimator animation = ObjectAnimator.ofInt (progressBar, "progress", 0, progressBar.getMax());
         animation.setDuration (300); //in milliseconds
         animation.setInterpolator (new DecelerateInterpolator());
         animation.start ();
@@ -104,6 +118,7 @@ public class DetectionFragment extends Fragment {
                 if(beacon == null){
                     Toast.makeText(getActivity().getBaseContext(),getResources().getString(R.string.no_beacon_saved), Toast.LENGTH_LONG).show();
                 }else if(!detectionStarted){
+                    textView.setText(getResources().getString(R.string.detection_started));
                     startDetectionService();
                 }
             }
@@ -126,6 +141,11 @@ public class DetectionFragment extends Fragment {
             public void onReceive(Context context, Intent intent) {
                 int rssi = intent.getIntExtra(BeaconScannerService.TAG, 0);
                 updateValue(computeDistance(rssi));
+                Location location = LocationUtils.getLastKnownLocation(getActivity());
+                beacon.setLatitude(location.getLatitude());
+                beacon.setLongitude(location.getLongitude());
+                beacon.setDate(new Date());
+                BeaconCacheManager.getInstance().update(beacon);
             }
         };
 

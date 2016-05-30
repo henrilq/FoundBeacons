@@ -39,12 +39,18 @@ import com.jaalee.sdk.Beacon;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickListener{
 
+    public static final String BEACON_ARGUMENT = "beacon";
     private MapView mMapView;
     private GoogleMap googleMap;
+    private Beacon beacon;
+    private Map<Marker, Beacon> markerToBeacon = new HashMap<>();
+    private Marker selectedMarker;
     private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yy");
     private final static SimpleDateFormat HOUR_FORMAT = new SimpleDateFormat("HH:mm");
     @Override
@@ -62,22 +68,28 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         mMapView = (MapView) v.findViewById(R.id.mapView);
         final ImageButton detectionButton = (ImageButton) v.findViewById(R.id.detectionButton);
         final ImageButton lastPositionButton = (ImageButton) v.findViewById(R.id.lastPositionButton);
-
         detectionButton.setColorFilter(null);
         lastPositionButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
+
+
 
         detectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = GMapFragment.this.getFragmentManager().beginTransaction();
-                transaction.replace(R.id.central, new DetectionFragment());
+                DetectionFragment detectionFragment = new DetectionFragment();
+                if(beacon != null){
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(DetectionFragment.BEACON_ARGUMENT, beacon);
+                    detectionFragment.setArguments(bundle);
+                }
+                transaction.replace(R.id.central, detectionFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
         });
 
         mMapView.onCreate(savedInstanceState);
-
         mMapView.onResume();// needed to get the map to display immediately
 
         try {
@@ -90,13 +102,8 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         if (PermissionUtils.checkPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)){
             googleMap.setMyLocationEnabled(true);
         }
+        googleMap.setOnMarkerClickListener(this);
 
-        // latitude and longitude
-        double latitude = 17.385044;
-        double longitude = 78.486671;
-        LatLng latLng = new LatLng(latitude, longitude);
-        LatLng myPosition = null;
-        Log.i("TEST", " "+ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION));
         if (ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -107,21 +114,30 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
                 ActivityCompat.requestPermissions(this.getActivity(), new String[] { Manifest.permission.ACCESS_FINE_LOCATION },1);
             }
         }
-        // create marker
-        MarkerOptions marker = new MarkerOptions().title("Hello Maps").snippet("Twitter HQ").icon(BitmapDescriptorFactory
-                .defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).position(latLng);
-
-        List<Beacon> beacons = BeaconCacheManager.getInstance().getData();
-        if(beacons != null){
-            for (Beacon b: beacons){
-                googleMap.addMarker(createMarker(b));
-            }
-        }
+        LatLng myPosition = null;
         Location location = LocationUtils.getLastKnownLocation(getActivity());
         if(location != null){
             myPosition = new LatLng(location.getLatitude(), location.getLongitude());
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
         }
+        List<Beacon> beacons = BeaconCacheManager.getInstance().getData();
+        if(beacons != null && ! beacons.isEmpty()){
+            if(getArguments() != null){
+                beacon = (Beacon)getArguments().get(BEACON_ARGUMENT);
+            }
+            if(beacons != null){
+                for (Beacon b: beacons){
+                    Marker marker = googleMap.addMarker(createMarker(b));
+                    markerToBeacon.put(marker, b);
+                }
+            }
+            if(beacon != null){
+                myPosition = new LatLng(beacon.getLatitude(), beacon.getLongitude());
+            }else{
+                Beacon lastDetectedBeacon = BeaconCacheManager.getInstance().findInCacheLastDetectedBeacon();
+                myPosition = new LatLng(lastDetectedBeacon.getLatitude(), lastDetectedBeacon.getLongitude());
+            }
+        }
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         return v;
     }
@@ -169,8 +185,10 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-
-
+        Beacon beacon = markerToBeacon.get(marker);
+        if(beacon != null){
+            this.beacon = beacon;
+        }
         return false;
     }
 }
