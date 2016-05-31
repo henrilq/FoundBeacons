@@ -91,54 +91,52 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
 
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume();// needed to get the map to display immediately
-
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
+            googleMap = mMapView.getMap();
+            if (PermissionUtils.checkPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)){
+                googleMap.setMyLocationEnabled(true);
+            }
+            googleMap.setOnMarkerClickListener(this);
+
+            if (ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                if (! ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                        Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    ActivityCompat.requestPermissions(this.getActivity(), new String[] { Manifest.permission.ACCESS_COARSE_LOCATION },1);
+                    ActivityCompat.requestPermissions(this.getActivity(), new String[] { Manifest.permission.ACCESS_FINE_LOCATION },1);
+                }
+            }
+            LatLng myPosition = null;
+            Location location = LocationUtils.getLastKnownLocation(getActivity());
+            if(location != null){
+                myPosition = new LatLng(location.getLatitude(), location.getLongitude());
+            }
+            List<Beacon> beacons = BeaconCacheManager.getInstance().getData();
+            if(beacons != null && ! beacons.isEmpty()){
+                if(getArguments() != null){
+                    beacon = (Beacon)getArguments().get(BEACON_ARGUMENT);
+                }
+                if(beacons != null){
+                    for (Beacon b: beacons){
+                        Marker marker = googleMap.addMarker(createMarker(b));
+                        markerToBeacon.put(marker, b);
+                    }
+                }
+                if(beacon != null){
+                    myPosition = new LatLng(beacon.getLatitude(), beacon.getLongitude());
+                }else{
+                    Beacon lastDetectedBeacon = BeaconCacheManager.getInstance().findInCacheLastDetectedBeacon();
+                    myPosition = new LatLng(lastDetectedBeacon.getLatitude(), lastDetectedBeacon.getLongitude());
+                }
+            }
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         } catch (Exception e) {
             Log.e("","",e);
         }
-
-        googleMap = mMapView.getMap();
-        if (PermissionUtils.checkPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)){
-            googleMap.setMyLocationEnabled(true);
-        }
-        googleMap.setOnMarkerClickListener(this);
-
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Should we show an explanation?
-            if (! ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                ActivityCompat.requestPermissions(this.getActivity(), new String[] { Manifest.permission.ACCESS_COARSE_LOCATION },1);
-                ActivityCompat.requestPermissions(this.getActivity(), new String[] { Manifest.permission.ACCESS_FINE_LOCATION },1);
-            }
-        }
-        LatLng myPosition = null;
-        Location location = LocationUtils.getLastKnownLocation(getActivity());
-        if(location != null){
-            myPosition = new LatLng(location.getLatitude(), location.getLongitude());
-        }
-        List<Beacon> beacons = BeaconCacheManager.getInstance().getData();
-        if(beacons != null && ! beacons.isEmpty()){
-            if(getArguments() != null){
-                beacon = (Beacon)getArguments().get(BEACON_ARGUMENT);
-            }
-            if(beacons != null){
-                for (Beacon b: beacons){
-                    Marker marker = googleMap.addMarker(createMarker(b));
-                    markerToBeacon.put(marker, b);
-                }
-            }
-            if(beacon != null){
-                myPosition = new LatLng(beacon.getLatitude(), beacon.getLongitude());
-            }else{
-                Beacon lastDetectedBeacon = BeaconCacheManager.getInstance().findInCacheLastDetectedBeacon();
-                myPosition = new LatLng(lastDetectedBeacon.getLatitude(), lastDetectedBeacon.getLongitude());
-            }
-        }
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         return v;
     }
 
