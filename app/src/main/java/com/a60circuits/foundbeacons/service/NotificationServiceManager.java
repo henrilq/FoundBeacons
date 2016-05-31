@@ -32,8 +32,7 @@ public class NotificationServiceManager {
         JobInfo task = new JobInfo.Builder(idJob, serviceName)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
                 .setRequiresDeviceIdle(true)
-                .setRequiresCharging(true)
-                .setPeriodic(20000)
+                .setPeriodic(NotificationService.PERIOD)
                 .setPersisted(true)
                 .build();
 

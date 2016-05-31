@@ -2,6 +2,7 @@ package com.a60circuits.foundbeacons;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -49,8 +50,7 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
         super.onCreate(savedInstanceState);
         handler = new Handler();
         beaconsAddress = new HashSet<>();
-        ActivityCompat.requestPermissions(this.getActivity(), new String[] { Manifest.permission.ACCESS_COARSE_LOCATION },1);
-        ActivityCompat.requestPermissions(this.getActivity(), new String[] { Manifest.permission.ACCESS_FINE_LOCATION },1);
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
     }
 
     @Nullable

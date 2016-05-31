@@ -13,4 +13,5 @@
     <string name="run_detection">LANCER DETECTION</string>
     <string name="no_beacon_saved">Aucun accessoire enregistré</string>
     <string name="detection_started">Recherche...</string>
+    <string name="bluetooth_not_supported">Le bluetooth ne fonctionne pas sur cet appareil</string>
 </resources>

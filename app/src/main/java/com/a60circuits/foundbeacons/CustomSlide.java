@@ -29,9 +29,9 @@ public class CustomSlide extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_custom_slide, container, false);
         ImageView imageView = (ImageView) rootView.findViewById(R.id.imageView);
         int key = getArguments().getInt(KEY);
-        if(key > 0){
+        //if(key > 0){
             imageView.setBackground(ContextCompat.getDrawable(getActivity(), key));
-        }
+        //}
 
         return rootView;
     }

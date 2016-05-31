@@ -1,10 +1,12 @@
 package com.a60circuits.foundbeacons;
 
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -44,7 +46,7 @@ public class DetectionFragment extends Fragment {
     public static final String BEACON_ARGUMENT = "Beacon";
     public static final String DETECTION_RESULT = "detectionResult";
 
-    private static final double MAX_DISTANCE = 10;
+    private static final double MAX_DISTANCE = 20;
 
     private ProgressBar progressBar;
     private TextView beaconName;
@@ -62,6 +64,7 @@ public class DetectionFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     @Nullable
@@ -217,11 +220,6 @@ public class DetectionFragment extends Fragment {
         } catch (InterruptedException e) {
             Log.e("","",e);
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     @Override

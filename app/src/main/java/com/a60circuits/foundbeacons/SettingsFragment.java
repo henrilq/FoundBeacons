@@ -1,6 +1,7 @@
 package com.a60circuits.foundbeacons;
 
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,12 @@ public class SettingsFragment extends Fragment{
 
     private Switch gpsSwitch;
     private Switch notificationSwitch;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+    }
 
     @Nullable
     @Override
