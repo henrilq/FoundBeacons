@@ -13,4 +13,6 @@
     <color name="letterGrey">#8694b0</color>
     <color name="circleBlue">#7682a4</color>
     <color name="circleGrey">#dadcde</color>
+    <color name="mapInfoBorder">#1a87fd</color>
+    <color name="mapInfoFontColor">#1684fe</color>
 </resources>

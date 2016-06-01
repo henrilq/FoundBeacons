@@ -33,7 +33,7 @@
                 android:id="@+id/b1"
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/settings2x"
+                android:src="@drawable/settings3x"
                 android:background="@null"
                 android:scaleType="fitXY"
                 android:layout_marginRight="50dp"
@@ -43,7 +43,7 @@
                 android:id="@+id/b2"
                 android:layout_width="30dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/location2x"
+                android:src="@drawable/location3x"
                 android:scaleType="fitXY"
                 android:background="@null"
                 android:layout_marginRight="50dp"/>
@@ -52,7 +52,7 @@
                 android:id="@+id/b3"
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/add2x"
+                android:src="@drawable/list3x"
                 android:scaleType="fitXY"
                 android:background="@null"/>
         </LinearLayout>

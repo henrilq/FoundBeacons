@@ -4,6 +4,10 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.LevelListDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -20,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.a60circuits.foundbeacons.utils.LocationUtils;
@@ -31,6 +36,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -99,6 +105,21 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
             }
             googleMap.setOnMarkerClickListener(this);
 
+            googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                @Override
+                public View getInfoWindow(Marker marker) {
+                    View view = getLayoutInflater(new Bundle()).inflate(R.layout.map_beacon_info, null);
+                    TextView textView = (TextView) view.findViewById(R.id.text);
+                    textView.setText(marker.getTitle()+"\n"+marker.getSnippet());
+                    return view;
+                }
+
+                @Override
+                public View getInfoContents(Marker marker) {
+                    return null;
+                }
+            });
+
             LatLng myPosition = null;
             Location location = LocationUtils.getLastKnownLocation(getActivity());
             if(location != null){
@@ -134,8 +155,15 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         Date date = beacon.getDate();
         String dateformated = "LE "+DATE_FORMAT.format(date)+" A "+HOUR_FORMAT.format(date);
         LatLng latLng = new LatLng(beacon.getLatitude(), beacon.getLongitude());
-        MarkerOptions marker = new MarkerOptions().title(beacon.getName()).snippet(dateformated).icon(BitmapDescriptorFactory
-                .defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).position(latLng);
+
+        /*LevelListDrawable d=(LevelListDrawable) getResources().getDrawable(R.drawable.pin2x, null);
+        d.setLevel(1234);
+        BitmapDrawable bd=(BitmapDrawable) d.getCurrent();
+        Bitmap b=bd.getBitmap();
+        Bitmap bhalfsize=Bitmap.createScaledBitmap(b, b.getWidth()/2,b.getHeight()/2, false);*/
+        BitmapDescriptor descriptor = BitmapDescriptorFactory.fromResource(R.drawable.pin);
+        BitmapDescriptor imageMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
+        MarkerOptions marker = new MarkerOptions().title(beacon.getName()).snippet(dateformated).icon(descriptor).position(latLng);
         return marker;
     }
 

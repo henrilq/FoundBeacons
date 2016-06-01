@@ -43,8 +43,7 @@
         android:orientation="horizontal"
         android:padding="10dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        >
+        android:layout_centerInParent="true">
         <ImageButton
             android:id="@+id/detectionButton"
             android:layout_width="150dp"

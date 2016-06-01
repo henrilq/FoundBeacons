@@ -2,11 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:background="@null"
-    android:layout_margin="30dp"
+    android:layout_marginLeft="30dp"
+    android:layout_marginRight="30dp"
     android:layout_height="match_parent">
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:orientation="vertical"
@@ -118,11 +119,11 @@
             </LinearLayout>
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/letterGrey"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:text="@string/settings_message"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
@@ -130,6 +131,40 @@
                 android:layout_marginLeft="35dp"
                 android:gravity="center"
                 android:layout_gravity="center_horizontal" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:padding="10dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true">
+                <ImageButton
+                    android:id="@+id/detectionButton"
+                    android:layout_width="0dp"
+                    android:layout_weight=".45"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/detection_button"
+                    android:scaleType="fitXY"
+                    android:adjustViewBounds="true"
+                    android:background="@null"/>
+
+                <ImageButton
+                    android:id="@+id/lastPositionButton"
+                    android:layout_width="0dp"
+                    android:layout_weight=".45"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/last_position"
+                    android:scaleType="fitXY"
+                    android:adjustViewBounds="true"
+                    android:background="@null"/>
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
