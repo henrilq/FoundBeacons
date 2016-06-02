@@ -14,4 +14,8 @@
     <string name="no_beacon_saved">Aucun accessoire enregistré</string>
     <string name="detection_started">Recherche Activée</string>
     <string name="bluetooth_not_supported">Le bluetooth ne fonctionne pas sur cet appareil</string>
+
+
+    <string name="font_brandon_bld">fonts/Brandon_bld.otf</string>
+    <string name="font_brandon_med">fonts/Brandon_med.otf</string>
 </resources>

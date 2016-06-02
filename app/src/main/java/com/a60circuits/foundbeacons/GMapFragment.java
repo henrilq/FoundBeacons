@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.LevelListDrawable;
 import android.location.Criteria;
@@ -63,7 +64,6 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     @Override
@@ -111,6 +111,8 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
                     View view = getLayoutInflater(new Bundle()).inflate(R.layout.map_beacon_info, null);
                     TextView textView = (TextView) view.findViewById(R.id.text);
                     textView.setText(marker.getTitle()+"\n"+marker.getSnippet());
+                    Typeface face = Typeface.createFromAsset(getActivity().getAssets(),getResources().getString(R.string.font_brandon_bld));
+                    textView.setTypeface(face);
                     return view;
                 }
 

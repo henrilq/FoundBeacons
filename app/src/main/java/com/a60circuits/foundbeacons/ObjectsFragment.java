@@ -50,7 +50,6 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
         super.onCreate(savedInstanceState);
         handler = new Handler();
         beaconsAddress = new HashSet<>();
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
     }
 
     @Nullable
