@@ -55,20 +55,23 @@ public class NotificationService extends JobService implements Observer{
 
     @Override
     public boolean onStartJob(JobParameters params) {
-        Log.i(TAG , "Starting job");
-        Toast.makeText(getApplicationContext(),"Starting job", Toast.LENGTH_SHORT).show();
-        BeaconCacheManager.getInstance().addObserver(this);
-        foundBeacons = new HashSet<>();
-        dao = new BeaconDao(getApplicationContext());
-        beacons = BeaconCacheManager.getInstance().getData();
-        Log.i("beacons ", "CACHE : "+beacons.size());
-        if(beacons == null || beacons.isEmpty()){
-            beacons = dao.findAll();
-            Log.i("beacons ", "DAO : "+beacons.size());
+        try{
+            Log.i(TAG , "Starting job");
+            Toast.makeText(getApplicationContext(),"Starting job", Toast.LENGTH_SHORT).show();
+            BeaconCacheManager.getInstance().addObserver(this);
+            foundBeacons = new HashSet<>();
+            dao = new BeaconDao(getApplicationContext());
+            beacons = BeaconCacheManager.getInstance().getData();
+            Log.i("beacons ", "CACHE : "+beacons.size());
+            if(beacons == null || beacons.isEmpty()){
+                beacons = dao.findAll();
+                Log.i("beacons ", "DAO : "+beacons.size());
+            }
+
+            beaconManagerDetection();
+        }catch(Exception e){
+            Log.e(TAG , "", e);
         }
-
-        beaconManagerDetection();
-
         return false;
     }
 
@@ -79,22 +82,26 @@ public class NotificationService extends JobService implements Observer{
         beaconManager.setRangingListener(new RangingListener() {
             @Override
             public void onBeaconsDiscovered(Region paramRegion, List<Beacon> paramList) {
-                long length = System.currentTimeMillis() - start;
-                if(length < 30000){
-                    for (Beacon b: paramList){
-                        detectedMacAdresses.add(b.getMacAddress());
-                    }
-                }else{
-                    for (Beacon b: beacons){
-                        Log.i("CHECK ", " BEACON "+b.getName()+"  "+b.getMacAddress());
-                        if(detectedMacAdresses.contains(b.getMacAddress())){
-                            Log.i("FOUND ", " BEACON "+b.getName()+"  "+b.getMacAddress());
-                        }else{
-                            Log.i("NOT FOUND ", " BEACON "+b.getName()+"  "+b.getMacAddress());
-                            sendNotification(b);
+                try{
+                    long length = System.currentTimeMillis() - start;
+                    if(length < 30000){
+                        for (Beacon b: paramList){
+                            detectedMacAdresses.add(b.getMacAddress());
                         }
+                    }else{
+                        for (Beacon b: beacons){
+                            Log.i("CHECK ", " BEACON "+b.getName()+"  "+b.getMacAddress());
+                            if(detectedMacAdresses.contains(b.getMacAddress())){
+                                Log.i("FOUND ", " BEACON "+b.getName()+"  "+b.getMacAddress());
+                            }else{
+                                Log.i("NOT FOUND ", " BEACON "+b.getName()+"  "+b.getMacAddress());
+                                sendNotification(b);
+                            }
+                        }
+                        stopRanging();
                     }
-                    stopRanging();
+                }catch(Exception e){
+                    Log.e(TAG , "", e);
                 }
             }
         });
