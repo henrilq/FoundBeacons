@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.a60circuits.foundbeacons.DetectionFragment;
+import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.jaalee.sdk.Beacon;
 import com.jaalee.sdk.BeaconManager;
 import com.jaalee.sdk.RangingListener;
@@ -44,7 +45,6 @@ public class BeaconScannerService extends Service {
         Log.i(TAG, " START BEACON SCANNER SERVICE ");
         boolean isDetectionMode = intent.getBooleanExtra(DETECTION_MODE, false);
         boolean isConnectionMode = intent.getBooleanExtra(CONNECTION_MODE, false);
-        List<Beacon> beacons = new ArrayList<>();
         beaconManager = new BeaconManager(getApplicationContext());
         if(isConnectionMode){
             beaconManager.setRangingListener(createConnectionRangingListener());
@@ -67,11 +67,13 @@ public class BeaconScannerService extends Service {
                 for (final Beacon beacon: beacons){
                     int rssi = Math.abs(beacon.getRssi());
                     Log.i(TAG, " BEACON DETECTED "+beacon.getMacAddress()+"  "+rssi);
-                    if(rssi < 60){
+                    Beacon found = BeaconCacheManager.getInstance().findInCacheByMacAddress(beacon);
+                    if(found == null && rssi < 60){
                         stopRanging();
                         Intent i = new Intent(getApplicationContext(),BeaconConnectionService.class);
                         i.putExtra(BeaconConnectionService.BEACON_ARGUMENT, beacon);
                         getApplicationContext().startService(i);
+                        break;
                     }
                 }
             }

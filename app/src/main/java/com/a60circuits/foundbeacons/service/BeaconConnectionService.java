@@ -2,6 +2,7 @@ package com.a60circuits.foundbeacons.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -32,12 +33,17 @@ public class BeaconConnectionService extends Service {
     private Beacon beacon;
     private Intent broadcastIntent;
 
+    private int connectionNb;
+    private Handler handler;
+
     public BeaconConnectionService() {
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if(intent != null){
+            handler = new Handler();
+            connectionNb = 0;
             broadcastIntent = new Intent();
             broadcastIntent.setAction(MainActivity.SCAN_RESULT);
             beacon = intent.getParcelableExtra(BEACON_ARGUMENT);
@@ -45,12 +51,36 @@ public class BeaconConnectionService extends Service {
             if(found != null){
                 sendBroadcastMessage(getResources().getString(R.string.scanned_beacon_already_saved)+" : "+found.getName());
             }else{
-                Log.i(TAG, " START CONNECTION TO " + beacon.getMacAddress());
-                connection = new BeaconConnection(getApplicationContext(), beacon, createConnectionCallback());
-                connection.connectBeaconWithPassword("666666");
+                connect();
             }
         }
         return Service.START_NOT_STICKY;
+    }
+
+    private void connect(){
+        if(connection != null){
+            connection.disconnect();
+        }
+        connectionNb++;
+        Log.i(TAG, " START CONNECTION TO " + beacon.getMacAddress());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                connection = new BeaconConnection(getApplicationContext(), beacon, createConnectionCallback());
+                connection.connectBeaconWithPassword("666666");
+            }
+        });
+
+    }
+
+    private void reconnect(String errorMessage){
+        if(connectionNb > 3){
+            sendBroadcastMessage(errorMessage);
+            stopSelf();
+        }else{
+            Log.i(TAG, " NEXT TRY " + connectionNb);
+            connect();
+        }
     }
 
     private ConnectionCallback createConnectionCallback() {
@@ -68,8 +98,7 @@ public class BeaconConnectionService extends Service {
                     @Override
                     public void onError() {
                         Log.i(TAG, " STATE CHANGE FAILURE");
-                        sendBroadcastMessage(getResources().getString(R.string.scanned_beacon_activation_error));
-                        stopSelf();
+                        reconnect(getResources().getString(R.string.scanned_beacon_activation_error));
                     }
                 });
             }
@@ -77,15 +106,13 @@ public class BeaconConnectionService extends Service {
             @Override
             public void onAuthenticationError() {
                 Log.i(TAG, " CONNECTION FAILED");
-                sendBroadcastMessage(getResources().getString(R.string.scanned_beacon_connection_error));
-                stopSelf();
+                reconnect(getResources().getString(R.string.scanned_beacon_connection_error));
             }
 
             @Override
             public void onDisconnected() {
                 Log.i(TAG, " DISCONNECTED");
-                sendBroadcastMessage(getResources().getString(R.string.scanned_beacon_connection_error));
-                stopSelf();
+                reconnect(getResources().getString(R.string.scanned_beacon_connection_error));
             }
         };
     }
