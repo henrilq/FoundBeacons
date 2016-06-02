@@ -16,8 +16,8 @@ import android.widget.TextView;
 public class SettingsTextFragment extends Fragment{
 
     public static final String FAQ = "faq";
-
     public static final String LEGAL_MENTION = "legal_mention";
+
     private ImageButton legalButton;
     private ImageButton faqButton;
     private TextView textView;
