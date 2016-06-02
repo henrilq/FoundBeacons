@@ -6,9 +6,12 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -23,6 +26,8 @@ public class SettingsFragment extends Fragment{
 
     private Switch gpsSwitch;
     private Switch notificationSwitch;
+    private ImageButton legalButton;
+    private ImageButton faqButton;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,6 +40,41 @@ public class SettingsFragment extends Fragment{
         View view = inflater.inflate(R.layout.settings_fragment,container,false);
         gpsSwitch = (Switch) view.findViewById(R.id.gps_switch);
         notificationSwitch = (Switch) view.findViewById(R.id.notification_switch);
+        legalButton = (ImageButton) view.findViewById(R.id.legal_button);
+        faqButton = (ImageButton) view.findViewById(R.id.faq_button);
+
+        legalButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                legalButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
+                faqButton.setColorFilter(null);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(SettingsTextFragment.LEGAL_MENTION, true);
+                Fragment fragment = new SettingsTextFragment();
+                fragment.setArguments(bundle);
+                transaction.replace(R.id.central, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+
+        faqButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                faqButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
+                legalButton.setColorFilter(null);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(SettingsTextFragment.FAQ, true);
+                Fragment fragment = new SettingsTextFragment();
+                fragment.setArguments(bundle);
+                transaction.replace(R.id.central, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+
         gpsSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
