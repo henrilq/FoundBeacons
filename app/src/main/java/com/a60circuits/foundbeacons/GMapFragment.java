@@ -61,6 +61,9 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
     private Marker selectedMarker;
     private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yy");
     private final static SimpleDateFormat HOUR_FORMAT = new SimpleDateFormat("HH:mm");
+    private ImageButton detectionButton;
+    private ImageButton lastPositionButton;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,8 +75,8 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         View v = inflater.inflate(R.layout.map_fragment, container,
                 false);
         mMapView = (MapView) v.findViewById(R.id.mapView);
-        final ImageButton detectionButton = (ImageButton) v.findViewById(R.id.detectionButton);
-        final ImageButton lastPositionButton = (ImageButton) v.findViewById(R.id.lastPositionButton);
+        detectionButton = (ImageButton) v.findViewById(R.id.detectionButton);
+        lastPositionButton = (ImageButton) v.findViewById(R.id.lastPositionButton);
         detectionButton.setColorFilter(null);
         lastPositionButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
 
@@ -104,7 +107,7 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
                 googleMap.setMyLocationEnabled(true);
             }
             googleMap.setOnMarkerClickListener(this);
-
+            googleMap.setPadding(0, 0, 0, 200);//Move up itinerary button
             googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
                 @Override
                 public View getInfoWindow(Marker marker) {
