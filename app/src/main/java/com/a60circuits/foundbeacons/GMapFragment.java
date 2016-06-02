@@ -131,18 +131,12 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
             if(beacons != null && ! beacons.isEmpty()){
                 if(getArguments() != null){
                     beacon = (Beacon)getArguments().get(BEACON_ARGUMENT);
-                }
-                if(beacons != null){
-                    for (Beacon b: beacons){
-                        Marker marker = googleMap.addMarker(createMarker(b));
-                        markerToBeacon.put(marker, b);
-                    }
+                }else{
+                    beacon = BeaconCacheManager.getInstance().findInCacheLastDetectedBeacon();
                 }
                 if(beacon != null){
+                    googleMap.addMarker(createMarker(beacon));
                     myPosition = new LatLng(beacon.getLatitude(), beacon.getLongitude());
-                }else{
-                    Beacon lastDetectedBeacon = BeaconCacheManager.getInstance().findInCacheLastDetectedBeacon();
-                    myPosition = new LatLng(lastDetectedBeacon.getLatitude(), lastDetectedBeacon.getLongitude());
                 }
             }
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
