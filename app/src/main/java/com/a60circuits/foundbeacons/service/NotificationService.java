@@ -60,7 +60,6 @@ public class NotificationService extends JobService implements Observer{
     public boolean onStartJob(JobParameters params) {
         try{
             Log.i(TAG , "Starting job");
-            Toast.makeText(getApplicationContext(),"Starting job", Toast.LENGTH_SHORT).show();
             BeaconCacheManager.getInstance().addObserver(this);
             foundBeacons = new HashSet<>();
             dao = new BeaconDao(getApplicationContext());
