@@ -4,10 +4,13 @@ import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.jaalee.sdk.Beacon;
@@ -41,24 +44,13 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconViewHolder>{
     public void onBindViewHolder(final BeaconViewHolder holder, int position) {
         final Beacon beacon = beacons.get(position);
         holder.setItem(beacon);
-        holder.editText.setText(beacon.getName());
+        holder.setText(beacon.getName());
+        holder.setEditable(false);
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean enabled = !holder.editText.isEnabled();
-                holder.editText.setEnabled(enabled);
-                holder.editText.setFocusable(enabled);
-                holder.editText.setFocusableInTouchMode(enabled);
-                if(enabled){
-                    int selectionColor = ContextCompat.getColor(context,R.color.colorSelectionBlue);
-                    holder.editButton.setColorFilter(selectionColor); // Blue Tint
-                    holder.editText.requestFocus();
-                    holder.editText.setSelection(holder.editText.getText().length());
-                }else{
-                    beacon.setName(holder.editText.getText().toString());
-                    holder.editButton.setColorFilter(null);
-                    BeaconCacheManager.getInstance().update(beacon);
-                }
+                boolean editable = !holder.isEditable();
+                holder.setEditMode(editable);
             }
         });
         holder.editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -67,13 +59,26 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconViewHolder>{
                 if(hasFocus){
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
                 }else{
-                    beacon.setName(holder.editText.getText().toString());
-                    holder.editButton.setColorFilter(null);
-                    holder.editText.setEnabled(false);
+                    holder.updateBeacon();
                 }
             }
         });
+
+        holder.editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean res = false;
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    holder.updateBeacon();
+                    notifyDataSetChanged();
+                    res = true;
+                }
+                return res;
+            }
+        });
     }
+
+
 
     @Override
     public int getItemCount() {

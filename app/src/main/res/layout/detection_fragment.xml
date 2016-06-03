@@ -19,6 +19,8 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/beaconName"
+            android:textColor="@color/letterGrey"
+            android:textSize="20dp"
             android:layout_above="@+id/line1"
             android:layout_marginBottom="10dp"
             android:textAlignment="center"

@@ -23,6 +23,7 @@ import com.jaalee.sdk.internal.Objects;
    private transient int measuredPower;
    private transient int rssi;
    private transient int battLevel;
+     private transient boolean editMode;
    private Date date;
      private double latitude;
      private double longitude;
@@ -130,6 +131,14 @@ import com.jaalee.sdk.internal.Objects;
 
      public double getLongitude() {
          return longitude;
+     }
+
+     public void setEditMode(boolean editMode) {
+         this.editMode = editMode;
+     }
+
+     public boolean getEditMode() {
+         return editMode;
      }
 
      public String toString()

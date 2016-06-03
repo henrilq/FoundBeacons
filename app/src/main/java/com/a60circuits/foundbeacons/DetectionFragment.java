@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -75,6 +76,8 @@ public class DetectionFragment extends Fragment {
         final ImageButton detectionButton = (ImageButton) view.findViewById(R.id.detectionButton);
         final ImageButton lastPositionButton = (ImageButton) view.findViewById(R.id.lastPositionButton);
         final RelativeLayout progressLayout = (RelativeLayout) view.findViewById(R.id.circleProgressLayout);
+        Typeface face = Typeface.createFromAsset(getActivity().getAssets(),getResources().getString(R.string.font_brandon_med));
+
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -88,6 +91,7 @@ public class DetectionFragment extends Fragment {
         }
         if(beacon != null){
             beaconName = (TextView) view.findViewById(R.id.beaconName);
+            beaconName.setTypeface(face);
             beaconName.setText(beacon.getName());
         }
         initBroadcastReceiver();

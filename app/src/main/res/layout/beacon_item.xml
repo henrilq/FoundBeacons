@@ -11,7 +11,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
@@ -19,7 +18,9 @@
         android:layout_alignParentStart="true"
         android:paddingBottom="10dp"
         android:textColor="@color/colorTextItemBlue"
-        android:background="@color/colorLightBlue" />
+        android:background="@color/colorLightBlue"
+        android:singleLine="true"
+        android:imeOptions="actionDone"/>
 
     <ImageButton
         android:id="@+id/editButton"
