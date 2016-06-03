@@ -9,6 +9,8 @@
     <string name="scanned_beacon_saving_error">Erreur, l\'accessoire doit être à proximité de votre smartphone</string>
     <string name="scanned_beacon_connection_error">Erreur, impossible de se connecter à l\'accessoire</string>
     <string name="scanned_beacon_activation_error">Erreur, impossible d\'activer l\'accessoire</string>
+    <string name="default_beacon_name">NOUVEL ACCESSOIRE</string>
+
     <string name="run_detection">LOCALISER</string>
     <string name="no_beacon_saved">Aucun accessoire enregistré</string>
     <string name="detection_started">Recherche Activée</string>
