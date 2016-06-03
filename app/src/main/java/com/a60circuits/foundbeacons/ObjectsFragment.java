@@ -72,27 +72,6 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
             }
         }));
 
-        addButton = (Button) view.findViewById(R.id.addButton);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Beacon beacon = new Beacon();
-                beacon.setName("New Beacon");
-                beacons.add(beacon);
-                adapter.notifyDataSetChanged();
-            }
-        });
-        Button deleteButton = (Button) view.findViewById(R.id.deleteButton);
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BeaconCacheManager.getInstance().deleteAll();
-                beacons.clear();
-                beaconsAddress.clear();
-                adapter.notifyDataSetChanged();
-            }
-        });
-
         layoutManager = new LinearLayoutManager(this.getContext());
         beaconsView.setLayoutManager(layoutManager);
         beaconsView.setAdapter(adapter);
