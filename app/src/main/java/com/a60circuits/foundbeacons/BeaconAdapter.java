@@ -49,8 +49,20 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconViewHolder>{
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean editable = !holder.isEditable();
-                holder.setEditMode(editable);
+                boolean enabled = !holder.editText.isEnabled();
+                holder.editText.setEnabled(enabled);
+                holder.editText.setFocusable(enabled);
+                holder.editText.setFocusableInTouchMode(enabled);
+                if(enabled){
+                    int selectionColor = ContextCompat.getColor(context,R.color.colorSelectionBlue);
+                    holder.editButton.setColorFilter(selectionColor); // Blue Tint
+                    holder.editText.requestFocus();
+                    holder.editText.setSelection(holder.editText.getText().length());
+                }else{
+                    beacon.setName(holder.editText.getText().toString());
+                    holder.editButton.setColorFilter(null);
+                    BeaconCacheManager.getInstance().save(beacon);
+                }
             }
         });
         holder.editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -59,7 +71,9 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconViewHolder>{
                 if(hasFocus){
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
                 }else{
-                    holder.updateBeacon();
+                    beacon.setName(holder.editText.getText().toString());
+                    holder.editButton.setColorFilter(null);
+                    holder.editText.setEnabled(false);
                 }
             }
         });

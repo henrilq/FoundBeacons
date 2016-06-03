@@ -29,6 +29,7 @@ import com.jaalee.sdk.ServiceReadyCallback;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -37,6 +38,8 @@ import java.util.Set;
 public class NotificationService extends JobService implements Observer{
 
     public static final long PERIOD = 60000;
+    public static final long TASK_LENGTH = 30000;
+    public static final int NOTIFICATION_ID = 001;
     public static final String TAG = "NOTIFICATION_SERVICE";
     private static final Region ALL_BEACONS_REGION = new Region("rid", null, null, null);
 
@@ -61,14 +64,15 @@ public class NotificationService extends JobService implements Observer{
             BeaconCacheManager.getInstance().addObserver(this);
             foundBeacons = new HashSet<>();
             dao = new BeaconDao(getApplicationContext());
-            beacons = BeaconCacheManager.getInstance().getData();
+            beacons = new ArrayList(BeaconCacheManager.getInstance().getData());
             Log.i("beacons ", "CACHE : "+beacons.size());
             if(beacons == null || beacons.isEmpty()){
                 beacons = dao.findAll();
                 Log.i("beacons ", "DAO : "+beacons.size());
             }
-
-            beaconManagerDetection();
+            if(beacons != null && ! beacons.isEmpty()){
+                beaconManagerDetection();
+            }
         }catch(Exception e){
             Log.e(TAG , "", e);
         }
@@ -83,22 +87,17 @@ public class NotificationService extends JobService implements Observer{
             @Override
             public void onBeaconsDiscovered(Region paramRegion, List<Beacon> paramList) {
                 try{
-                    long length = System.currentTimeMillis() - start;
-                    if(length < 30000){
+                    long time = System.currentTimeMillis() - start;
+                    if(time < TASK_LENGTH && ! beacons.isEmpty()){
                         for (Beacon b: paramList){
-                            detectedMacAdresses.add(b.getMacAddress());
+                            removeBeaconByMacAddress(b);
                         }
                     }else{
-                        for (Beacon b: beacons){
-                            Log.i("CHECK ", " BEACON "+b.getName()+"  "+b.getMacAddress());
-                            if(detectedMacAdresses.contains(b.getMacAddress())){
-                                Log.i("FOUND ", " BEACON "+b.getName()+"  "+b.getMacAddress());
-                            }else{
-                                Log.i("NOT FOUND ", " BEACON "+b.getName()+"  "+b.getMacAddress());
-                                sendNotification(b);
-                            }
-                        }
                         stopRanging();
+                        Log.i("NOTIFICATION ", "not found : "+beacons.size() +"  time : "+time);
+                        if(! beacons.isEmpty()){
+                            sendNotification(beacons);
+                        }
                     }
                 }catch(Exception e){
                     Log.e(TAG , "", e);
@@ -108,6 +107,18 @@ public class NotificationService extends JobService implements Observer{
         connectToService();
     }
 
+    private void removeBeaconByMacAddress(Beacon beacon){
+        Iterator<Beacon> iterator = beacons.iterator();
+        while(iterator.hasNext()){
+            Beacon b = iterator.next();
+            if(b.getMacAddress().equals(beacon.getMacAddress())){
+                iterator.remove();
+                break;
+            }
+        }
+    }
+
+    @Deprecated
     private void basicDetection(){
         BluetoothManager manager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         BluetoothAdapter mBluetoothAdapter = manager.getAdapter();
@@ -125,12 +136,11 @@ public class NotificationService extends JobService implements Observer{
                         macAddresses.add(sc.getDevice().getAddress());
                         Log.i("MAC ADDRESS ", sc.getDevice().getAddress() +"  "+sc.getRssi());
                     }
-
+                    sendNotification(beacons);
                     for (Beacon beacon: beacons) {
                         String mac = beacon.getMacAddress();
                         if(mac != null && ! macAddresses.contains(mac)){
-                            Log.i("Send ", " notification" );
-                            sendNotification(beacon);
+                            sendNotification(beacons);
                         }
                     }
                 }catch(Exception e){
@@ -144,19 +154,30 @@ public class NotificationService extends JobService implements Observer{
         connectToService();
     }
 
-    private void sendNotification(Beacon beacon){
-        Log.i("NOTIFICATION ", "not found MAC : "+beacon.getMacAddress());
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
+    private void sendNotification(List<Beacon> beacons){
+        String title = "Found : accessoire non détecté";
+        if(beacons.size() > 1){
+            title = "Found : accessoires non détectés";
+        }
+
+        StringBuilder content = new StringBuilder();
+        int index = 0;
+        for (Beacon beacon: beacons) {
+            Log.i("NOT FOUND ", " BEACON "+beacon.getName()+"  "+beacon.getMacAddress());
+            content.append(beacon.getName());
+            if(index < beacons.size() - 1){
+                content.append("\n");
+            }
+            index++;
+        }
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.logo)
-                        .setContentTitle("My notification")
-                        .setContentText("not found MAC : "+beacon.getMacAddress());
-        Long longId = Long.parseLong(beacon.getMacAddress().replace(":", ""), 16);
-        int id = Math.abs(longId.intValue());
-        notificationManager.notify(id,mBuilder.build());
-        notificationManager.notify();
+                        .setContentTitle(title)
+                        .setContentText(content.toString());
+        notificationManager.notify(NOTIFICATION_ID,mBuilder.build());
     }
 
     private void connectToService() {
@@ -173,10 +194,15 @@ public class NotificationService extends JobService implements Observer{
     }
 
     private void stopRanging(){
-        try {
-            beaconManager.stopRanging(ALL_BEACONS_REGION);
-        } catch (RemoteException e) {
-            Log.e(TAG,"",e);
+        if(beaconManager != null){
+            try {
+                beaconManager.stopRanging(ALL_BEACONS_REGION);
+
+            } catch (RemoteException e) {
+                Log.e(TAG,"",e);
+            }finally {
+                beaconManager.disconnect();
+            }
         }
     }
 
@@ -185,10 +211,10 @@ public class NotificationService extends JobService implements Observer{
     public boolean onStopJob(JobParameters params) {
         if(scanner != null){
             scanner.stopScan(scanCallBack);
+            beaconManager.disconnect();
         }
         if(beaconManager != null){
             stopRanging();
-            beaconManager.disconnect();
         }
         return false;
     }
