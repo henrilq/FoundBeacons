@@ -35,7 +35,7 @@ public class NotificationService extends JobService implements Observer{
     public static final int NOTIFICATION_ID = 001;
     private static final Region ALL_BEACONS_REGION = new Region("rid", null, null, null);
 
-    private static List<Beacon> beacons;
+    private List<Beacon> beacons;
     private BeaconDao dao;
     private BeaconManager beaconManager;
 
