@@ -63,7 +63,6 @@ public class NotificationService extends JobService implements Observer{
     private void beaconManagerDetection(){
         beaconManager = new BeaconManager(getApplicationContext());
         final long start = System.currentTimeMillis();
-        final Set<String> detectedMacAdresses = new HashSet<>();
         beaconManager.setRangingListener(new RangingListener() {
             @Override
             public void onBeaconsDiscovered(Region paramRegion, List<Beacon> paramList) {
