@@ -103,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
         settingsButton.setOnClickListener(createButtonListener(settingsButton));
         mapButton.setOnClickListener(createButtonListener(mapButton));
         objectsButton.setOnClickListener(createButtonListener(objectsButton));
+        //starts app on beacon list fragment
+        replaceFragment(objectsButton);
     }
 
     private void replaceFragment(ImageButton button){
