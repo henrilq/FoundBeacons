@@ -5,18 +5,10 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
-import android.bluetooth.le.BluetoothLeScanner;
-import android.bluetooth.le.ScanCallback;
-import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanResult;
-import android.bluetooth.le.ScanSettings;
 import android.content.Intent;
 import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.a60circuits.foundbeacons.R;
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
@@ -37,31 +29,21 @@ import java.util.Set;
 
 public class NotificationService extends JobService implements Observer{
 
+    public static final String TAG = "NOTIFICATION_SERVICE";
     public static final long PERIOD = 60000;
     public static final long TASK_LENGTH = 30000;
     public static final int NOTIFICATION_ID = 001;
-    public static final String TAG = "NOTIFICATION_SERVICE";
     private static final Region ALL_BEACONS_REGION = new Region("rid", null, null, null);
 
-    private BluetoothLeScanner scanner;
-    private ScanSettings settings;
-    private List<ScanFilter> filters;
-    private ScanCallback scanCallBack;
     private static List<Beacon> beacons;
-    private static Set<String> foundBeacons;
     private BeaconDao dao;
     private BeaconManager beaconManager;
-
-    public NotificationService() {
-
-    }
 
     @Override
     public boolean onStartJob(JobParameters params) {
         try{
             Log.i(TAG , "Starting job");
             BeaconCacheManager.getInstance().addObserver(this);
-            foundBeacons = new HashSet<>();
             dao = new BeaconDao(getApplicationContext());
             beacons = new ArrayList(BeaconCacheManager.getInstance().getData());
             Log.i("beacons ", "CACHE : "+beacons.size());
@@ -115,42 +97,6 @@ public class NotificationService extends JobService implements Observer{
                 break;
             }
         }
-    }
-
-    @Deprecated
-    private void basicDetection(){
-        BluetoothManager manager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
-        BluetoothAdapter mBluetoothAdapter = manager.getAdapter();
-        scanner = mBluetoothAdapter.getBluetoothLeScanner();
-        settings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_POWER).setReportDelay(10000).build();
-        filters = new ArrayList<ScanFilter>();
-        scanCallBack = new ScanCallback() {
-            @Override
-            public void onBatchScanResults(List<ScanResult> results) {
-                try{
-                    Log.i("SCAN ", " Results "+results.size());
-                    Log.i("Beacons ", ""+beacons.size());
-                    Set<String> macAddresses = new HashSet<String>();
-                    for (ScanResult sc: results) {
-                        macAddresses.add(sc.getDevice().getAddress());
-                        Log.i("MAC ADDRESS ", sc.getDevice().getAddress() +"  "+sc.getRssi());
-                    }
-                    sendNotification(beacons);
-                    for (Beacon beacon: beacons) {
-                        String mac = beacon.getMacAddress();
-                        if(mac != null && ! macAddresses.contains(mac)){
-                            sendNotification(beacons);
-                        }
-                    }
-                }catch(Exception e){
-                    Log.e("","",e);
-                }finally {
-                    scanner.stopScan(this);
-                }
-            }
-        };
-
-        connectToService();
     }
 
     private void sendNotification(List<Beacon> beacons){
@@ -208,10 +154,6 @@ public class NotificationService extends JobService implements Observer{
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        if(scanner != null){
-            scanner.stopScan(scanCallBack);
-            beaconManager.disconnect();
-        }
         if(beaconManager != null){
             stopRanging();
         }
