@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.vlonjatg.android.apptourlibrary.AppTour;
 
@@ -15,13 +16,15 @@ import com.vlonjatg.android.apptourlibrary.AppTour;
 public class AppTourActivity extends AppTour{
     @Override
     public void init(@Nullable Bundle savedInstanceState) {
-        int customSlideColor = ContextCompat.getColor(getApplicationContext(),R.color.colorBorderBlue);
-        Button skipButton = (Button) findViewById(com.vlonjatg.android.apptourlibrary.R.id.skipIntroButton);
-        skipButton.setText("Passer");
+        int textColor = ContextCompat.getColor(getApplicationContext(),R.color.colorBorderBlue);
+        int customSlideColor = ContextCompat.getColor(getApplicationContext(),R.color.colorPrimary);
+        ImageButton nextSlideImageButton = (ImageButton) findViewById(com.vlonjatg.android.apptourlibrary.R.id.nextSlideImageButton);
+        nextSlideImageButton.setColorFilter(textColor);
 
-        Button doneSlideButton = (Button) findViewById(com.vlonjatg.android.apptourlibrary.R.id.doneSlideButton);
-        doneSlideButton.setText("Continuer");
+        setSkipText("Passer");
+        setDoneText("Continuer");
 
+        setActiveDotColor(textColor);
         //Custom slide
         addSlide(createSlide(R.drawable.tuto_1), customSlideColor);
         addSlide(createSlide(R.drawable.tuto_2), customSlideColor);
@@ -29,10 +32,11 @@ public class AppTourActivity extends AppTour{
         addSlide(createSlide(R.drawable.tuto_4), customSlideColor);
         addSlide(createSlide(R.drawable.tuto_5), customSlideColor);
 
+
         //Customize tour
-        setSkipButtonTextColor(Color.WHITE);
-        setNextButtonColorToWhite();
-        setDoneButtonTextColor(Color.WHITE);
+        setSkipButtonTextColor(textColor);
+        setNextButtonColorToBlack();
+        setDoneButtonTextColor(textColor);
 
     }
 
