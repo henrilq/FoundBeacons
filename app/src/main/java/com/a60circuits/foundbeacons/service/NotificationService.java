@@ -166,7 +166,7 @@ public class NotificationService extends JobService implements Observer{
             Log.i("NOT FOUND ", " BEACON "+beacon.getName()+"  "+beacon.getMacAddress());
             content.append(beacon.getName());
             if(index < beacons.size() - 1){
-                content.append("\n");
+                content.append(", ");
             }
             index++;
         }
