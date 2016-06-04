@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.a60circuits.foundbeacons.utils.LocationUtils;
 import com.a60circuits.foundbeacons.utils.PermissionUtils;
+import com.a60circuits.foundbeacons.utils.ResourcesUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -114,7 +115,7 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
                     View view = getLayoutInflater(new Bundle()).inflate(R.layout.map_beacon_info, null);
                     TextView textView = (TextView) view.findViewById(R.id.text);
                     textView.setText(marker.getTitle()+"\n"+marker.getSnippet());
-                    Typeface face = Typeface.createFromAsset(getActivity().getAssets(),getResources().getString(R.string.font_brandon_bld));
+                    Typeface face = ResourcesUtils.getTypeFace(getActivity(),R.string.font_brandon_bld);
                     textView.setTypeface(face);
                     return view;
                 }
@@ -142,8 +143,10 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
                     myPosition = new LatLng(beacon.getLatitude(), beacon.getLongitude());
                 }
             }
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+            if(myPosition != null){
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
+                googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+            }
         } catch (Exception e) {
             Log.e("","",e);
         }

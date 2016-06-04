@@ -6,8 +6,12 @@
     android:layout_marginRight="20dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <ScrollView
+        android:id="@+id/settings_central"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
         <LinearLayout
-            android:id="@+id/settings_central"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -135,6 +139,8 @@
                 android:layout_gravity="center_horizontal" />
 
         </LinearLayout>
+    </ScrollView>
+
     <LinearLayout
         android:id="@+id/buttonsLayout"
         android:layout_width="match_parent"
@@ -144,27 +150,29 @@
         android:layout_marginTop="20dp"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true">
-
-        <Button
+        <ImageButton
             android:id="@+id/legal_button"
-            android:text="MENTIONS LEGALES"
             android:layout_width="0dp"
-            android:layout_weight=".5"
+            android:layout_weight=".45"
             android:layout_height="wrap_content"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
-            android:padding="10dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/legal"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
             android:background="@null"/>
 
-        <Button
+        <ImageButton
             android:id="@+id/faq_button"
-            android:text="AIDE"
             android:layout_width="0dp"
-            android:layout_weight=".5"
+            android:layout_weight=".45"
             android:layout_height="wrap_content"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
-            android:padding="10dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/help"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
             android:background="@null"/>
     </LinearLayout>
+
 </RelativeLayout>

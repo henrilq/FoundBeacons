@@ -18,6 +18,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         final ActionBar ab = getSupportActionBar();
         ab.setDisplayShowHomeEnabled(true); // show or hide the default home button
-        ab.setDisplayHomeAsUpEnabled(false);
+        ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
         ab.setDisplayShowTitleEnabled(false);
 
@@ -106,6 +107,12 @@ public class MainActivity extends AppCompatActivity {
         objectsButton.setOnClickListener(createButtonListener(objectsButton));
         //starts app on beacon list fragment
         replaceFragment(objectsButton);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        getSupportFragmentManager().popBackStack();
+        return super.onOptionsItemSelected(item);
     }
 
     private void replaceFragment(ImageButton button){

@@ -28,8 +28,8 @@ public class SettingsFragment extends Fragment{
 
     private Switch gpsSwitch;
     private Switch notificationSwitch;
-    private Button legalButton;
-    private Button faqButton;
+    private ImageButton legalButton;
+    private ImageButton faqButton;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,17 +42,14 @@ public class SettingsFragment extends Fragment{
         View view = inflater.inflate(R.layout.settings_fragment,container,false);
         gpsSwitch = (Switch) view.findViewById(R.id.gps_switch);
         notificationSwitch = (Switch) view.findViewById(R.id.notification_switch);
-        legalButton = (Button) view.findViewById(R.id.legal_button);
-        faqButton = (Button) view.findViewById(R.id.faq_button);
-
-        ButtonUtils.setUnSelectStyle(legalButton);
-        ButtonUtils.setUnSelectStyle(faqButton);
+        legalButton = (ImageButton) view.findViewById(R.id.legal_button);
+        faqButton = (ImageButton) view.findViewById(R.id.faq_button);
 
         legalButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //legalButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
-                //faqButton.setColorFilter(null);
+                legalButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
+                faqButton.setColorFilter(null);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 Bundle bundle = new Bundle();
                 bundle.putBoolean(SettingsTextFragment.LEGAL_MENTION, true);
@@ -67,8 +64,8 @@ public class SettingsFragment extends Fragment{
         faqButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //faqButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
-                //legalButton.setColorFilter(null);
+                faqButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
+                legalButton.setColorFilter(null);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 Bundle bundle = new Bundle();
                 bundle.putBoolean(SettingsTextFragment.FAQ, true);

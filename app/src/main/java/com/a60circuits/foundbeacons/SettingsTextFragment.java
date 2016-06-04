@@ -21,8 +21,8 @@ public class SettingsTextFragment extends Fragment{
     public static final String FAQ = "faq";
     public static final String LEGAL_MENTION = "legal_mention";
 
-    private Button legalButton;
-    private Button faqButton;
+    private ImageButton legalButton;
+    private ImageButton faqButton;
     private TextView textView;
 
     @Nullable
@@ -33,8 +33,8 @@ public class SettingsTextFragment extends Fragment{
         if(args != null){
             boolean isFaq = args.getBoolean(FAQ);
             boolean isLegalMention = args.getBoolean(LEGAL_MENTION);
-            legalButton = (Button) view.findViewById(R.id.legal_button);
-            faqButton = (Button) view.findViewById(R.id.faq_button);
+            legalButton = (ImageButton) view.findViewById(R.id.legal_button);
+            faqButton = (ImageButton) view.findViewById(R.id.faq_button);
             textView = (TextView) view.findViewById(R.id.text);
 
             legalButton.setOnClickListener(new View.OnClickListener() {
@@ -60,14 +60,14 @@ public class SettingsTextFragment extends Fragment{
     }
 
     private void switchToFaq(){
-        ButtonUtils.setSelectStyle(faqButton);
-        ButtonUtils.setUnSelectStyle(legalButton);
+        legalButton.setColorFilter(null);
+        faqButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
         textView.setText(getResources().getString(R.string.settings_faq));
     }
 
     private void switchToLegalMention(){
-        ButtonUtils.setSelectStyle(legalButton);
-        ButtonUtils.setUnSelectStyle(faqButton);
+        faqButton.setColorFilter(null);
+        legalButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
         textView.setText(getResources().getString(R.string.settings_legal_mention));
     }
 }

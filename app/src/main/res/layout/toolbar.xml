@@ -14,14 +14,11 @@
         <!-- This is a centered logo -->
         <ImageView
             android:id="@+id/toolbar_logo"
-            android:src="@drawable/found2x"
-            android:layout_width="wrap_content"
+            android:src="@drawable/found3x"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="45dp"
             android:layout_gravity="center"
-            android:layout_weight="1"/>
+            android:layout_weight="0.2"/>
 
         <ImageButton
             android:id="@+id/scanButton"
