@@ -41,6 +41,8 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-
+    <style name="ToolbarColoredArrow" parent="AppTheme">
+        <item name="android:textColorSecondary">#7a8aab</item>
+    </style>
 
 </resources>
