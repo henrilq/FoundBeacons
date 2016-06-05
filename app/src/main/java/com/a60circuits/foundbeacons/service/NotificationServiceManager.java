@@ -15,7 +15,7 @@ public class NotificationServiceManager {
 
     private static final String TAG = "NotifServiceManager";
 
-    private static int idJob = 1274;
+    private static final int idJob = 1274;
 
     private PermanentScheduledService notificationService;
 
