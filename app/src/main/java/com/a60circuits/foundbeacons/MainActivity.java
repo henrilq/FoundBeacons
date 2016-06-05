@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
         Object lastPosition = CacheVariable.get(BUTTON_POSITION);
         if(lastPosition == null){
             replaceFragment(settingsButton);
-
         }else{
             selectMenuButton(Integer.valueOf(""+lastPosition));
         }
