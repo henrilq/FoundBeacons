@@ -12,6 +12,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -30,7 +31,9 @@ import com.a60circuits.foundbeacons.service.BeaconConnectionService;
 import com.a60circuits.foundbeacons.service.BeaconScannerService;
 import com.a60circuits.foundbeacons.service.NotificationServiceManager;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String BUTTON_POSITION = "buttonPosition";
     public static final String SCAN_RESULT = "com.a60circuits.foundbeacons.result";
 
-    private Map<ImageButton, Class<? extends Fragment>> map;
+    private Map<ImageButton, List<Class<? extends Fragment>>> map;
     private ImageButton selectedButton;
     private ImageButton scanButton;
     private int buttonPosition;
@@ -76,7 +79,25 @@ public class MainActivity extends AppCompatActivity {
         initPermissions();
         initBeaconCache();
         initBroadcastReceiver();
+        initListeners();
 
+        NotificationServiceManager.getInstance().setActivity(this);
+        Object lastPosition = CacheVariable.get(BUTTON_POSITION);
+        if(lastPosition == null){
+            replaceFragment(settingsButton);
+
+        }else{
+            selectMenuButton(Integer.valueOf(""+lastPosition));
+        }
+
+        //starts app on beacon list fragment
+        replaceFragment(objectsButton);
+    }
+
+    public void initListeners(){
+        settingsButton.setOnClickListener(createButtonListener(settingsButton));
+        mapButton.setOnClickListener(createButtonListener(mapButton));
+        objectsButton.setOnClickListener(createButtonListener(objectsButton));
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,20 +114,34 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-        NotificationServiceManager.getInstance().setActivity(this);
-        Object lastPosition = CacheVariable.get(BUTTON_POSITION);
-        if(lastPosition == null){
-            replaceFragment(settingsButton);
-
-        }else{
-            selectMenuButton(Integer.valueOf(""+lastPosition));
-        }
-        settingsButton.setOnClickListener(createButtonListener(settingsButton));
-        mapButton.setOnClickListener(createButtonListener(mapButton));
-        objectsButton.setOnClickListener(createButtonListener(objectsButton));
-        //starts app on beacon list fragment
-        replaceFragment(objectsButton);
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                Fragment fragment = null;
+                try{
+                    for(Fragment f: getSupportFragmentManager().getFragments()){
+                        if(f != null){
+                            if(f.isVisible()){
+                                fragment = f;
+                                break;
+                            }
+                        }
+                    }
+                    if(fragment != null){
+                        for(Map.Entry<ImageButton, List<Class<? extends Fragment>>> entry: map.entrySet()){
+                            for(Class<?> clazz: entry.getValue()){
+                                if(clazz.equals(fragment.getClass())){
+                                    selectMenuButton(entry.getKey());
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }catch(Exception e){
+                    Log.e(TAG, "",e);
+                }
+            }
+        });
     }
 
     @Override
@@ -117,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void replaceFragment(ImageButton button){
         try {
-            Fragment fragment = map.get(button).newInstance();
+            Fragment fragment = map.get(button).get(0).newInstance();
             replaceFragment(button, fragment);
         } catch (Exception e) {
             Log.e(TAG,"",e);
@@ -175,9 +210,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void initMapButton(){
         map = new LinkedHashMap<>();
-        map.put(settingsButton, SettingsFragment.class);
-        map.put(mapButton, GMapFragment.class);
-        map.put(objectsButton, ObjectsFragment.class);
+        addInMap(settingsButton, SettingsFragment.class, SettingsTextFragment.class);
+        addInMap(mapButton, GMapFragment.class, DetectionFragment.class);
+        addInMap(objectsButton, ObjectsFragment.class);
+    }
+
+    private void addInMap(ImageButton button, Class<? extends Fragment> ... fragments){
+        map.put(button, Arrays.asList(fragments));
     }
 
     private void initPermissions(){

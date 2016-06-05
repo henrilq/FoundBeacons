@@ -11,23 +11,11 @@ import android.widget.ImageButton;
  */
 public class ReplacerFragment extends Fragment{
 
-    protected void replaceByFragment(Fragment fragment){
-        replaceByFragment(fragment, null);
-    }
-
-    protected void replaceByFragment(Fragment fragment, Bundle bundle){
+    protected void replaceFragment(Fragment fragment){
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.central, fragment);
-        if(bundle != null){
-            fragment.setArguments(bundle);
-        }
         transaction.addToBackStack(null);
         transaction.commit();
-    }
-
-    protected void selectMenuButton(int position){
-        MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.selectMenuButton(position);
     }
 
 }

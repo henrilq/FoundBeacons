@@ -52,7 +52,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickListener{
+public class GMapFragment extends ReplacerFragment implements GoogleMap.OnMarkerClickListener{
 
     public static final String BEACON_ARGUMENT = "beacon";
     private MapView mMapView;
@@ -81,21 +81,16 @@ public class GMapFragment extends Fragment implements GoogleMap.OnMarkerClickLis
         detectionButton.setColorFilter(null);
         lastPositionButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
 
-
-
         detectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction transaction = GMapFragment.this.getFragmentManager().beginTransaction();
                 DetectionFragment detectionFragment = new DetectionFragment();
                 if(beacon != null){
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(DetectionFragment.BEACON_ARGUMENT, beacon);
                     detectionFragment.setArguments(bundle);
                 }
-                transaction.replace(R.id.central, detectionFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                GMapFragment.super.replaceFragment(detectionFragment);
             }
         });
 

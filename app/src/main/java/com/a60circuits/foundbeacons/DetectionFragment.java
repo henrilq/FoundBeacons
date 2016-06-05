@@ -42,7 +42,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * Created by zoz on 26/05/2016.
  */
-public class DetectionFragment extends Fragment {
+public class DetectionFragment extends ReplacerFragment {
 
     public static final String BEACON_ARGUMENT = "Beacon";
     public static final String DETECTION_RESULT = "detectionResult";
@@ -102,14 +102,13 @@ public class DetectionFragment extends Fragment {
         lastPositionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction transaction = DetectionFragment.this.getFragmentManager().beginTransaction();
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(GMapFragment.BEACON_ARGUMENT, beacon);
                 GMapFragment mapFragment = new GMapFragment();
-                mapFragment.setArguments(bundle);
-                transaction.replace(R.id.central, mapFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                if(beacon != null){
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(GMapFragment.BEACON_ARGUMENT, beacon);
+                    mapFragment.setArguments(bundle);
+                }
+                DetectionFragment.super.replaceFragment(mapFragment);
             }
         });
 

@@ -67,8 +67,9 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
                 Beacon selectedBeacon = beacons.get(position);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(DetectionFragment.BEACON_ARGUMENT, selectedBeacon);
-                replaceByFragment(new DetectionFragment(), bundle);
-                selectMenuButton(1);
+                DetectionFragment fragment = new DetectionFragment();
+                fragment.setArguments(bundle);
+                ObjectsFragment.super.replaceFragment(fragment);
             }
         }));
 
