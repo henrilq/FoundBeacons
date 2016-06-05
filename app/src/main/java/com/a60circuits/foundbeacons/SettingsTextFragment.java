@@ -7,11 +7,13 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.a60circuits.foundbeacons.utils.ButtonUtils;
+import com.a60circuits.foundbeacons.utils.ResourcesUtils;
 
 /**
  * Created by zoz on 02/06/2016.
@@ -23,7 +25,8 @@ public class SettingsTextFragment extends Fragment{
 
     private ImageButton legalButton;
     private ImageButton faqButton;
-    private TextView textView;
+    private TextView titleView;
+    private JustifyTextView textView;
 
     @Nullable
     @Override
@@ -35,8 +38,11 @@ public class SettingsTextFragment extends Fragment{
             boolean isLegalMention = args.getBoolean(LEGAL_MENTION);
             legalButton = (ImageButton) view.findViewById(R.id.legal_button);
             faqButton = (ImageButton) view.findViewById(R.id.faq_button);
-            textView = (TextView) view.findViewById(R.id.text);
+            titleView = (TextView) view.findViewById(R.id.title);
+            textView = (JustifyTextView) view.findViewById(R.id.text);
 
+            titleView.setTypeface(ResourcesUtils.getTypeFace(getContext(), R.string.font_brandon_bld));
+            textView.setTypeface(ResourcesUtils.getTypeFace(getContext(), R.string.font_brandon_bld));
             legalButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -62,12 +68,14 @@ public class SettingsTextFragment extends Fragment{
     private void switchToFaq(){
         legalButton.setColorFilter(null);
         faqButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
+        titleView.setText(R.string.settings_faq_title);
         textView.setText(getResources().getString(R.string.settings_faq));
     }
 
     private void switchToLegalMention(){
         faqButton.setColorFilter(null);
         legalButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
-        textView.setText(getResources().getString(R.string.settings_legal_mention));
+        titleView.setText(R.string.settings_legal_mention_title);
+        textView.setText(R.string.settings_legal_mention_text);
     }
 }

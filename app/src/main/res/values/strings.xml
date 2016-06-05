@@ -16,11 +16,144 @@
     <string name="detection_started">Recherche Activée</string>
     <string name="bluetooth_not_supported">Le bluetooth ne fonctionne pas sur cet appareil</string>
 
-    <string name="settings_faq">FAQ test</string>
-    <string name="settings_legal_mention">Legal Mention test</string>
-
     <string name="font_brandon_bld">fonts/Brandon_bld.otf</string>
     <string name="font_brandon_med">fonts/Brandon_med.otf</string>
 
+    <string name="settings_faq_title">AIDE</string>
+    <string name="settings_legal_mention_title">MENTIONS LEGALES</string>
+
+    <string name="settings_faq">
+        COMMENT UTILISER FOUND
+\n\n
+Activation
+\n
+1. Téléchargez l\'application Found.
+\n
+2. Ouvrez l\'application sur votre téléphone.
+\n
+3. Suivez les instructions du tutoriel, puis activez le Bluetooth ainsi que la
+localisation GPS de votre téléphone afin de pouvoir repérer vos accessoires Found.
+\n
+4. Approchez votre smartphone de votre accessoire.
+\n
+5. Appuyez pendant 5 secondes sur la puce de votre accessoire Found
+afin de le rendre détectable et de pouvoir l\'associer à votre téléphone.
+\n
+6. Donnez le nom de votre choix à votre foulard ou à votre chapeau.
+\n
+7. Souriez ! Désormais votre accessoire Found est impossible à égarer.
+\n\n
+Retrouver son accessoire
+\n
+Votre accessoire Found est égaré. Que faire ? Suivez ces conseils pour retrouver votre
+chapeau ou votre foulard.
+\n
+* Accessoire égaré à proximité *
+\n
+Pour lancer la recherche d\'un objet, sélectionnez l\'accessoire recherché dans l\'écran
+d\'accueil ou appuyez sur l\'icône de localisation dans la barre de menu du bas. Une fois sur la
+page de localisation, appuyez sur « localiser » pour lancer la recherche. Votre téléphone va
+suivre le signal de l\'accessoire afin de vous indiquer sa distance selon votre position.
+\n
+* Dernière position de l\'accessoire *
+\n
+L\'application enregistre automatiquement le dernier endroit où votre téléphone avec
+l\'application ouverte a localisé votre accessoire Found. Il suffit d\'ouvrir votre objet égaré sur
+l\'application et une fois sur la page de localisation, appuyez sur le bouton « dernière position
+» pour obtenir l\'emplacement approximatif sur une carte.
+\n\n
+Dépannage technique
+\n
+Malgré tout le soin que nous avons apporté à la fabrication de nos accessoires Found, nous
+sommes désolés si vous rencontrez des problèmes techniques.
+        \n
+Merci de visiter notre page Found sur le site www.mercedes-benz.fr pour contacter notre
+service après-vente.
+\n\n
+POUR ALLER PLUS LOIN
+\n
+Vous pouvez poursuivre l\'expérience Found en conduisant à l\'air libre en toute insouciance.
+Venez découvrir la nouvelle gamme de cabriolets Mercedes-Benz en concession, en venant
+profiter d\'une demi-heure de conduite offerte pour tout achat d\'un accessoire Found. Plus
+de détails sur XXXXXXXXXXXX
+    </string>
+
+
+    <string name="settings_legal_mention_text">
+        ÉDITEUR DE L’APPLICATION\n
+Dénomination sociale : Mercedes-Benz France\n
+Siège social : Mercedes-Benz - 7, av. Niepce - 78180 Montigny\n
+Numéro de téléphone : 01 30 05 80 00\n
+Numéro d\'inscription au RCS : 622 044 287 RCS Versailles.\n
+Capital social : 75 516 000 €
+\n\n
+À PROPOS DE FOUND\n\n
+1. En un mot Found est une collaboration entre Mercedes-Benz et Maison Kitsuné qui rend hommage au
+style de vie unique des cabriolets à travers une série limitée de foulards et de chapeaux impossibles à égarer.
+\n\n
+2. Fonctionnement
+\n
+L\'application Found est capable de détecter le signal Bluetooth de votre accessoire dans un
+rayon de 15 mètres. Si vous égarez votre foulard ou votre chapeau Found, vous pouvez ainsi
+déterminer la distance qui vous sépare de votre objet ou localiser sa dernière position sur la
+carte.
+\n\n
+3. Distance de détection\n
+La distance de séparation entre le téléphone et l\'accessoire Found peut varier de quelques
+cm à plusieurs dizaines de mètres. Dans de bonnes conditions*, cette distance varie de 5 cm
+à 15m.
+*Le Bluetooth Low Energy est un moyen de communication tout particulièrement sensible
+aux parois. Il est conseillé d\'éviter ces dernières, ainsi que les surfaces métalliques.
+\n\n
+4. Durée de vie
+\n
+La durée de vie de la batterie est d\'environ 12 mois dans le cas d\'une utilisation modérée.
+\n\n
+5. Étanchéité
+\n
+Le lavage à sec est obligatoire.
+Aucun composant n\'est étanche.
+\n\n
+6. Technologie et détails techniques
+\n
+Found utilise la technologie Bluetooth Low Energy (BLE).\n
+Les composants de la pièce intégrée sont les suivants :
+\n
+- contrôleur BLE CC2541,
+\n
+- contrôleur de batterie,
+\n
+- bouton power (pression du doigt sur le composant),
+\n
+- plug pour pile CR2016 ou type similaire,
+\n
+- une pile CR2016
+\n\n
+Détails chiffrés
+\n
+Dimensions de la pièce : 40.3mm x 23.9mm x 2.6mm
+\n
+Modèle et durée de vie de la pile : CR2016, 10 mois à 1 an.
+\n\n
+7. Comptabilité du système
+\n
+Found fonctionne sur les mobiles Apple et Android avec Bluetooth 4.0.
+\n
+Appareils compatibles :
+\n
+- mobiles Apple utilisant iOS 7 and 8,
+\n
+- mobiles Android 5.0
+\n\n
+8. Sécurité et confidentialité
+\n
+L\'App Found ne va collecter aucune de vos données personnelles. Les accessoires Found
+peuvent être détectés par toute personne disposant du matériel nécessaire pour ce faire.
+Cependant, seul l\'utilisateur FOUND à accès aux données détaillées : nom de l\'accessoire,
+date, géolocalisation.
+\n
+Nous attirons votre attention sur le fait que l\'accessoire peut être connecté à deux
+smartphones simultanément. Cependant cela ne sera possible que si l\'accessoire se trouve à
+proximité immédiate du smartphone.</string>
 
 </resources>
