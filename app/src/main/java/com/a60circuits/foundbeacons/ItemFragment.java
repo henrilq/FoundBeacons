@@ -1,11 +1,9 @@
 package com.a60circuits.foundbeacons;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.jaalee.sdk.Beacon;
-
-import java.util.Observer;
 
 /**
  * Created by zoz on 17/05/2016.

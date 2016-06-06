@@ -9,9 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-/**
- * @author Vlonjat Gashi (vlonjatg)
- */
 public class CustomSlide extends Fragment {
 
     public static final String KEY = "image";

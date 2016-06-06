@@ -1,19 +1,15 @@
 package com.a60circuits.foundbeacons;
 
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -30,14 +26,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
-import com.a60circuits.foundbeacons.service.BeaconConnectionService;
 import com.a60circuits.foundbeacons.service.BeaconScannerService;
 import com.a60circuits.foundbeacons.utils.LocationUtils;
 import com.jaalee.sdk.Beacon;
 
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by zoz on 26/05/2016.

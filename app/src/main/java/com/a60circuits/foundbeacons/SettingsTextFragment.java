@@ -7,12 +7,9 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.a60circuits.foundbeacons.utils.ButtonUtils;
 import com.a60circuits.foundbeacons.utils.ResourcesUtils;
 
 /**

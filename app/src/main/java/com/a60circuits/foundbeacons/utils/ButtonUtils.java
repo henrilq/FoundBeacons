@@ -1,7 +1,6 @@
 package com.a60circuits.foundbeacons.utils;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.widget.Button;

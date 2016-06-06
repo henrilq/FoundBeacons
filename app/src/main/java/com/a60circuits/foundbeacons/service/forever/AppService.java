@@ -14,7 +14,6 @@ package com.a60circuits.foundbeacons.service.forever;
  http://commonsware.com/AdvAndroid
  */
 
-import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.app.job.JobParameters;
@@ -27,9 +26,6 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -37,7 +33,6 @@ import com.a60circuits.foundbeacons.R;
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.a60circuits.foundbeacons.dao.BeaconDao;
 import com.jaalee.sdk.Beacon;
-import com.jaalee.sdk.BeaconManager;
 import com.jaalee.sdk.Region;
 
 import java.util.ArrayList;

@@ -2,11 +2,9 @@ package com.a60circuits.foundbeacons;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.vlonjatg.android.apptourlibrary.AppTour;

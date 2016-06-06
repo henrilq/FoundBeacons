@@ -16,7 +16,6 @@ import com.jaalee.sdk.RangingListener;
 import com.jaalee.sdk.Region;
 import com.jaalee.sdk.ServiceReadyCallback;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -3,15 +3,10 @@ package com.a60circuits.foundbeacons.utils;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.support.v4.app.ActivityCompat;
-import android.webkit.PermissionRequest;
-
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
@@ -26,6 +21,7 @@ public class LocationUtils {
         }
         LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
         List<String> providers = locationManager.getProviders(true);
+        LocationProvider mainProvider = locationManager.getProvider(LocationManager.GPS_PROVIDER);
         Location bestLocation = null;
         for (String provider : providers) {
             Location l = locationManager.getLastKnownLocation(provider);

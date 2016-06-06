@@ -2,7 +2,6 @@ package com.a60circuits.foundbeacons;
 
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.media.audiofx.BassBoost;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;

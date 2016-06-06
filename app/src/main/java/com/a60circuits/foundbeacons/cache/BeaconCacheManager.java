@@ -1,17 +1,13 @@
 package com.a60circuits.foundbeacons.cache;
 
 import android.app.Activity;
-import android.content.Context;
 import android.location.Location;
 
 import com.a60circuits.foundbeacons.dao.BeaconDao;
 import com.a60circuits.foundbeacons.utils.LocationUtils;
-import com.google.android.gms.maps.model.LatLng;
 import com.jaalee.sdk.Beacon;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;

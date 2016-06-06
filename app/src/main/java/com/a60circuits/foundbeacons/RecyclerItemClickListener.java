@@ -3,9 +3,9 @@ package com.a60circuits.foundbeacons;
 /**
  * Created by zoz on 25/05/2016.
  */
+
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;

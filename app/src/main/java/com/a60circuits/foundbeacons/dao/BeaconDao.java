@@ -5,7 +5,6 @@ import android.content.Context;
 import com.jaalee.sdk.Beacon;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
