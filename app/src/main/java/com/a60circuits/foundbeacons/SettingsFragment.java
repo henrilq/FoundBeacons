@@ -1,7 +1,6 @@
 package com.a60circuits.foundbeacons;
 
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,13 +10,12 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.a60circuits.foundbeacons.service.NotificationServiceManager;
-import com.a60circuits.foundbeacons.utils.ButtonUtils;
+import com.a60circuits.foundbeacons.utils.ResourcesUtils;
 
 /**
  * Created by zoz on 17/05/2016.
@@ -88,8 +86,7 @@ public class SettingsFragment extends Fragment{
         TextView notificationText = (TextView) view.findViewById(R.id.notification_text);
         TextView detailText = (TextView) view.findViewById(R.id.detail_text);
 
-        Typeface face = Typeface.createFromAsset(getActivity().getAssets(),getResources().getString(R.string.font_brandon_med));
-
+        Typeface face = ResourcesUtils.getTypeFace(getContext(), R.string.font_brandon_med);
         paramText.setTypeface(face);
         gpsText.setTypeface(face);
         notificationText.setTypeface(face);

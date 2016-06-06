@@ -1,19 +1,13 @@
 package com.a60circuits.foundbeacons;
 
-import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
+import com.a60circuits.foundbeacons.utils.ResourcesUtils;
 import com.jaalee.sdk.Beacon;
 
 /**
@@ -27,6 +21,7 @@ public class BeaconViewHolder extends RecyclerView.ViewHolder{
     public BeaconViewHolder(View view) {
         super(view);
         editText = (EditText) view.findViewById(R.id.editText);
+        editText.setTypeface(ResourcesUtils.getTypeFace(editText.getContext(), R.string.font_brandon_med));
         editButton = (ImageButton) view.findViewById(R.id.editButton);
     }
 
