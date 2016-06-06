@@ -87,13 +87,19 @@ public class SettingsFragment extends Fragment{
         TextView gpsText = (TextView) view.findViewById(R.id.gps_text);
         TextView notificationText = (TextView) view.findViewById(R.id.notification_text);
         TextView detailText = (TextView) view.findViewById(R.id.detail_text);
+        TextView detail1 = (TextView) view.findViewById(R.id.detail_1);
+        TextView detail2 = (TextView) view.findViewById(R.id.detail_2);
 
         Typeface face = ResourcesUtils.getTypeFace(getContext(), R.string.font_brandon_med);
         paramText.setTypeface(face);
         gpsText.setTypeface(face);
         notificationText.setTypeface(face);
         detailText.setTypeface(face);
-
+        detail1.setTypeface(face);
+        detail2.setTypeface(face);
+        
+        //hide first detail
+        detail1.setVisibility(View.INVISIBLE);
         final SharedPreferences settings = getActivity().getSharedPreferences(MainActivity.PREF_FILE, 0);
         boolean notificationEnabled = settings.getBoolean(NOTIFICATION_ENABLED, false);
         notificationSwitch.setChecked(notificationEnabled);
