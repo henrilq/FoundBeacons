@@ -1,6 +1,7 @@
 package com.a60circuits.foundbeacons;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +15,9 @@ import com.vlonjatg.android.apptourlibrary.AppTour;
  * Created by zoz on 24/05/2016.
  */
 public class AppTourActivity extends AppTour{
+
+    public static final String HIDE_APP_TOUR = "hideAppTour";
+
     @Override
     public void init(@Nullable Bundle savedInstanceState) {
         int textColor = ContextCompat.getColor(getApplicationContext(),R.color.colorBorderBlue);
@@ -42,12 +46,21 @@ public class AppTourActivity extends AppTour{
 
     @Override
     public void onSkipPressed() {
+        registerPreferences();
         startMainActivity();
     }
 
     @Override
     public void onDonePressed() {
+        registerPreferences();
         startMainActivity();
+    }
+
+    private void registerPreferences(){
+        SharedPreferences settings = getApplicationContext().getSharedPreferences(MainActivity.PREF_FILE, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(HIDE_APP_TOUR, true);
+        editor.commit();
     }
 
     private CustomSlide createSlide(int id){
