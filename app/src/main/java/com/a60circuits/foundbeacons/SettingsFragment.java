@@ -97,7 +97,7 @@ public class SettingsFragment extends Fragment{
         detailText.setTypeface(face);
         detail1.setTypeface(face);
         detail2.setTypeface(face);
-        
+
         //hide first detail
         detail1.setVisibility(View.INVISIBLE);
         final SharedPreferences settings = getActivity().getSharedPreferences(MainActivity.PREF_FILE, 0);

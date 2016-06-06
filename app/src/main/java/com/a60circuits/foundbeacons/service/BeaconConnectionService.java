@@ -125,7 +125,7 @@ public class BeaconConnectionService extends Service {
         if(found != null){
             message = getResources().getString(R.string.scanned_beacon_already_saved)+" : "+found.getName() ;
         }else{
-            beacon.setName(getResources().getString(R.string.default_beacon_name));
+            beacon.setName("");
             boolean success = BeaconCacheManager.getInstance().save(beacon);
             if(success){
                 message = getResources().getString(R.string.scanned_beacon_saved);

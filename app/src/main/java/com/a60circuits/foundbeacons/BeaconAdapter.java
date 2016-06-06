@@ -43,7 +43,15 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconViewHolder>{
         final Beacon beacon = beacons.get(position);
         holder.setItem(beacon);
         holder.setText(beacon.getName());
-        holder.setEditable(false);
+        initListeners(holder, beacon);
+        if(beacon.getName() != null && beacon.getName().isEmpty()){
+            holder.editButton.performClick();
+        }else{
+            holder.setEditable(false);
+        }
+    }
+
+    private void initListeners(final BeaconViewHolder holder, final Beacon beacon){
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
