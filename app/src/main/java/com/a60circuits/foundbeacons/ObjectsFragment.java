@@ -1,21 +1,16 @@
 package com.a60circuits.foundbeacons;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.a60circuits.foundbeacons.service.BeaconConnectionService;
@@ -80,6 +75,8 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
         List<Beacon> savedBeacons = BeaconCacheManager.getInstance().getData();
         if(savedBeacons != null && ! savedBeacons.isEmpty()){
             setBeacons(savedBeacons);
+        }else{
+            Toast.makeText(ObjectsFragment.this.getContext(),getResources().getString(R.string.new_beacon_instruct), Toast.LENGTH_LONG).show();
         }
         return view;
     }
