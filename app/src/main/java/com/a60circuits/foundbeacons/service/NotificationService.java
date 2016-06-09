@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-public class NotificationService extends JobService implements Observer{
+public class NotificationService extends JobService{
 
     public static final String TAG = "NOTIFICATION_SERVICE";
     public static final long PERIOD = 60000;
@@ -41,7 +41,6 @@ public class NotificationService extends JobService implements Observer{
     public boolean onStartJob(JobParameters params) {
         try{
             Log.i(TAG , "Starting job");
-            BeaconCacheManager.getInstance().addObserver(this);
             dao = new BeaconDao(getApplicationContext());
             beacons = new ArrayList(BeaconCacheManager.getInstance().getData());
             Log.i("beacons ", "CACHE : "+beacons.size());
@@ -163,10 +162,4 @@ public class NotificationService extends JobService implements Observer{
         return Service.START_STICKY;
     }
 
-    @Override
-    public void update(Observable observable, Object data) {
-        if(data != null){
-            beacons = (List<Beacon>)data;
-        }
-    }
 }
