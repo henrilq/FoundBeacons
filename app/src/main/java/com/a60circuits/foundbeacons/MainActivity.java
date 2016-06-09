@@ -1,6 +1,7 @@
 package com.a60circuits.foundbeacons;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -41,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
     public static final String PREF_FILE = "prefFile";
     public static final String BUTTON_POSITION = "buttonPosition";
     public static final String SCAN_RESULT = "com.a60circuits.foundbeacons.result";
+    public static final String START_CONNECTION = "Start_Connection";
+    public static final String STOP_CONNECTION = "Stop_Connection";
+    public static final String START_SCANNER = "Start_Scanner";
+    public static final String STOP_SCANNER = "Stop_Scanner";
+
 
     private Map<ImageButton, List<Class<? extends Fragment>>> map;
     private ImageButton selectedButton;
@@ -54,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton settingsButton;
     private ImageButton mapButton;
     private ImageButton objectsButton;
+
+    private ProgressDialog progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,10 +113,17 @@ public class MainActivity extends AppCompatActivity {
                     Intent i = new Intent(MainActivity.this,BeaconScannerService.class);
                     i.putExtra(BeaconScannerService.CONNECTION_MODE, true);
                     MainActivity.this.startService(i);
+                    if(progressBar == null){
+                        progressBar = new ProgressDialog(v.getContext());
+                        progressBar.setCancelable(false);
+                        progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    }
+                    progressBar.show();
                 }else{
                     scanButton.setColorFilter(null);
                     stopService(new Intent(MainActivity.this,BeaconScannerService.class));
                     stopService(new Intent(MainActivity.this,BeaconConnectionService.class));
+                    progressBar.dismiss();
                 }
             }
         });
@@ -243,12 +258,32 @@ public class MainActivity extends AppCompatActivity {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                scanning = false;
-                scanButton.setColorFilter(null);
-                String message = intent.getStringExtra(BeaconConnectionService.TAG);
-                if(message != null){
-                    Toast.makeText(MainActivity.this.getBaseContext(),message, Toast.LENGTH_LONG).show();
+
+                String message = intent.getStringExtra(START_SCANNER);
+                if(message == null || message.isEmpty()){
+                    message = intent.getStringExtra(START_CONNECTION);
                 }
+                if(message != null && ! message.isEmpty()){
+                    if(progressBar != null){
+                        progressBar.setMessage(message);
+                    }
+                }else{
+                    message = intent.getStringExtra(STOP_CONNECTION);
+                    if(message == null || message.isEmpty()){
+                        message = intent.getStringExtra(STOP_SCANNER);
+                    }
+                    if(message != null && ! message.isEmpty()){
+                        scanning = false;
+                        scanButton.setColorFilter(null);
+                        if(progressBar != null){
+                            progressBar.dismiss();
+                        }
+                    }
+                }
+                if(message != null && ! message.isEmpty()){
+                    Toast.makeText(MainActivity.this.getBaseContext(),message, Toast.LENGTH_SHORT).show();
+                }
+
             }
         };
         filter = new IntentFilter();
@@ -278,6 +313,9 @@ public class MainActivity extends AppCompatActivity {
         stopService(new Intent(this,BeaconConnectionService.class));
         BeaconCacheManager.getInstance().deleteObservers();
         CacheVariable.put(BUTTON_POSITION, buttonPosition);
+        if(progressBar != null){
+            progressBar.dismiss();
+        }
     }
 
 }

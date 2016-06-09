@@ -42,14 +42,15 @@ public class BeaconConnectionService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if(intent != null){
-            handler = new Handler();
-            connectionNb = 0;
             broadcastIntent = new Intent();
             broadcastIntent.setAction(MainActivity.SCAN_RESULT);
+            sendStartBroadcastMessage(getResources().getString(R.string.connecting_beacon));
+            handler = new Handler();
+            connectionNb = 0;
             beacon = intent.getParcelableExtra(BEACON_ARGUMENT);
             Beacon found = BeaconCacheManager.getInstance().findInCacheByMacAddress(beacon);
             if(found != null){
-                sendBroadcastMessage(getResources().getString(R.string.scanned_beacon_already_saved)+" : "+found.getName());
+                sendStopBroadcastMessage(getResources().getString(R.string.scanned_beacon_already_saved)+" : "+found.getName());
             }else{
                 connect();
             }
@@ -75,7 +76,7 @@ public class BeaconConnectionService extends Service {
 
     private void reconnect(String errorMessage){
         if(connectionNb > 3){
-            sendBroadcastMessage(errorMessage);
+            sendStopBroadcastMessage(errorMessage);
             stopSelf();
         }else{
             Log.i(TAG, " NEXT TRY " + connectionNb);
@@ -133,12 +134,19 @@ public class BeaconConnectionService extends Service {
                 message = getResources().getString(R.string.scanned_beacon_saving_technical_error);
             }
         }
-        sendBroadcastMessage(message);
+        sendStopBroadcastMessage(message);
         stopSelf();
     }
 
-    private void sendBroadcastMessage(String message){
-        broadcastIntent.putExtra(TAG, message);
+    private void sendStopBroadcastMessage(String message){
+        broadcastIntent.putExtra(MainActivity.START_CONNECTION, "");
+        broadcastIntent.putExtra(MainActivity.STOP_CONNECTION, message);
+        sendBroadcast(broadcastIntent);
+    }
+
+    private void sendStartBroadcastMessage(String message){
+        broadcastIntent.putExtra(MainActivity.STOP_CONNECTION, "");
+        broadcastIntent.putExtra(MainActivity.START_CONNECTION, message);
         sendBroadcast(broadcastIntent);
     }
 

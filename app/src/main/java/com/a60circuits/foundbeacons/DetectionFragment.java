@@ -140,8 +140,10 @@ public class DetectionFragment extends ReplacerFragment {
                 int rssi = intent.getIntExtra(BeaconScannerService.TAG, 0);
                 updateValue(computeDistance(rssi));
                 Location location = LocationUtils.getLastKnownLocation(getActivity());
-                beacon.setLatitude(location.getLatitude());
-                beacon.setLongitude(location.getLongitude());
+                if(location != null){
+                    beacon.setLatitude(location.getLatitude());
+                    beacon.setLongitude(location.getLongitude());
+                }
                 beacon.setDate(new Date());
                 BeaconCacheManager.getInstance().update(beacon);
             }

@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.a60circuits.foundbeacons.DetectionFragment;
+import com.a60circuits.foundbeacons.MainActivity;
+import com.a60circuits.foundbeacons.R;
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.jaalee.sdk.Beacon;
 import com.jaalee.sdk.BeaconManager;
@@ -25,6 +27,8 @@ public class BeaconScannerService extends Service {
 
     public static final String TAG = "BeaconScannerService";
 
+    public static final long TIME_OUT = 30000;
+
     private static final Region ALL_BEACONS_REGION = new Region("rid", null, null, null);
 
     public static final String DETECTION_MODE = "detectionMode";
@@ -39,14 +43,20 @@ public class BeaconScannerService extends Service {
 
     private Handler handler = new Handler();
 
+    private long startTime;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, " START BEACON SCANNER SERVICE ");
+        this.startTime = System.currentTimeMillis();
         boolean isDetectionMode = intent.getBooleanExtra(DETECTION_MODE, false);
         boolean isConnectionMode = intent.getBooleanExtra(CONNECTION_MODE, false);
         beaconManager = new BeaconManager(getApplicationContext());
         if(isConnectionMode){
             beaconManager.setRangingListener(createConnectionRangingListener());
+            broadcastIntent = new Intent();
+            broadcastIntent.setAction(MainActivity.SCAN_RESULT);
+            sendStartBroadcastMessage(getResources().getString(R.string.scanning_beacon));
         }else if(isDetectionMode){
             broadcastIntent = new Intent();
             broadcastIntent.setAction(DetectionFragment.DETECTION_RESULT);
@@ -63,16 +73,23 @@ public class BeaconScannerService extends Service {
         return new RangingListener() {
             @Override
             public void onBeaconsDiscovered(Region region, final List<Beacon> beacons) {
-                for (final Beacon beacon: beacons){
-                    int rssi = Math.abs(beacon.getRssi());
-                    Log.i(TAG, " BEACON DETECTED "+beacon.getMacAddress()+"  "+rssi);
-                    Beacon found = BeaconCacheManager.getInstance().findInCacheByMacAddress(beacon);
-                    if(found == null && rssi < 60){
-                        stopRanging();
-                        Intent i = new Intent(getApplicationContext(),BeaconConnectionService.class);
-                        i.putExtra(BeaconConnectionService.BEACON_ARGUMENT, beacon);
-                        getApplicationContext().startService(i);
-                        break;
+                long time = System.currentTimeMillis() - startTime;
+                Log.i(TAG, " TIME "+time);
+                if(time > TIME_OUT){
+                    stopRanging();
+                    sendStopBroadcastMessage(getResources().getString(R.string.scanning_time_out));
+                }else{
+                    for (final Beacon beacon: beacons){
+                        int rssi = Math.abs(beacon.getRssi());
+                        Log.i(TAG, " BEACON DETECTED "+beacon.getMacAddress()+"  "+rssi);
+                        Beacon found = BeaconCacheManager.getInstance().findInCacheByMacAddress(beacon);
+                        if(found == null && rssi < 60){
+                            stopRanging();
+                            Intent i = new Intent(getApplicationContext(),BeaconConnectionService.class);
+                            i.putExtra(BeaconConnectionService.BEACON_ARGUMENT, beacon);
+                            getApplicationContext().startService(i);
+                            break;
+                        }
                     }
                 }
             }
@@ -96,7 +113,6 @@ public class BeaconScannerService extends Service {
         };
     }
 
-
     private void connectToService() {
         beaconManager.connect(new ServiceReadyCallback() {
             @Override
@@ -116,6 +132,18 @@ public class BeaconScannerService extends Service {
         } catch (RemoteException e) {
             Log.e(TAG,"",e);
         }
+    }
+
+    private void sendStopBroadcastMessage(String message){
+        broadcastIntent.putExtra(MainActivity.START_SCANNER, "");
+        broadcastIntent.putExtra(MainActivity.STOP_SCANNER, message);
+        sendBroadcast(broadcastIntent);
+    }
+
+    private void sendStartBroadcastMessage(String message){
+        broadcastIntent.putExtra(MainActivity.STOP_SCANNER, "");
+        broadcastIntent.putExtra(MainActivity.START_SCANNER, message);
+        sendBroadcast(broadcastIntent);
     }
 
     @Override
