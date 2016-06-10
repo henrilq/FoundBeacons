@@ -66,6 +66,15 @@
             android:textSize="35sp"
             android:layout_centerInParent="true"
             android:gravity="center_vertical|right"/>
+
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:src="@drawable/loading"
+            android:visibility="invisible"
+            android:gravity="center_vertical|right"/>
     </RelativeLayout>
 
     <View

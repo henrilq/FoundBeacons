@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -54,6 +55,7 @@ public class DetectionFragment extends ReplacerFragment {
     private BroadcastReceiver broadcastReceiver;
     private IntentFilter filter;
     private Handler handler = new Handler();
+    private ImageView loadingView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,6 +68,8 @@ public class DetectionFragment extends ReplacerFragment {
         View view = inflater.inflate(R.layout.detection_fragment,container,false);
         progressBar = (ProgressBar) view.findViewById(R.id.circleProgress);
         textView = (TextView) view.findViewById(R.id.nbText);
+        loadingView = (ImageView) view.findViewById(R.id.loading);
+
         final ImageButton detectionButton = (ImageButton) view.findViewById(R.id.detectionButton);
         final ImageButton lastPositionButton = (ImageButton) view.findViewById(R.id.lastPositionButton);
         final RelativeLayout progressLayout = (RelativeLayout) view.findViewById(R.id.circleProgressLayout);
@@ -116,7 +120,8 @@ public class DetectionFragment extends ReplacerFragment {
                 if(beacon == null){
                     Toast.makeText(getActivity().getBaseContext(),getResources().getString(R.string.no_beacon_saved), Toast.LENGTH_LONG).show();
                 }else if(!detectionStarted){
-                    textView.setText(getResources().getString(R.string.detection_started));
+                    textView.setText("");
+                    loadingView.setVisibility(View.VISIBLE);
                     startDetectionService();
                 }
             }
@@ -192,6 +197,7 @@ public class DetectionFragment extends ReplacerFragment {
     }
 
     private void updateTextView(String distance, String unit){
+        loadingView.setVisibility(View.INVISIBLE);
         String textValue = distance + "\n"+unit;
         SpannableString ss1=  new SpannableString(textValue);
         ss1.setSpan(new RelativeSizeSpan(2f), 0,distance.length(), 0); // set size
