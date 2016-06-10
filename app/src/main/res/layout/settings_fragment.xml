@@ -76,6 +76,7 @@
                     android:autoLink="web"
                     android:textColor="@color/webBlue"
                     android:textSize="16sp"
+                    android:visibility="invisible"
                     android:layout_gravity="right" />
             </LinearLayout>
 
@@ -123,6 +124,7 @@
                     android:autoLink="web"
                     android:textColor="@color/webBlue"
                     android:textSize="16sp"
+                    android:visibility="invisible"
                     android:layout_gravity="right" />
             </LinearLayout>
 
@@ -139,6 +141,7 @@
                 android:layout_marginRight="35dp"
                 android:layout_marginLeft="35dp"
                 android:gravity="center"
+                android:visibility="invisible"
                 android:layout_gravity="center_horizontal" />
 
         </LinearLayout>
