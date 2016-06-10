@@ -1,6 +1,5 @@
 package com.a60circuits.foundbeacons;
 
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,12 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.a60circuits.foundbeacons.cache.CacheVariable;
-import com.a60circuits.foundbeacons.service.BeaconConnectionService;
-import com.a60circuits.foundbeacons.service.BeaconScannerService;
 import com.jaalee.sdk.Beacon;
 import com.jaalee.sdk.Region;
 
