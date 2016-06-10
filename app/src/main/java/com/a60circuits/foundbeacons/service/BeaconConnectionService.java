@@ -49,9 +49,7 @@ public class BeaconConnectionService extends Service {
             connectionNb = 0;
             beacon = intent.getParcelableExtra(BEACON_ARGUMENT);
             Beacon found = BeaconCacheManager.getInstance().findInCacheByMacAddress(beacon);
-            if(found != null){
-                sendStopBroadcastMessage(getResources().getString(R.string.scanned_beacon_already_saved)+" : "+found.getName());
-            }else{
+            if(found == null){
                 connect();
             }
         }
@@ -123,9 +121,7 @@ public class BeaconConnectionService extends Service {
         beacon.setDate(new Date());
         Beacon found = BeaconCacheManager.getInstance().findInCacheByMacAddress(beacon);
         String message = null;
-        if(found != null){
-            message = getResources().getString(R.string.scanned_beacon_already_saved)+" : "+found.getName() ;
-        }else{
+        if(found == null){
             beacon.setName("");
             boolean success = BeaconCacheManager.getInstance().save(beacon);
             if(success){
@@ -139,14 +135,14 @@ public class BeaconConnectionService extends Service {
     }
 
     private void sendStopBroadcastMessage(String message){
-        broadcastIntent.putExtra(MainActivity.START_CONNECTION, "");
-        broadcastIntent.putExtra(MainActivity.STOP_CONNECTION, message);
+        broadcastIntent.putExtra(MainActivity.SERVICE_INFO, "");
+        broadcastIntent.putExtra(MainActivity.SERVICE_STOP, message);
         sendBroadcast(broadcastIntent);
     }
 
     private void sendStartBroadcastMessage(String message){
-        broadcastIntent.putExtra(MainActivity.STOP_CONNECTION, "");
-        broadcastIntent.putExtra(MainActivity.START_CONNECTION, message);
+        broadcastIntent.putExtra(MainActivity.SERVICE_STOP, "");
+        broadcastIntent.putExtra(MainActivity.SERVICE_INFO, message);
         sendBroadcast(broadcastIntent);
     }
 

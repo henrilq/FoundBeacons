@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -42,17 +43,14 @@ public class MainActivity extends AppCompatActivity {
     public static final String PREF_FILE = "prefFile";
     public static final String BUTTON_POSITION = "buttonPosition";
     public static final String SCAN_RESULT = "com.a60circuits.foundbeacons.result";
-    public static final String START_CONNECTION = "Start_Connection";
-    public static final String STOP_CONNECTION = "Stop_Connection";
-    public static final String START_SCANNER = "Start_Scanner";
-    public static final String STOP_SCANNER = "Stop_Scanner";
-
+    public static final String SERVICE_STOP = "Service_Stop";
+    public static final String SERVICE_INFO = "Service_info";
+    public static final String SCANNING = "scanning";
 
     private Map<ImageButton, List<Class<? extends Fragment>>> map;
     private ImageButton selectedButton;
     private ImageButton scanButton;
     private int buttonPosition;
-    private boolean scanning;
 
     private IntentFilter filter;
     private BroadcastReceiver broadcastReceiver;
@@ -60,8 +58,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton settingsButton;
     private ImageButton mapButton;
     private ImageButton objectsButton;
-
-    private ProgressDialog progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
         initBroadcastReceiver();
         initListeners();
 
+
+
+
         NotificationServiceManager.getInstance().setActivity(this);
         Object lastPosition = CacheVariable.get(BUTTON_POSITION);
         if(lastPosition == null){
@@ -107,23 +106,13 @@ public class MainActivity extends AppCompatActivity {
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                scanning = !scanning;
-                if(scanning){
+                if(! CacheVariable.getBoolean(SCANNING)){
+                    CacheVariable.put(SCANNING, true);
+                    replaceFragment(objectsButton, null, true);
                     scanButton.setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.colorSelectionBlue));
                     Intent i = new Intent(MainActivity.this,BeaconScannerService.class);
                     i.putExtra(BeaconScannerService.CONNECTION_MODE, true);
                     MainActivity.this.startService(i);
-                    if(progressBar == null){
-                        progressBar = new ProgressDialog(v.getContext());
-                        progressBar.setCancelable(false);
-                        progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    }
-                    progressBar.show();
-                }else{
-                    scanButton.setColorFilter(null);
-                    stopService(new Intent(MainActivity.this,BeaconScannerService.class));
-                    stopService(new Intent(MainActivity.this,BeaconConnectionService.class));
-                    progressBar.dismiss();
                 }
             }
         });
@@ -163,17 +152,29 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     private void replaceFragment(ImageButton button){
+        replaceFragment(button, null);
+    }
+
+    private void replaceFragment(ImageButton button, Bundle bundle){
+        replaceFragment(button, bundle, false);
+    }
+
+    private void replaceFragment(ImageButton button, Bundle bundle, boolean forceReplacement){
         try {
             Fragment fragment = map.get(button).get(0).newInstance();
-            replaceFragment(button, fragment);
+            replaceFragment(button, fragment, bundle, forceReplacement);
         } catch (Exception e) {
             Log.e(TAG,"",e);
         }
     }
 
-    private void replaceFragment(ImageButton button, Fragment fragment){
-        if(selectedButton == null || ! button.equals(selectedButton)){
+    private void replaceFragment(ImageButton button, Fragment fragment, Bundle bundle, boolean forceReplacement){
+        if(selectedButton == null || ! button.equals(selectedButton) || forceReplacement){
+            if(bundle != null){
+                fragment.setArguments(bundle);
+            }
             selectMenuButton(button);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.central, fragment);
@@ -258,32 +259,21 @@ public class MainActivity extends AppCompatActivity {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-
-                String message = intent.getStringExtra(START_SCANNER);
+                String message = intent.getStringExtra(SERVICE_INFO);
                 if(message == null || message.isEmpty()){
-                    message = intent.getStringExtra(START_CONNECTION);
-                }
-                if(message != null && ! message.isEmpty()){
-                    if(progressBar != null){
-                        progressBar.setMessage(message);
-                    }
-                }else{
-                    message = intent.getStringExtra(STOP_CONNECTION);
-                    if(message == null || message.isEmpty()){
-                        message = intent.getStringExtra(STOP_SCANNER);
-                    }
+                    message = intent.getStringExtra(SERVICE_STOP);
                     if(message != null && ! message.isEmpty()){
-                        scanning = false;
+                        CacheVariable.put(SCANNING, false);
                         scanButton.setColorFilter(null);
-                        if(progressBar != null){
-                            progressBar.dismiss();
-                        }
+                        //reload objects fragment
+                        Bundle bundle = new Bundle();
+                        bundle.putBoolean(ObjectsFragment.SCANNING, false);
+                        replaceFragment(objectsButton, bundle, true);
                     }
                 }
                 if(message != null && ! message.isEmpty()){
                     Toast.makeText(MainActivity.this.getBaseContext(),message, Toast.LENGTH_SHORT).show();
                 }
-
             }
         };
         filter = new IntentFilter();
@@ -313,9 +303,6 @@ public class MainActivity extends AppCompatActivity {
         stopService(new Intent(this,BeaconConnectionService.class));
         BeaconCacheManager.getInstance().deleteObservers();
         CacheVariable.put(BUTTON_POSITION, buttonPosition);
-        if(progressBar != null){
-            progressBar.dismiss();
-        }
     }
 
 }

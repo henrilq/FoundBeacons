@@ -17,6 +17,19 @@ public class CacheVariable {
         getInstance().map.put(key, value);
     }
 
+    public static boolean getBoolean(String key){
+        return getBoolean(key, false);
+    }
+
+    public static boolean getBoolean(String key, boolean defaultValue){
+        boolean res = defaultValue;
+        Object obj = getInstance().map.get(key);
+        if(obj != null){
+            res = (boolean)getInstance().map.get(key);
+        }
+        return res;
+    }
+
     public static Object get(String key){
         return getInstance().map.get(key);
     }

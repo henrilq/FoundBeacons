@@ -27,7 +27,7 @@ public class BeaconScannerService extends Service {
 
     public static final String TAG = "BeaconScannerService";
 
-    public static final long TIME_OUT = 30000;
+    public static final long TIME_OUT = 20000;
 
     private static final Region ALL_BEACONS_REGION = new Region("rid", null, null, null);
 
@@ -135,14 +135,14 @@ public class BeaconScannerService extends Service {
     }
 
     private void sendStopBroadcastMessage(String message){
-        broadcastIntent.putExtra(MainActivity.START_SCANNER, "");
-        broadcastIntent.putExtra(MainActivity.STOP_SCANNER, message);
+        broadcastIntent.putExtra(MainActivity.SERVICE_INFO, "");
+        broadcastIntent.putExtra(MainActivity.SERVICE_STOP, message);
         sendBroadcast(broadcastIntent);
     }
 
     private void sendStartBroadcastMessage(String message){
-        broadcastIntent.putExtra(MainActivity.STOP_SCANNER, "");
-        broadcastIntent.putExtra(MainActivity.START_SCANNER, message);
+        broadcastIntent.putExtra(MainActivity.SERVICE_STOP, "");
+        broadcastIntent.putExtra(MainActivity.SERVICE_INFO, message);
         sendBroadcast(broadcastIntent);
     }
 

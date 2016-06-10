@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
+import com.a60circuits.foundbeacons.cache.CacheVariable;
 import com.a60circuits.foundbeacons.service.BeaconConnectionService;
 import com.a60circuits.foundbeacons.service.BeaconScannerService;
 import com.jaalee.sdk.Beacon;
@@ -27,12 +28,16 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
 
+import pl.droidsonroids.gif.GifImageView;
+
 /**
  * Created by zoz on 17/05/2016.
  */
 public class ObjectsFragment extends ReplacerFragment implements Observer{
 
     private static final Region ALL_BEACONS_REGION = new Region("rid", null, null, null);
+
+    public final static String SCANNING = "Scanning";
 
     private RecyclerView beaconsView;
     private Button addButton;
@@ -42,6 +47,7 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
     private BeaconAdapter adapter;
     private Handler handler;
     private TextView text;
+    private GifImageView loader;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,10 +65,17 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
         adapter = new BeaconAdapter(beacons);
         beaconsView = (RecyclerView) view.findViewById(R.id.beaconsView);
         beaconsView.setHasFixedSize(true);
-
+        loader = (GifImageView)view.findViewById(R.id.loader);
         Typeface face = Typeface.createFromAsset(getActivity().getAssets(),getResources().getString(R.string.font_brandon_med));
         text = (TextView)view.findViewById(R.id.text);
         text.setTypeface(face);
+
+        if(CacheVariable.getBoolean(MainActivity.SCANNING)){
+            loader.setVisibility(View.VISIBLE);
+            text.setVisibility(View.INVISIBLE);
+        }else{
+            loader.setVisibility(View.INVISIBLE);
+        }
 
         beaconsView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override public void onItemClick(View view, int position) {
@@ -122,8 +135,6 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        getContext().stopService(new Intent(getContext(),BeaconScannerService.class));
-        getContext().stopService(new Intent(getContext(),BeaconConnectionService.class));
         BeaconCacheManager.getInstance().deleteObserver(this);
     }
 
