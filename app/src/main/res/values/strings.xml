@@ -20,7 +20,7 @@
     <string name="bluetooth_not_supported">Le bluetooth ne fonctionne pas sur cet appareil</string>
 
     <string name="gpg_mandatory">La localisation gps est indispensable au bon fonctionnement de Found</string>
-    <string name="new_beacon_instruct">Appuyez sur le bouton en forme de croix en haut à droite de votre écran pour ajouter un nouvel accessoire</string>
+    <string name="new_beacon_instruct">Commencez par ajouter un accessoire !\nVeuillez cliquer sur le + ci-dessus</string>
 
     <string name="font_brandon_bld">fonts/Brandon_bld.otf</string>
     <string name="font_brandon_med">fonts/Brandon_med.otf</string>

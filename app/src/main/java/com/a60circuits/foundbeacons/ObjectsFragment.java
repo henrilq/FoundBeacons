@@ -1,6 +1,7 @@
 package com.a60circuits.foundbeacons;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
@@ -39,6 +41,7 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
     private LinearLayoutManager layoutManager;
     private BeaconAdapter adapter;
     private Handler handler;
+    private TextView text;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,6 +59,10 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
         adapter = new BeaconAdapter(beacons);
         beaconsView = (RecyclerView) view.findViewById(R.id.beaconsView);
         beaconsView.setHasFixedSize(true);
+
+        Typeface face = Typeface.createFromAsset(getActivity().getAssets(),getResources().getString(R.string.font_brandon_med));
+        text = (TextView)view.findViewById(R.id.text);
+        text.setTypeface(face);
 
         beaconsView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override public void onItemClick(View view, int position) {
@@ -75,8 +82,6 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
         List<Beacon> savedBeacons = BeaconCacheManager.getInstance().getData();
         if(savedBeacons != null && ! savedBeacons.isEmpty()){
             setBeacons(savedBeacons);
-        }else{
-            Toast.makeText(ObjectsFragment.this.getContext(),getResources().getString(R.string.new_beacon_instruct), Toast.LENGTH_LONG).show();
         }
         return view;
     }
@@ -84,6 +89,12 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
     private void setBeacons(List<Beacon> newBeacons){
         beacons.clear();
         beaconsAddress.clear();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                text.setVisibility(View.INVISIBLE);
+            }
+        });
         addBeacons(newBeacons);
     }
 
