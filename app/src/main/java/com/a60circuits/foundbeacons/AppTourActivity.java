@@ -12,7 +12,7 @@ import com.vlonjatg.android.apptourlibrary.AppTour;
 /**
  * Created by zoz on 24/05/2016.
  */
-public class AppTourActivity extends AppTour{
+public class AppTourActivity extends CustomAppTour{
 
     public static final String HIDE_APP_TOUR = "hideAppTour";
 
@@ -23,8 +23,9 @@ public class AppTourActivity extends AppTour{
         ImageButton nextSlideImageButton = (ImageButton) findViewById(com.vlonjatg.android.apptourlibrary.R.id.nextSlideImageButton);
         nextSlideImageButton.setColorFilter(textColor);
 
-        setSkipText("Passer");
-        setDoneText("Continuer");
+        setDoneText("Démarrer");
+        hideSkip();
+        hideNext();
 
         setActiveDotColor(textColor);
         //Custom slide
