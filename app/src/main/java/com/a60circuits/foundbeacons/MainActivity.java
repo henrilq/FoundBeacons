@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         final ActionBar ab = getSupportActionBar();
         ab.setDisplayShowHomeEnabled(true); // show or hide the default home button
-        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setDisplayHomeAsUpEnabled(false);
         ab.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
         ab.setDisplayShowTitleEnabled(false);
 
@@ -81,8 +81,6 @@ public class MainActivity extends AppCompatActivity {
         initBeaconCache();
         initBroadcastReceiver();
         initListeners();
-
-
 
 
         NotificationServiceManager.getInstance().setActivity(this);
@@ -117,29 +115,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
-                Fragment fragment = null;
-                try{
-                    for(Fragment f: getSupportFragmentManager().getFragments()){
-                        if(f != null){
-                            if(f.isVisible()){
-                                fragment = f;
-                                break;
-                            }
-                        }
-                    }
-                    if(fragment != null){
-                        for(Map.Entry<ImageButton, List<Class<? extends Fragment>>> entry: map.entrySet()){
-                            for(Class<?> clazz: entry.getValue()){
-                                if(clazz.equals(fragment.getClass())){
-                                    selectMenuButton(entry.getKey());
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }catch(Exception e){
-                    Log.e(TAG, "",e);
-                }
+                replaceByLastFragment();
             }
         });
     }
@@ -150,8 +126,33 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void replaceByLastFragment(){
+        Fragment fragment = null;
+        try{
+            for(Fragment f: getSupportFragmentManager().getFragments()){
+                if(f != null){
+                    if(f.isVisible()){
+                        fragment = f;
+                        break;
+                    }
+                }
+            }
+            if(fragment != null){
+                for(Map.Entry<ImageButton, List<Class<? extends Fragment>>> entry: map.entrySet()){
+                    for(Class<?> clazz: entry.getValue()){
+                        if(clazz.equals(fragment.getClass())){
+                            selectMenuButton(entry.getKey());
+                            break;
+                        }
+                    }
+                }
+            }
+        }catch(Exception e){
+            Log.e(TAG, "",e);
+        }
+    }
 
-    private void replaceFragment(ImageButton button){
+    public void replaceFragment(ImageButton button){
         replaceFragment(button, null);
     }
 
@@ -291,6 +292,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         registerReceiver(broadcastReceiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopService(new Intent(this,BeaconScannerService.class));
+        stopService(new Intent(this,BeaconConnectionService.class));
     }
 
     @Override

@@ -12,29 +12,32 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/buttonsLayout">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/close"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="25dp"
-                android:textColor="@color/letterGrey"
-                android:gravity="center"
-                android:layout_marginBottom="20dp"/>
+                android:textSize="15dp"
+                android:textColor="@color/colorSelectionBlue"
+                android:text="@string/close"
+                android:layout_alignParentRight="true"
+                android:background="@null"/>
 
             <com.a60circuits.foundbeacons.JustifyTextView
                 android:id="@+id/text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/close"
+                android:layout_marginTop="20dp"
                 android:textSize="15dp"
                 android:textColor="@color/letterGrey"
                 android:gravity="center"/>
 
-        </LinearLayout>
+        </RelativeLayout>
     </ScrollView>
 
 
