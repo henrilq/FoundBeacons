@@ -40,7 +40,7 @@ public class SettingsTextFragment extends Fragment{
             textView = (JustifyTextView) view.findViewById(R.id.text);
 
             closeButton.setTypeface(ResourcesUtils.getTypeFace(getContext(), R.string.font_brandon_bld));
-            textView.setTypeface(ResourcesUtils.getTypeFace(getContext(), R.string.font_brandon_bld));
+            textView.setTypeface(ResourcesUtils.getTypeFace(getContext(), R.string.font_brandon_med));
 
             closeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
