@@ -70,7 +70,7 @@ public class BeaconScannerService extends Service {
             beaconManager.setRangingListener(createConnectionRangingListener());
             broadcastIntent = new Intent();
             broadcastIntent.setAction(MainActivity.SCAN_RESULT);
-            sendStartBroadcastMessage(getResources().getString(R.string.scanning_beacon));
+            sendInfoBroadcastMessage(getResources().getString(R.string.scanning_beacon));
         }else if(isDetectionMode){
             broadcastIntent = new Intent();
             broadcastIntent.setAction(DetectionFragment.DETECTION_RESULT);
@@ -111,6 +111,7 @@ public class BeaconScannerService extends Service {
                         if(rssi < MAX_RSSI){
                             stopRanging();
                             BeaconScannerService.this.beacon = nearestBeacon;
+                            sendInfoBroadcastMessage(getResources().getString(R.string.connecting_beacon));
                             connect();
                         }
                     }
@@ -239,7 +240,7 @@ public class BeaconScannerService extends Service {
         sendBroadcast(broadcastIntent);
     }
 
-    private void sendStartBroadcastMessage(String message){
+    private void sendInfoBroadcastMessage(String message){
         broadcastIntent.putExtra(MainActivity.SERVICE_STOP, "");
         broadcastIntent.putExtra(MainActivity.SERVICE_INFO, message);
         sendBroadcast(broadcastIntent);

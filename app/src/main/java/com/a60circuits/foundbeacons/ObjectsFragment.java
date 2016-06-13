@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
@@ -44,6 +45,7 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
     private Handler handler;
     private TextView text;
     private GifImageView loader;
+    private RelativeLayout textLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,13 +64,14 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
         beaconsView = (RecyclerView) view.findViewById(R.id.beaconsView);
         beaconsView.setHasFixedSize(true);
         loader = (GifImageView)view.findViewById(R.id.loader);
+        textLayout = (RelativeLayout) view.findViewById(R.id.textLayout);
         Typeface face = Typeface.createFromAsset(getActivity().getAssets(),getResources().getString(R.string.font_brandon_med));
         text = (TextView)view.findViewById(R.id.text);
         text.setTypeface(face);
 
         if(CacheVariable.getBoolean(MainActivity.SCANNING)){
             loader.setVisibility(View.VISIBLE);
-            text.setVisibility(View.INVISIBLE);
+            textLayout.setVisibility(View.INVISIBLE);
         }else{
             loader.setVisibility(View.INVISIBLE);
         }
@@ -101,7 +104,7 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                text.setVisibility(View.INVISIBLE);
+                textLayout.setVisibility(View.INVISIBLE);
             }
         });
         addBeacons(newBeacons);
