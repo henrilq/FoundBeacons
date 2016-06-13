@@ -18,16 +18,17 @@ public class AppTourActivity extends CustomAppTour{
 
     @Override
     public void init(@Nullable Bundle savedInstanceState) {
-        int textColor = ContextCompat.getColor(getApplicationContext(),R.color.colorBorderBlue);
+        int dotColor = ContextCompat.getColor(getApplicationContext(),R.color.colorBorderBlue);
+        int textColor = ContextCompat.getColor(getApplicationContext(),R.color.unselectedButtonColor);
         int customSlideColor = ContextCompat.getColor(getApplicationContext(),R.color.colorPrimary);
         ImageButton nextSlideImageButton = (ImageButton) findViewById(com.vlonjatg.android.apptourlibrary.R.id.nextSlideImageButton);
-        nextSlideImageButton.setColorFilter(textColor);
+        nextSlideImageButton.setColorFilter(dotColor);
 
         setDoneText("Démarrer");
         hideSkip();
         hideNext();
 
-        setActiveDotColor(textColor);
+        setActiveDotColor(dotColor);
         //Custom slide
         addSlide(createSlide(R.drawable.tuto_1), customSlideColor);
         addSlide(createSlide(R.drawable.tuto_2), customSlideColor);
