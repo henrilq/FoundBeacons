@@ -11,35 +11,45 @@
         android:layout_height="match_parent" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+
+        android:background="@color/colorLightBlue"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true">
-        <ImageButton
-            android:id="@+id/detectionButton"
-            android:layout_width="0dp"
-            android:layout_weight=".45"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            android:src="@drawable/detection_button"
-            android:scaleType="fitXY"
-            android:adjustViewBounds="true"
-            android:background="@null"/>
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp">
 
-        <ImageButton
-            android:id="@+id/lastPositionButton"
-            android:layout_width="0dp"
-            android:layout_weight=".45"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            android:src="@drawable/last_position"
-            android:scaleType="fitXY"
-            android:adjustViewBounds="true"
-            android:background="@null"/>
+            <ImageButton
+                android:id="@+id/detectionButton"
+                android:layout_width="0dp"
+                android:layout_weight=".45"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/detection_button"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:background="@null"/>
+
+            <ImageButton
+                android:id="@+id/lastPositionButton"
+                android:layout_width="0dp"
+                android:layout_weight=".45"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/last_position"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:background="@null"/>
+        </LinearLayout>
     </LinearLayout>
 
 
