@@ -17,7 +17,13 @@ import com.jaalee.sdk.BeaconManager;
 import com.jaalee.sdk.RangingListener;
 import com.jaalee.sdk.Region;
 import com.jaalee.sdk.ServiceReadyCallback;
+import com.jaalee.sdk.connection.BeaconCharacteristics;
+import com.jaalee.sdk.connection.BeaconConnection;
+import com.jaalee.sdk.connection.ConnectionCallback;
+import com.jaalee.sdk.connection.JaaleeDefine;
+import com.jaalee.sdk.connection.WriteCallback;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,7 +33,9 @@ public class BeaconScannerService extends Service {
 
     public static final String TAG = "BeaconScannerService";
 
-    public static final long TIME_OUT = 20000;
+    public static final long TIME_OUT = 30000;
+
+    public static final long MAX_RSSI = 60;
 
     private static final Region ALL_BEACONS_REGION = new Region("rid", null, null, null);
 
@@ -39,11 +47,17 @@ public class BeaconScannerService extends Service {
 
     private BeaconManager beaconManager;
 
+    private BeaconConnection connection;
+
     private Intent broadcastIntent;
 
     private Handler handler = new Handler();
 
+    private Beacon beacon;
+
     private long startTime;
+    private int connectionNb;
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -69,6 +83,7 @@ public class BeaconScannerService extends Service {
         return Service.START_NOT_STICKY;
     }
 
+
     private RangingListener createConnectionRangingListener(){
         return new RangingListener() {
             @Override
@@ -79,16 +94,24 @@ public class BeaconScannerService extends Service {
                     stopRanging();
                     sendStopBroadcastMessage(getResources().getString(R.string.scanning_time_out));
                 }else{
+                    Beacon nearestBeacon = null;
                     for (final Beacon beacon: beacons){
+                        if(nearestBeacon == null){
+                            nearestBeacon = beacon;
+                        }
                         int rssi = Math.abs(beacon.getRssi());
-                        Log.i(TAG, " BEACON DETECTED "+beacon.getMacAddress()+"  "+rssi);
+                        Log.i(TAG, " BEACON DETECTED "+beacon.getMacAddress()+"  "+beacon.getName()+"   "+rssi);
                         Beacon found = BeaconCacheManager.getInstance().findInCacheByMacAddress(beacon);
-                        if(found == null && rssi < 60){
+                        if(found == null && rssi < Math.abs(nearestBeacon.getRssi())){
+                            nearestBeacon = beacon;
+                        }
+                    }
+                    if(nearestBeacon != null){
+                        int rssi = Math.abs(nearestBeacon.getRssi());
+                        if(rssi < MAX_RSSI){
                             stopRanging();
-                            Intent i = new Intent(getApplicationContext(),BeaconConnectionService.class);
-                            i.putExtra(BeaconConnectionService.BEACON_ARGUMENT, beacon);
-                            getApplicationContext().startService(i);
-                            break;
+                            BeaconScannerService.this.beacon = nearestBeacon;
+                            connect();
                         }
                     }
                 }
@@ -113,6 +136,41 @@ public class BeaconScannerService extends Service {
         };
     }
 
+    private ConnectionCallback createConnectionCallback() {
+        return new ConnectionCallback() {
+            @Override
+            public void onAuthenticated(BeaconCharacteristics paramBeaconCharacteristics) {
+                Log.i(TAG, " CONNECTION SUCCESS  " + connection.isConnected());
+                connection.writeBeaconState(JaaleeDefine.JAALEE_BEACON_STATE_ENABLE, new WriteCallback() {
+                    @Override
+                    public void onSuccess() {
+                        Log.i(TAG, " STATE CHANGED WITH SUCCES");
+                        saveBeacon();
+                    }
+
+                    @Override
+                    public void onError() {
+                        Log.i(TAG, " STATE CHANGE FAILURE");
+                        reconnect(getResources().getString(R.string.scanned_beacon_activation_error));
+                    }
+                });
+            }
+
+            @Override
+            public void onAuthenticationError() {
+                Log.i(TAG, " CONNECTION FAILED");
+                reconnect(getResources().getString(R.string.scanned_beacon_connection_error));
+            }
+
+            @Override
+            public void onDisconnected() {
+                Log.i(TAG, " DISCONNECTED");
+                reconnect(getResources().getString(R.string.scanned_beacon_connection_error));
+            }
+        };
+    }
+
+
     private void connectToService() {
         beaconManager.connect(new ServiceReadyCallback() {
             @Override
@@ -134,6 +192,47 @@ public class BeaconScannerService extends Service {
         }
     }
 
+    private void connect(){
+        if(connection != null){
+            connection.disconnect();
+        }
+        connectionNb++;
+        Log.i(TAG, " START CONNECTION TO " + beacon.getMacAddress());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                connection = new BeaconConnection(getApplicationContext(), beacon, createConnectionCallback());
+                connection.connectBeaconWithPassword("666666");
+            }
+        });
+
+    }
+
+    private void reconnect(String errorMessage){
+        boolean stopped = stopOutOfTime();
+        if(! stopped){
+            if(connectionNb > 3){
+                sendStopBroadcastMessage(errorMessage);
+                stopSelf();
+            }else{
+                Log.i(TAG, " NEXT TRY " + connectionNb);
+                connect();
+            }
+        }
+    }
+
+    private boolean stopOutOfTime(){
+        long time = System.currentTimeMillis() - startTime;
+        Log.i(TAG, " TIME "+time);
+        boolean stopped = false;
+        if(time > TIME_OUT){
+            stopped = true;
+            sendStopBroadcastMessage(getResources().getString(R.string.scanning_time_out));
+            stopSelf();
+        }
+        return stopped;
+    }
+
     private void sendStopBroadcastMessage(String message){
         broadcastIntent.putExtra(MainActivity.SERVICE_INFO, "");
         broadcastIntent.putExtra(MainActivity.SERVICE_STOP, message);
@@ -146,6 +245,24 @@ public class BeaconScannerService extends Service {
         sendBroadcast(broadcastIntent);
     }
 
+    private void saveBeacon(){
+        Log.i(TAG," SAVING BEACON");
+        beacon.setDate(new Date());
+        Beacon found = BeaconCacheManager.getInstance().findInCacheByMacAddress(beacon);
+        String message = null;
+        if(found == null){
+            beacon.setName("");
+            boolean success = BeaconCacheManager.getInstance().save(beacon);
+            if(success){
+                message = getResources().getString(R.string.scanned_beacon_saved);
+            }else{
+                message = getResources().getString(R.string.scanned_beacon_saving_technical_error);
+            }
+        }
+        sendStopBroadcastMessage(message);
+        stopSelf();
+    }
+
     @Override
     public void onDestroy() {
         Log.i(TAG, " DESTROY");
@@ -153,6 +270,9 @@ public class BeaconScannerService extends Service {
             stopRanging();
         }
         beaconManager.disconnect();
+        if(connection != null){
+            connection.disconnect();
+        }
         super.onDestroy();
     }
 
