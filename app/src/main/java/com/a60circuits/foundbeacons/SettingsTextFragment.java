@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.a60circuits.foundbeacons.utils.LayoutUtils;
 import com.a60circuits.foundbeacons.utils.ResourcesUtils;
 
 /**
@@ -36,6 +37,7 @@ public class SettingsTextFragment extends Fragment{
             boolean isLegalMention = args.getBoolean(LEGAL_MENTION);
             legalButton = (ImageButton) view.findViewById(R.id.legal_button);
             faqButton = (ImageButton) view.findViewById(R.id.faq_button);
+            LayoutUtils.overLapView(legalButton,faqButton,true);
             closeButton = (Button) view.findViewById(R.id.close);
             textView = (TextView) view.findViewById(R.id.text);
             textView.setTypeface(ResourcesUtils.getTypeFace(getContext(), R.string.font_brandon_med));
@@ -74,11 +76,15 @@ public class SettingsTextFragment extends Fragment{
         legalButton.setColorFilter(null);
         faqButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
         textView.setText(getResources().getString(R.string.settings_faq));
+        legalButton.setZ(0);
+        faqButton.setZ(1);
     }
 
     private void switchToLegalMention(){
         faqButton.setColorFilter(null);
         legalButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
         textView.setText(R.string.settings_legal_mention_text);
+        legalButton.setZ(1);
+        faqButton.setZ(0);
     }
 }

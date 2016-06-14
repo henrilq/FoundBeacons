@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.a60circuits.foundbeacons.service.NotificationServiceManager;
+import com.a60circuits.foundbeacons.utils.LayoutUtils;
 import com.a60circuits.foundbeacons.utils.ResourcesUtils;
 
 /**
@@ -43,7 +44,7 @@ public class SettingsFragment extends Fragment{
         notificationSwitch = (Switch) view.findViewById(R.id.notification_switch);
         legalButton = (ImageButton) view.findViewById(R.id.legal_button);
         faqButton = (ImageButton) view.findViewById(R.id.faq_button);
-
+        LayoutUtils.overLapView(legalButton,faqButton,true);
         legalButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -22,12 +22,12 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.a60circuits.foundbeacons.service.BeaconScannerService;
+import com.a60circuits.foundbeacons.utils.LayoutUtils;
 import com.a60circuits.foundbeacons.utils.LocationUtils;
 import com.jaalee.sdk.Beacon;
 
@@ -72,7 +72,7 @@ public class DetectionFragment extends ReplacerFragment {
 
         final ImageButton detectionButton = (ImageButton) view.findViewById(R.id.detectionButton);
         final ImageButton lastPositionButton = (ImageButton) view.findViewById(R.id.lastPositionButton);
-        final RelativeLayout progressLayout = (RelativeLayout) view.findViewById(R.id.circleProgressLayout);
+        LayoutUtils.overLapView(detectionButton,lastPositionButton,false);
         Typeface face = Typeface.createFromAsset(getActivity().getAssets(),getResources().getString(R.string.font_brandon_med));
 
         handler.post(new Runnable() {

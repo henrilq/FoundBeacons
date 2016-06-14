@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
+import com.a60circuits.foundbeacons.utils.LayoutUtils;
 import com.a60circuits.foundbeacons.utils.LocationUtils;
 import com.a60circuits.foundbeacons.utils.PermissionUtils;
 import com.a60circuits.foundbeacons.utils.ResourcesUtils;
@@ -60,6 +61,7 @@ public class GMapFragment extends ReplacerFragment implements GoogleMap.OnMarker
         mMapView = (MapView) v.findViewById(R.id.mapView);
         detectionButton = (ImageButton) v.findViewById(R.id.detectionButton);
         lastPositionButton = (ImageButton) v.findViewById(R.id.lastPositionButton);
+        LayoutUtils.overLapView(detectionButton,lastPositionButton,true);
         detectionButton.setColorFilter(null);
         lastPositionButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
 
