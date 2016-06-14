@@ -27,7 +27,7 @@
                 android:layout_alignParentRight="true"
                 android:background="@null"/>
 
-            <com.a60circuits.foundbeacons.JustifyTextView
+            <TextView
                 android:id="@+id/text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
                 android:layout_marginTop="20dp"
                 android:textSize="15dp"
                 android:textColor="@color/letterGrey"
-                android:gravity="center"/>
+                android:textAlignment="textStart"/>
 
         </RelativeLayout>
     </ScrollView>

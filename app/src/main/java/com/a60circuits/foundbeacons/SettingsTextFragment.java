@@ -24,7 +24,7 @@ public class SettingsTextFragment extends Fragment{
     private ImageButton legalButton;
     private ImageButton faqButton;
     private Button closeButton;
-    private JustifyTextView textView;
+    private TextView textView;
 
     @Nullable
     @Override
@@ -37,10 +37,9 @@ public class SettingsTextFragment extends Fragment{
             legalButton = (ImageButton) view.findViewById(R.id.legal_button);
             faqButton = (ImageButton) view.findViewById(R.id.faq_button);
             closeButton = (Button) view.findViewById(R.id.close);
-            textView = (JustifyTextView) view.findViewById(R.id.text);
-
-            closeButton.setTypeface(ResourcesUtils.getTypeFace(getContext(), R.string.font_brandon_bld));
+            textView = (TextView) view.findViewById(R.id.text);
             textView.setTypeface(ResourcesUtils.getTypeFace(getContext(), R.string.font_brandon_med));
+            closeButton.setTypeface(ResourcesUtils.getTypeFace(getContext(), R.string.font_brandon_bld));
 
             closeButton.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -32,25 +32,25 @@
     <string name="settings_faq">
         COMMENT UTILISER FOUND
 \n\n
-Activation
-\n
+1. Activation
+\n\t\t\t\t\t
 1. Téléchargez l\'application Found.
-\n
+\n\t\t\t\t\t
 2. Ouvrez l\'application sur votre téléphone.
-\n
+\n\t\t\t\t\t
 3. Suivez les instructions du tutoriel, puis activez le Bluetooth ainsi que la
 localisation GPS de votre téléphone afin de pouvoir repérer vos accessoires Found.
-\n
+\n\t\t\t\t\t
 4. Approchez votre smartphone de votre accessoire.
-\n
+\n\t\t\t\t\t
 5. Appuyez pendant 5 secondes sur la puce de votre accessoire Found
 afin de le rendre détectable et de pouvoir l\'associer à votre téléphone.
-\n
+\n\t\t\t\t\t
 6. Donnez le nom de votre choix à votre foulard ou à votre chapeau.
-\n
+\n\t\t\t\t\t
 7. Souriez ! Désormais votre accessoire Found est impossible à égarer.
 \n\n
-Retrouver son accessoire
+2. Retrouver son accessoire
 \n
 Votre accessoire Found est égaré. Que faire ? Suivez ces conseils pour retrouver votre
 chapeau ou votre foulard.
@@ -69,7 +69,7 @@ l\'application ouverte a localisé votre accessoire Found. Il suffit d\'ouvrir v
 l\'application et une fois sur la page de localisation, appuyez sur le bouton « dernière position
 » pour obtenir l\'emplacement approximatif sur une carte.
 \n\n
-Dépannage technique
+3. Dépannage technique
 \n
 Malgré tout le soin que nous avons apporté à la fabrication de nos accessoires Found, nous
 sommes désolés si vous rencontrez des problèmes techniques.
