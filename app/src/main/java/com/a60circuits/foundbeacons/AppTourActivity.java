@@ -5,8 +5,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
 import android.widget.ImageButton;
 
+import com.a60circuits.foundbeacons.service.NotificationServiceManager;
 import com.vlonjatg.android.apptourlibrary.AppTour;
 
 /**
@@ -72,6 +74,11 @@ public class AppTourActivity extends CustomAppTour{
     }
 
     private void startMainActivity(){
+        final SharedPreferences settings = getSharedPreferences(MainActivity.PREF_FILE, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(SettingsFragment.GPS_ENABLED, true);
+        editor.commit();
+
         Intent intent = new Intent(AppTourActivity.this, MainActivity.class);
         Bundle args = new Bundle();
         args.putBoolean(MainActivity.START_SCAN, true);

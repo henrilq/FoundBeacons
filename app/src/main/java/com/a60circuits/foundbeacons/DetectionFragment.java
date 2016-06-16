@@ -118,7 +118,7 @@ public class DetectionFragment extends ReplacerFragment {
             @Override
             public void onClick(View v) {
                 if(beacon == null){
-                    Toast.makeText(getActivity().getBaseContext(),getResources().getString(R.string.no_beacon_saved), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity().getBaseContext(),getResources().getString(R.string.no_beacon_saved), Toast.LENGTH_SHORT).show();
                 }else if(!detectionStarted){
                     textView.setText("");
                     loadingView.setVisibility(View.VISIBLE);
@@ -148,8 +148,8 @@ public class DetectionFragment extends ReplacerFragment {
                 if(location != null){
                     beacon.setLatitude(location.getLatitude());
                     beacon.setLongitude(location.getLongitude());
+                    beacon.setDate(new Date());
                 }
-                beacon.setDate(new Date());
                 BeaconCacheManager.getInstance().update(beacon);
             }
         };
@@ -228,8 +228,9 @@ public class DetectionFragment extends ReplacerFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        getActivity().unregisterReceiver(broadcastReceiver);
-        getActivity().stopService(new Intent(getActivity(),BeaconScannerService.class));
+        MainActivity mainActivity = (MainActivity)getActivity();
+        mainActivity.unregisterReceiver(broadcastReceiver);
+        mainActivity.stopScan();
     }
 
 }

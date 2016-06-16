@@ -1,6 +1,7 @@
 package com.a60circuits.foundbeacons;
 
 import android.Manifest;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.a60circuits.foundbeacons.utils.LayoutUtils;
@@ -58,78 +60,99 @@ public class GMapFragment extends ReplacerFragment implements GoogleMap.OnMarker
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.map_fragment, container,
                 false);
-        mMapView = (MapView) v.findViewById(R.id.mapView);
-        detectionButton = (ImageButton) v.findViewById(R.id.detectionButton);
-        lastPositionButton = (ImageButton) v.findViewById(R.id.lastPositionButton);
-        LayoutUtils.overLapView(detectionButton,lastPositionButton,true);
-        detectionButton.setColorFilter(null);
-        lastPositionButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
 
-        detectionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DetectionFragment detectionFragment = new DetectionFragment();
-                if(beacon != null){
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable(DetectionFragment.BEACON_ARGUMENT, beacon);
-                    detectionFragment.setArguments(bundle);
-                }
-                GMapFragment.super.replaceFragment(detectionFragment);
+        List<Beacon> beacons = BeaconCacheManager.getInstance().getData();
+        if(beacons != null && ! beacons.isEmpty()){
+            if(getArguments() != null){
+                beacon = (Beacon)getArguments().get(BEACON_ARGUMENT);
+            }else{
+                beacon = BeaconCacheManager.getInstance().findInCacheLastDetectedBeacon();
             }
-        });
-
-        mMapView.onCreate(savedInstanceState);
-        mMapView.onResume();// needed to get the map to display immediately
-        try {
-            MapsInitializer.initialize(getActivity().getApplicationContext());
-            googleMap = mMapView.getMap();
-            if (PermissionUtils.checkPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)){
-                googleMap.setMyLocationEnabled(true);
-            }
-            googleMap.setOnMarkerClickListener(this);
-            googleMap.setPadding(0, 0, 0, 200);//Move up itinerary button
-            googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-                @Override
-                public View getInfoWindow(Marker marker) {
-                    View view = getLayoutInflater(new Bundle()).inflate(R.layout.map_beacon_info, null);
-                    TextView textView = (TextView) view.findViewById(R.id.text);
-                    textView.setText(marker.getTitle()+"\n"+marker.getSnippet());
-                    Typeface face = ResourcesUtils.getTypeFace(getActivity(),R.string.font_brandon_bld);
-                    textView.setTypeface(face);
-                    return view;
+        }
+        final SharedPreferences settings = getActivity().getSharedPreferences(MainActivity.PREF_FILE, 0);
+        boolean gpsEnabled = settings.getBoolean(SettingsFragment.GPS_ENABLED, false);
+        if(!gpsEnabled){
+            if(getArguments() != null){
+                if (getArguments().get(BEACON_ARGUMENT) != null){
+                    Toast.makeText(getActivity().getBaseContext(),getResources().getString(R.string.gps_disabled), Toast.LENGTH_SHORT).show();
                 }
+            }else if(beacon == null){
+                Toast.makeText(getActivity().getBaseContext(),getResources().getString(R.string.no_beacon_saved), Toast.LENGTH_SHORT).show();
+            }
+            goToDetectionScreen();
+        }else{
+            mMapView = (MapView) v.findViewById(R.id.mapView);
+            detectionButton = (ImageButton) v.findViewById(R.id.detectionButton);
+            lastPositionButton = (ImageButton) v.findViewById(R.id.lastPositionButton);
+            LayoutUtils.overLapView(detectionButton,lastPositionButton,true);
+            detectionButton.setColorFilter(null);
+            lastPositionButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
 
+            detectionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public View getInfoContents(Marker marker) {
-                    return null;
+                public void onClick(View v) {
+                    goToDetectionScreen();
                 }
             });
 
-            LatLng myPosition = null;
-            Location location = LocationUtils.getLastKnownLocation(getActivity());
-            if(location != null){
-                myPosition = new LatLng(location.getLatitude(), location.getLongitude());
-            }
-            List<Beacon> beacons = BeaconCacheManager.getInstance().getData();
-            if(beacons != null && ! beacons.isEmpty()){
-                if(getArguments() != null){
-                    beacon = (Beacon)getArguments().get(BEACON_ARGUMENT);
-                }else{
-                    beacon = BeaconCacheManager.getInstance().findInCacheLastDetectedBeacon();
+            mMapView.onCreate(savedInstanceState);
+            mMapView.onResume();// needed to get the map to display immediately
+            try {
+                MapsInitializer.initialize(getActivity().getApplicationContext());
+                googleMap = mMapView.getMap();
+                if (PermissionUtils.checkPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)){
+                    googleMap.setMyLocationEnabled(true);
                 }
+                googleMap.setOnMarkerClickListener(this);
+                googleMap.setPadding(0, 0, 0, 200);//Move up itinerary button
+                googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                    @Override
+                    public View getInfoWindow(Marker marker) {
+                        View view = getLayoutInflater(new Bundle()).inflate(R.layout.map_beacon_info, null);
+                        TextView textView = (TextView) view.findViewById(R.id.text);
+                        textView.setText(marker.getTitle()+"\n"+marker.getSnippet());
+                        Typeface face = ResourcesUtils.getTypeFace(getActivity(),R.string.font_brandon_bld);
+                        textView.setTypeface(face);
+                        return view;
+                    }
+
+                    @Override
+                    public View getInfoContents(Marker marker) {
+                        return null;
+                    }
+                });
+
+                LatLng myPosition = null;
+                Location location = LocationUtils.getLastKnownLocation(getActivity());
+                if(location != null){
+                    myPosition = new LatLng(location.getLatitude(), location.getLongitude());
+                }
+
                 if(beacon != null){
                     googleMap.addMarker(createMarker(beacon));
                     myPosition = new LatLng(beacon.getLatitude(), beacon.getLongitude());
+                }else{
+                    Toast.makeText(getActivity().getBaseContext(),getResources().getString(R.string.no_beacon_saved), Toast.LENGTH_SHORT).show();
                 }
+                if(myPosition != null){
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
+                    googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                }
+            } catch (Exception e) {
+                Log.e("","",e);
             }
-            if(myPosition != null){
-                googleMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
-                googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-            }
-        } catch (Exception e) {
-            Log.e("","",e);
         }
         return v;
+    }
+
+    private void goToDetectionScreen(){
+        DetectionFragment detectionFragment = new DetectionFragment();
+        if(beacon != null){
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(DetectionFragment.BEACON_ARGUMENT, beacon);
+            detectionFragment.setArguments(bundle);
+        }
+        GMapFragment.super.replaceFragment(detectionFragment);
     }
 
     private MarkerOptions createMarker(Beacon beacon){

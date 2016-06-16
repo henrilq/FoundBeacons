@@ -24,6 +24,7 @@ import com.a60circuits.foundbeacons.utils.ResourcesUtils;
  */
 public class SettingsFragment extends Fragment{
 
+    public static final String GPS_ENABLED = "gpsEnabled";
     public static final String NOTIFICATION_ENABLED = "notificationEnabled";
 
     private Switch gpsSwitch;
@@ -77,15 +78,8 @@ public class SettingsFragment extends Fragment{
             }
         });
 
-        gpsSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(SettingsFragment.this.getContext(),getResources().getString(R.string.gpg_mandatory), Toast.LENGTH_SHORT).show();
-                gpsSwitch.setChecked(true);
-            }
-        });
         TextView paramText = (TextView) view.findViewById(R.id.parameter_text);
-        TextView gpsText = (TextView) view.findViewById(R.id.gps_text);
+        final TextView gpsText = (TextView) view.findViewById(R.id.gps_text);
         TextView notificationText = (TextView) view.findViewById(R.id.notification_text);
         TextView detailText = (TextView) view.findViewById(R.id.detail_text);
         TextView detail1 = (TextView) view.findViewById(R.id.detail_1);
@@ -103,18 +97,30 @@ public class SettingsFragment extends Fragment{
         boolean notificationEnabled = settings.getBoolean(NOTIFICATION_ENABLED, false);
         notificationSwitch.setChecked(notificationEnabled);
 
+        boolean gpsEnabled = settings.getBoolean(GPS_ENABLED, false);
+        gpsSwitch.setChecked(gpsEnabled);
+
         notificationSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences.Editor editor = settings.edit();
-                if(notificationSwitch.isChecked()){
-                    NotificationServiceManager.getInstance().startNotificationService();
-                    editor.putBoolean(NOTIFICATION_ENABLED, true);
-                }else{
-                    NotificationServiceManager.getInstance().killNoficationService();
-                    editor.putBoolean(NOTIFICATION_ENABLED, false);
-                }
-                editor.commit();
+            SharedPreferences.Editor editor = settings.edit();
+            if(notificationSwitch.isChecked()){
+                NotificationServiceManager.getInstance().startNotificationService();
+                editor.putBoolean(NOTIFICATION_ENABLED, true);
+            }else{
+                NotificationServiceManager.getInstance().killNoficationService();
+                editor.putBoolean(NOTIFICATION_ENABLED, false);
+            }
+            editor.commit();
+            }
+        });
+
+        gpsSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putBoolean(GPS_ENABLED, gpsSwitch.isChecked());
+            editor.commit();
             }
         });
 

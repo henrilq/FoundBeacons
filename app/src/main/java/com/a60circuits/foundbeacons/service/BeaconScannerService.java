@@ -128,6 +128,7 @@ public class BeaconScannerService extends Service {
                 String macAddress = beacon.getMacAddress();
                 if(macAddress != null){
                     for (Beacon b: beacons){
+                        Log.i(TAG, " BEACON DETECTED "+b.getMacAddress()+"  "+b.getName()+"   "+b.getRssi());
                         if(macAddress.equals(b.getMacAddress())){
                             broadcastIntent.putExtra(TAG, b.getRssi());
                             sendBroadcast(broadcastIntent);

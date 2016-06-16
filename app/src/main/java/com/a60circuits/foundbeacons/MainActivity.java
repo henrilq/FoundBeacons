@@ -285,8 +285,7 @@ public class MainActivity extends AppCompatActivity {
                         stop = true;
                     }
                     if(stop || success){
-                        CacheVariable.put(SCANNING, false);
-                        scanButton.setColorFilter(null);
+                        stopScan();
                         //reload objects fragment
                         Bundle bundle = new Bundle();
                         bundle.putBoolean(ObjectsFragment.SCANNING, false);
@@ -312,6 +311,12 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
+    public void stopScan(){
+        scanButton.setColorFilter(null);
+        CacheVariable.put(SCANNING, false);
+        stopService(new Intent(this,BeaconScannerService.class));
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -321,16 +326,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        stopService(new Intent(this,BeaconScannerService.class));
-        stopService(new Intent(this,BeaconConnectionService.class));
+        stopScan();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(broadcastReceiver);
-        stopService(new Intent(this,BeaconScannerService.class));
-        stopService(new Intent(this,BeaconConnectionService.class));
+        stopScan();
         BeaconCacheManager.getInstance().deleteObservers();
         CacheVariable.put(BUTTON_POSITION, buttonPosition);
     }
