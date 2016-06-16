@@ -72,7 +72,10 @@ public class AppTourActivity extends CustomAppTour{
     }
 
     private void startMainActivity(){
-        Intent i = new Intent(AppTourActivity.this, MainActivity.class);
-        startActivity(i);
+        Intent intent = new Intent(AppTourActivity.this, MainActivity.class);
+        Bundle args = new Bundle();
+        args.putBoolean(MainActivity.START_SCAN, true);
+        intent.putExtras(args);
+        startActivity(intent);
     }
 }

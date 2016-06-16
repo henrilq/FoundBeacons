@@ -42,9 +42,10 @@ public class MainActivity extends AppCompatActivity {
     public static final String BUTTON_POSITION = "buttonPosition";
     public static final String SCAN_RESULT = "com.a60circuits.foundbeacons.result";
     public static final String SERVICE_STOP = "Service_Stop";
-    public static final String SERVICE_INFO = "Service_info";
-    public static final String SERVICE_SUCCESS = "Service_success";
-    public static final String SCANNING = "scanning";
+    public static final String SERVICE_INFO = "Service_Info";
+    public static final String SERVICE_SUCCESS = "Service_Success";
+    public static final String SCANNING = "Scanning";
+    public static final String START_SCAN = "Start_Scan";
 
     private Map<ImageButton, List<Class<? extends Fragment>>> map;
     private ImageButton selectedButton;
@@ -94,6 +95,13 @@ public class MainActivity extends AppCompatActivity {
 
         //starts app on beacon list fragment
         replaceFragment(objectsButton);
+
+        Bundle args = getIntent().getExtras();
+        if(args != null){
+            if(args.getBoolean(START_SCAN)){
+                startScan();
+            }
+        }
     }
 
     public void initListeners(){
@@ -103,14 +111,7 @@ public class MainActivity extends AppCompatActivity {
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(! CacheVariable.getBoolean(SCANNING)){
-                    CacheVariable.put(SCANNING, true);
-                    replaceFragment(objectsButton, null, true);
-                    scanButton.setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.colorSelectionBlue));
-                    Intent i = new Intent(MainActivity.this,BeaconScannerService.class);
-                    i.putExtra(BeaconScannerService.CONNECTION_MODE, true);
-                    MainActivity.this.startService(i);
-                }
+                startScan();
             }
         });
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -119,6 +120,17 @@ public class MainActivity extends AppCompatActivity {
                 replaceByLastFragment();
             }
         });
+    }
+
+    private void startScan(){
+        if(! CacheVariable.getBoolean(SCANNING)){
+            CacheVariable.put(SCANNING, true);
+            replaceFragment(objectsButton, null, true);
+            scanButton.setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.colorSelectionBlue));
+            Intent i = new Intent(MainActivity.this,BeaconScannerService.class);
+            i.putExtra(BeaconScannerService.CONNECTION_MODE, true);
+            MainActivity.this.startService(i);
+        }
     }
 
     @Override
