@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String SCAN_RESULT = "com.a60circuits.foundbeacons.result";
     public static final String SERVICE_STOP = "Service_Stop";
     public static final String SERVICE_INFO = "Service_info";
+    public static final String SERVICE_SUCCESS = "Service_success";
     public static final String SCANNING = "scanning";
 
     private Map<ImageButton, List<Class<? extends Fragment>>> map;
@@ -258,17 +259,28 @@ public class MainActivity extends AppCompatActivity {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                boolean stop = false;
+                boolean success = false;
                 String message = intent.getStringExtra(SERVICE_INFO);
                 if(message == null || message.isEmpty()){
                     message = intent.getStringExtra(SERVICE_STOP);
-                    if(message != null && ! message.isEmpty()){
+                    if(message == null || message.isEmpty()){
+                        message = intent.getStringExtra(SERVICE_SUCCESS);
+                        if(message != null && ! message.isEmpty()){
+                            success = true;
+                        }
+                    }else{
+                        stop = true;
+                    }
+                    if(stop || success){
                         CacheVariable.put(SCANNING, false);
                         scanButton.setColorFilter(null);
                         //reload objects fragment
                         Bundle bundle = new Bundle();
                         bundle.putBoolean(ObjectsFragment.SCANNING, false);
-                        replaceFragment(objectsButton, bundle, true);
+                        replaceFragment(objectsButton, bundle, stop);
                     }
+
                 }
                 if(message != null && ! message.isEmpty()){
                     Toast.makeText(MainActivity.this.getBaseContext(),message, Toast.LENGTH_SHORT).show();

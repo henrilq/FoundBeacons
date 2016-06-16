@@ -33,7 +33,6 @@ import pl.droidsonroids.gif.GifImageView;
 public class ObjectsFragment extends ReplacerFragment implements Observer{
 
     private static final Region ALL_BEACONS_REGION = new Region("rid", null, null, null);
-
     public final static String SCANNING = "Scanning";
 
     private RecyclerView beaconsView;
@@ -46,6 +45,7 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
     private TextView text;
     private GifImageView loader;
     private RelativeLayout textLayout;
+    private boolean scanning;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,13 +69,11 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
         text = (TextView)view.findViewById(R.id.text);
         text.setTypeface(face);
 
-        if(CacheVariable.getBoolean(MainActivity.SCANNING)){
-            loader.setVisibility(View.VISIBLE);
+        scanning = CacheVariable.getBoolean(MainActivity.SCANNING);
+        if(scanning){
             textLayout.setVisibility(View.INVISIBLE);
-        }else{
-            loader.setVisibility(View.INVISIBLE);
+            loader.setVisibility(View.VISIBLE);
         }
-
         beaconsView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override public void onItemClick(View view, int position) {
                 Beacon selectedBeacon = beacons.get(position);
@@ -93,18 +91,23 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
 
         List<Beacon> savedBeacons = BeaconCacheManager.getInstance().getData();
         if(savedBeacons != null && ! savedBeacons.isEmpty()){
-            setBeacons(savedBeacons);
+            setBeacons(savedBeacons, scanning);
         }
         return view;
     }
 
-    private void setBeacons(List<Beacon> newBeacons){
+    private void setBeacons(List<Beacon> newBeacons, final boolean scanning){
         beacons.clear();
         beaconsAddress.clear();
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 textLayout.setVisibility(View.INVISIBLE);
+                if(scanning){
+                    loader.setVisibility(View.VISIBLE);
+                }else{
+                    loader.setVisibility(View.INVISIBLE);
+                }
             }
         });
         addBeacons(newBeacons);
@@ -144,7 +147,7 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
 
     @Override
     public void update(Observable observable, Object data) {
-        setBeacons((List<Beacon>)data);
+        setBeacons((List<Beacon>)data, false);
     }
 }
 

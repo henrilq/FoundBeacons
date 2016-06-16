@@ -12,6 +12,7 @@ import com.a60circuits.foundbeacons.DetectionFragment;
 import com.a60circuits.foundbeacons.MainActivity;
 import com.a60circuits.foundbeacons.R;
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
+import com.a60circuits.foundbeacons.cache.CacheVariable;
 import com.jaalee.sdk.Beacon;
 import com.jaalee.sdk.BeaconManager;
 import com.jaalee.sdk.RangingListener;
@@ -236,12 +237,21 @@ public class BeaconScannerService extends Service {
 
     private void sendStopBroadcastMessage(String message){
         broadcastIntent.putExtra(MainActivity.SERVICE_INFO, "");
+        broadcastIntent.putExtra(MainActivity.SERVICE_SUCCESS, "");
         broadcastIntent.putExtra(MainActivity.SERVICE_STOP, message);
+        sendBroadcast(broadcastIntent);
+    }
+
+    private void sendSuccessBroadcastMessage(String message){
+        broadcastIntent.putExtra(MainActivity.SERVICE_INFO, "");
+        broadcastIntent.putExtra(MainActivity.SERVICE_STOP, "");
+        broadcastIntent.putExtra(MainActivity.SERVICE_SUCCESS, message);
         sendBroadcast(broadcastIntent);
     }
 
     private void sendInfoBroadcastMessage(String message){
         broadcastIntent.putExtra(MainActivity.SERVICE_STOP, "");
+        broadcastIntent.putExtra(MainActivity.SERVICE_SUCCESS, "");
         broadcastIntent.putExtra(MainActivity.SERVICE_INFO, message);
         sendBroadcast(broadcastIntent);
     }
@@ -253,14 +263,16 @@ public class BeaconScannerService extends Service {
         String message = null;
         if(found == null){
             beacon.setName("");
+            CacheVariable.put(MainActivity.SCANNING, false);
             boolean success = BeaconCacheManager.getInstance().save(beacon);
             if(success){
                 message = getResources().getString(R.string.scanned_beacon_saved);
+                sendSuccessBroadcastMessage(message);
             }else{
                 message = getResources().getString(R.string.scanned_beacon_saving_technical_error);
+                sendStopBroadcastMessage(message);
             }
         }
-        sendStopBroadcastMessage(message);
         stopSelf();
     }
 
