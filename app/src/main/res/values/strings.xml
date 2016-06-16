@@ -16,6 +16,7 @@
 
     <string name="run_detection">LOCALISER</string>
     <string name="no_beacon_saved">Aucun accessoire enregistré</string>
+    <string name="no_gps_data">L\'accessoire n\'a pas de coordonnées gps enregistrées</string>
     <string name="detection_started">Recherche Activée</string>
     <string name="bluetooth_not_supported">Le bluetooth ne fonctionne pas sur cet appareil</string>
 

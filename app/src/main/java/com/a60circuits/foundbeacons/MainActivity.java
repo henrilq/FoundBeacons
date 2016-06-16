@@ -122,17 +122,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void startScan(){
-        if(! CacheVariable.getBoolean(SCANNING)){
-            CacheVariable.put(SCANNING, true);
-            replaceFragment(objectsButton, null, true);
-            scanButton.setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.colorSelectionBlue));
-            Intent i = new Intent(MainActivity.this,BeaconScannerService.class);
-            i.putExtra(BeaconScannerService.CONNECTION_MODE, true);
-            MainActivity.this.startService(i);
-        }
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         getSupportFragmentManager().popBackStack();
@@ -311,6 +300,17 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
+    private void startScan(){
+        if(! CacheVariable.getBoolean(SCANNING)){
+            CacheVariable.put(SCANNING, true);
+            replaceFragment(objectsButton, null, true);
+            scanButton.setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.colorSelectionBlue));
+            Intent i = new Intent(MainActivity.this,BeaconScannerService.class);
+            i.putExtra(BeaconScannerService.CONNECTION_MODE, true);
+            MainActivity.this.startService(i);
+        }
+    }
+
     public void stopScan(){
         scanButton.setColorFilter(null);
         CacheVariable.put(SCANNING, false);
@@ -325,8 +325,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        if(! BeaconCacheManager.getInstance().getData().isEmpty()){
+            stopScan();
+        }
         super.onPause();
-        stopScan();
     }
 
     @Override

@@ -225,12 +225,32 @@ public class DetectionFragment extends ReplacerFragment {
         }
     }
 
+    private void reset(){
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                loadingView.setVisibility(View.INVISIBLE);
+                updateValue(MAX_DISTANCE);
+                textView.setText(getResources().getString(R.string.run_detection));
+                detectionStarted = false;
+            }
+        });
+    }
+
+    @Override
+    public void onPause() {
+        reset();
+        super.onPause();
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         MainActivity mainActivity = (MainActivity)getActivity();
         mainActivity.unregisterReceiver(broadcastReceiver);
-        mainActivity.stopScan();
+        if(beacon != null){
+            mainActivity.stopScan();
+        }
     }
 
 }

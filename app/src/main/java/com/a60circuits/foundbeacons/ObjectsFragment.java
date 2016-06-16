@@ -135,6 +135,12 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
     }
 
     @Override
+    public void onPause() {
+        loader.setVisibility(View.INVISIBLE);
+        super.onPause();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         BeaconCacheManager.getInstance().deleteObserver(this);
