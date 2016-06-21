@@ -48,31 +48,36 @@ localisation GPS de votre téléphone afin de pouvoir repérer vos accessoires F
 \n\t\t
 4. Approchez votre smartphone de votre accessoire.
 \n\t\t
-5. Appuyez pendant 5 secondes sur la puce de votre accessoire Found
-afin de le rendre détectable et de pouvoir l\'associer à votre téléphone.
+5. L’emplacement des puces FOUND :
+\n\t\t\t\t\t- Sur le foulard : elle se trouve dans une petite poche située
+sur l\’un des coins de votre foulard.
+\n\t\t\t\t\t- Sur le chapeau : elle se trouve dans une petite poche située sous le nœud du bandeau de votre chapeau.
 \n\t\t
-6. Donnez le nom de votre choix à votre foulard ou à votre chapeau.
-\n\t\t
-7. Souriez ! Désormais votre accessoire Found est impossible à égarer.
+6. Pincez la puce jusqu\’à entendre un « clic ». Maintenez la pression pendant 5 secondes, un signal sonore va retentir. Votre
+accessoire est désormais détectable par votre téléphone.
+        \n\t\t7. Donnez le nom de votre choix à votre foulard ou à votre chapeau.
+\n\t\t8. Souriez ! Désormais votre accessoire Found est impossible à égarer.
 \n\n
 2. Retrouver son accessoire
 \n
 Votre accessoire Found est égaré. Que faire ? Suivez ces conseils pour retrouver votre
 chapeau ou votre foulard.
-\n
+\n\n
 * Accessoire égaré à proximité *
-\n
+\n\n
 Pour lancer la recherche d\'un objet, sélectionnez l\'accessoire recherché dans l\'écran
 d\'accueil ou appuyez sur l\'icône de localisation dans la barre de menu du bas. Une fois sur la
 page de localisation, appuyez sur « localiser » pour lancer la recherche. Votre téléphone va
 suivre le signal de l\'accessoire afin de vous indiquer sa distance selon votre position.
-\n
+\n\n
 * Dernière position de l\'accessoire *
-\n
-L\'application enregistre automatiquement le dernier endroit où votre téléphone avec
-l\'application ouverte a localisé votre accessoire Found. Il suffit d\'ouvrir votre objet égaré sur
-l\'application et une fois sur la page de localisation, appuyez sur le bouton « dernière position
-» pour obtenir l\'emplacement approximatif sur une carte.
+\n\n
+La dernière position de votre accessoire Found est automatiquement
+enregistrée sur une carte dès l\’ouverture de l\’application, à condition
+que le Bluetooth soit activé. Il suffit d\’ouvrir votre objet égaré sur le
+menu de l\’application et une fois sur la page de localisation, appuyez sur
+le bouton « dernière position » pour obtenir l\’emplacement
+approximatif sur une carte.
 \n\n
 3. Dépannage technique
 \n
