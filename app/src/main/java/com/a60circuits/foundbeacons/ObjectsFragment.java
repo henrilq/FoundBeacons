@@ -134,9 +134,15 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
         });
     }
 
+    private void reset(){
+        if(BeaconCacheManager.getInstance().getData().isEmpty()){
+            textLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
     @Override
     public void onPause() {
-        loader.setVisibility(View.INVISIBLE);
+        reset();
         super.onPause();
     }
 

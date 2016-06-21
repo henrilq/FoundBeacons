@@ -24,10 +24,12 @@
     <string name="new_beacon_instruct">Commencez par ajouter un accessoire !\nVeuillez cliquer sur le + ci-dessus</string>
     <string name="gps_disabled">La localisation gps n\'est pas activée</string>
 
-
     <string name="font_brandon_bld">fonts/Brandon_bld.otf</string>
     <string name="font_brandon_med">fonts/Brandon_med.otf</string>
 
+    <string name="settings_title">PARAMÈTRES</string>
+    <string name="settings_location">LOCALISATION GPS</string>
+    <string name="settings_notification">NOTIFICATION</string>
     <string name="settings_faq_title">FAQ</string>
     <string name="settings_legal_mention_title">MENTIONS LEGALES</string>
     <string name="close">FERMER</string>
@@ -36,21 +38,21 @@
         COMMENT UTILISER FOUND
 \n\n
 1. Activation
-\n\t\t\t\t\t
+\n\t\t
 1. Téléchargez l\'application Found.
-\n\t\t\t\t\t
+\n\t\t
 2. Ouvrez l\'application sur votre téléphone.
-\n\t\t\t\t\t
+\n\t\t
 3. Suivez les instructions du tutoriel, puis activez le Bluetooth ainsi que la
 localisation GPS de votre téléphone afin de pouvoir repérer vos accessoires Found.
-\n\t\t\t\t\t
+\n\t\t
 4. Approchez votre smartphone de votre accessoire.
-\n\t\t\t\t\t
+\n\t\t
 5. Appuyez pendant 5 secondes sur la puce de votre accessoire Found
 afin de le rendre détectable et de pouvoir l\'associer à votre téléphone.
-\n\t\t\t\t\t
+\n\t\t
 6. Donnez le nom de votre choix à votre foulard ou à votre chapeau.
-\n\t\t\t\t\t
+\n\t\t
 7. Souriez ! Désormais votre accessoire Found est impossible à égarer.
 \n\n
 2. Retrouver son accessoire

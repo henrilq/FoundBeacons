@@ -81,7 +81,7 @@ public class AppTourActivity extends CustomAppTour{
 
         Intent intent = new Intent(AppTourActivity.this, MainActivity.class);
         Bundle args = new Bundle();
-        args.putBoolean(MainActivity.START_SCAN, true);
+        //args.putBoolean(MainActivity.START_SCAN, true);
         intent.putExtras(args);
         startActivity(intent);
     }

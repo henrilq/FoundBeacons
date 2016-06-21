@@ -10,6 +10,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:scrollbars="none"
         android:layout_above="@id/buttonsLayout">
 
         <RelativeLayout
@@ -33,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/close"
                 android:layout_marginTop="20dp"
-                android:textSize="15dp"
+                android:textSize="18dp"
                 android:textColor="@color/letterGrey"
                 android:textAlignment="textStart"/>
 
@@ -71,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/faq"
+            android:src="@drawable/help"
             android:scaleType="fitXY"
             android:adjustViewBounds="true"
             android:background="@null"/>

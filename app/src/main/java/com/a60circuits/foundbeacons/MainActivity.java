@@ -73,9 +73,10 @@ public class MainActivity extends AppCompatActivity {
         ab.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
         ab.setDisplayShowTitleEnabled(false);
 
+
         settingsButton = (ImageButton) findViewById(R.id.b1);
-        mapButton = (ImageButton)findViewById(R.id.b2);
-        objectsButton = (ImageButton)findViewById(R.id.b3);
+        objectsButton = (ImageButton)findViewById(R.id.b2);
+        mapButton = (ImageButton)findViewById(R.id.b3);
         scanButton = (ImageButton) tb.findViewById(R.id.scanButton);
 
         initMapButton();
@@ -226,8 +227,8 @@ public class MainActivity extends AppCompatActivity {
     private void initMapButton(){
         map = new LinkedHashMap<>();
         addInMap(settingsButton, SettingsFragment.class, SettingsTextFragment.class);
-        addInMap(mapButton, GMapFragment.class, DetectionFragment.class);
         addInMap(objectsButton, ObjectsFragment.class);
+        addInMap(mapButton, GMapFragment.class, DetectionFragment.class);
     }
 
     private void addInMap(ImageButton button, Class<? extends Fragment> ... fragments){
