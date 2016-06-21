@@ -17,7 +17,7 @@
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
 
-        android:background="@color/colorLightBlue"
+        android:background="@color/colorTransparentWhite"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true">
         <LinearLayout
