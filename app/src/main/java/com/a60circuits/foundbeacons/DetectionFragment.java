@@ -201,7 +201,10 @@ public class DetectionFragment extends ReplacerFragment {
         String textValue = distance + "\n"+unit;
         SpannableString ss1=  new SpannableString(textValue);
         ss1.setSpan(new RelativeSizeSpan(2f), 0,distance.length(), 0); // set size
-        ss1.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(),R.color.circleGrey)), 0, textValue.length(), 0);// set color
+        Context context = getContext();
+        if(context != null){
+            ss1.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context,R.color.circleGrey)), 0, textValue.length(), 0);// set color
+        }
         ss1.setSpan(new RelativeSizeSpan(0.7f), distance.length(),textValue.length(), 0);
         textView.setText(ss1);
     }
@@ -229,10 +232,12 @@ public class DetectionFragment extends ReplacerFragment {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                loadingView.setVisibility(View.INVISIBLE);
-                updateValue(MAX_DISTANCE);
-                textView.setText(getResources().getString(R.string.run_detection));
-                detectionStarted = false;
+                if(isAdded()){
+                    loadingView.setVisibility(View.INVISIBLE);
+                    updateValue(MAX_DISTANCE);
+                    textView.setText(getResources().getString(R.string.run_detection));
+                    detectionStarted = false;
+                }
             }
         });
     }
