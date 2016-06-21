@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton settingsButton;
     private ImageButton mapButton;
     private ImageButton objectsButton;
+    private View logo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         objectsButton = (ImageButton)findViewById(R.id.b2);
         mapButton = (ImageButton)findViewById(R.id.b3);
         scanButton = (ImageButton) tb.findViewById(R.id.scanButton);
+        logo = (View) tb.findViewById(R.id.toolbar_logo);
 
         initMapButton();
         initPermissions();
@@ -119,6 +121,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onBackStackChanged() {
                 replaceByLastFragment();
+            }
+        });
+        logo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replaceFragment(objectsButton);
             }
         });
     }
