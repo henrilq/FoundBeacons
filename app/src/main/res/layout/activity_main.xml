@@ -45,9 +45,9 @@
 
             <ImageButton
                 android:id="@+id/b2"
-                android:layout_width="40dp"
-                android:layout_height="30dp"
-                android:src="@drawable/list3x"
+                android:layout_width="30dp"
+                android:layout_height="35dp"
+                android:src="@drawable/objects_list3x"
                 android:scaleType="fitXY"
                 android:background="@null"
                 android:layout_centerInParent="true"
