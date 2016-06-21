@@ -301,7 +301,7 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-    private void startScan(){
+    public void startScan(){
         if(! CacheVariable.getBoolean(SCANNING)){
             CacheVariable.put(SCANNING, true);
             replaceFragment(objectsButton, null, true);
@@ -326,9 +326,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        if(! BeaconCacheManager.getInstance().getData().isEmpty()){
-            stopScan();
-        }
+        stopScan();
         super.onPause();
     }
 
