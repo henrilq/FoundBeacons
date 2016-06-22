@@ -22,16 +22,12 @@ public class AppTourActivity extends CustomAppTour{
     @Override
     public void init(@Nullable Bundle savedInstanceState) {
         int dotColor = ContextCompat.getColor(getApplicationContext(),R.color.colorBorderBlue);
+        int inactiveDotColor = ContextCompat.getColor(getApplicationContext(),R.color.colorInactiveDot);
         int textColor = ContextCompat.getColor(getApplicationContext(),R.color.unselectedButtonColor);
         int customSlideColor = ContextCompat.getColor(getApplicationContext(),R.color.colorPrimary);
         ImageButton nextSlideImageButton = (ImageButton) findViewById(com.vlonjatg.android.apptourlibrary.R.id.nextSlideImageButton);
         nextSlideImageButton.setColorFilter(dotColor);
 
-        setDoneText("Démarrer");
-        hideSkip();
-        hideNext();
-
-        setActiveDotColor(dotColor);
         //Custom slide
         addSlide(createSlide(R.drawable.tuto_1), customSlideColor);
         addSlide(createSlide(R.drawable.tuto_2), customSlideColor);
@@ -40,8 +36,12 @@ public class AppTourActivity extends CustomAppTour{
         addSlide(createSlide(R.drawable.tuto_5), customSlideColor);
         addSlide(createSlide(R.drawable.tuto_6), customSlideColor);
 
-
         //Customize tour
+        setDoneText(getResources().getString(R.string.tuto_start));
+        hideSkip();
+        hideNext();
+        setActiveDotColor(dotColor);
+        setInactiveDocsColor(inactiveDotColor);
         setSkipButtonTextColor(textColor);
         setNextButtonColorToBlack();
         setDoneButtonTextColor(textColor);
