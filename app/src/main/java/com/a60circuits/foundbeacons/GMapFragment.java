@@ -81,7 +81,6 @@ public class GMapFragment extends ReplacerFragment implements GoogleMap.OnMarker
             Toast.makeText(getActivity().getBaseContext(),getResources().getString(R.string.no_beacon_saved), Toast.LENGTH_SHORT).show();
             goToDetectionScreen();
         }else if(beacon.getLatitude() == 0.0 && beacon.getLongitude() == 0.0){
-            Toast.makeText(getActivity().getBaseContext(),getResources().getString(R.string.no_gps_data), Toast.LENGTH_SHORT).show();
             goToDetectionScreen();
         }else{
             mMapView = (MapView) v.findViewById(R.id.mapView);

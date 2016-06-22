@@ -101,11 +101,15 @@ public class DetectionFragment extends ReplacerFragment {
             public void onClick(View v) {
                 GMapFragment mapFragment = new GMapFragment();
                 if(beacon != null){
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable(GMapFragment.BEACON_ARGUMENT, beacon);
-                    mapFragment.setArguments(bundle);
+                    if(beacon.getLatitude() == 0.0 && beacon.getLongitude() == 0.0){
+                        Toast.makeText(getActivity().getBaseContext(),getResources().getString(R.string.no_gps_data), Toast.LENGTH_SHORT).show();
+                    }else{
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(GMapFragment.BEACON_ARGUMENT, beacon);
+                        mapFragment.setArguments(bundle);
+                        DetectionFragment.super.replaceFragment(mapFragment);
+                    }
                 }
-                DetectionFragment.super.replaceFragment(mapFragment);
             }
         });
 

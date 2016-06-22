@@ -5,10 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -166,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
     private void replaceFragment(ImageButton button, Bundle bundle){
         replaceFragment(button, bundle, false);
     }
-    
+
     private void replaceFragment(ImageButton button, Bundle bundle, boolean forceReplacement){
         try {
             Fragment fragment = map.get(button).get(0).newInstance();
