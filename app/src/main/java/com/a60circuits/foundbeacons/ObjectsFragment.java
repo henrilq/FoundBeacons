@@ -83,7 +83,8 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
             setBeacons(savedBeacons);
         }
         initListeners();
-        reset();
+        boolean startFirstScan = CacheVariable.getBoolean(MainActivity.START_FIRST_SCAN);
+        reset(startFirstScan);
         return view;
     }
 
@@ -134,12 +135,14 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
             }
         });
     }
-
-
     public void reset(){
+        reset(false);
+    }
+
+    public void reset(final boolean firstScan){
         final boolean scanMode = CacheVariable.getBoolean(MainActivity.SCANNING);
         boolean emptyCache = BeaconCacheManager.getInstance().getData().isEmpty();
-        final int firstStepVisibility = emptyCache & !scanMode ? View.VISIBLE : View.INVISIBLE;
+        final int firstStepVisibility = (emptyCache && !scanMode) || firstScan ? View.VISIBLE : View.INVISIBLE;
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -148,9 +151,19 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
                 }else{
                     loader.setVisibility(View.INVISIBLE);
                 }
+                if(firstScan){
+                    text.setText(getResources().getString(R.string.first_scan_instruc));
+                }else{
+                    text.setText(getResources().getString(R.string.new_beacon_instruct));
+                }
                 text.setVisibility(firstStepVisibility);
                 line.setVisibility(firstStepVisibility);
-                scanButton.setVisibility(firstStepVisibility);
+                if(firstScan){
+                    CacheVariable.put(MainActivity.START_FIRST_SCAN, false);
+                    scanButton.setVisibility(View.INVISIBLE);
+                }else{
+                    scanButton.setVisibility(firstStepVisibility);
+                }
             }
         });
     }

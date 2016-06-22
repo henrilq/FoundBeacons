@@ -1,16 +1,13 @@
 package com.a60circuits.foundbeacons;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.view.View;
 import android.widget.ImageButton;
 
-import com.a60circuits.foundbeacons.service.NotificationServiceManager;
+import com.a60circuits.foundbeacons.cache.CacheVariable;
 import com.a60circuits.foundbeacons.utils.SharedPreferencesUtils;
-import com.vlonjatg.android.apptourlibrary.AppTour;
 
 /**
  * Created by zoz on 24/05/2016.
@@ -74,10 +71,8 @@ public class AppTourActivity extends CustomAppTour{
     }
 
     private void startMainActivity(){
+        CacheVariable.put(MainActivity.START_FIRST_SCAN, true);
         Intent intent = new Intent(AppTourActivity.this, MainActivity.class);
-        Bundle args = new Bundle();
-        args.putBoolean(MainActivity.START_SCAN, true);
-        intent.putExtras(args);
         startActivity(intent);
     }
 }

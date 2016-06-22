@@ -23,7 +23,6 @@ public class SpashScreenActivity extends Activity{
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         final boolean hideAppTourActivity = SharedPreferencesUtils.getBoolean(this,AppTourActivity.HIDE_APP_TOUR, false);
-        SharedPreferencesUtils.putBoolean(this,AppTourActivity.HIDE_APP_TOUR, true);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

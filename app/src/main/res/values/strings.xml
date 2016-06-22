@@ -22,6 +22,7 @@
     <string name="bluetooth_not_supported">Le bluetooth ne fonctionne pas sur cet appareil</string>
 
     <string name="gpg_mandatory">La localisation gps est indispensable au bon fonctionnement de Found</string>
+    <string name="first_scan_instruc">N\'OUBLIEZ PAS D\'APPUYER SUR\nVOTRE ACCESSOIRE</string>
     <string name="new_beacon_instruct">AJOUTEZ \nVOTRE ACCESSOIRE</string>
     <string name="gps_disabled">La localisation gps n\'est pas activée</string>
 

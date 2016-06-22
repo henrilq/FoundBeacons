@@ -1,12 +1,10 @@
 package com.a60circuits.foundbeacons;
 
-import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
@@ -31,7 +29,6 @@ import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.a60circuits.foundbeacons.service.BeaconScannerService;
 import com.a60circuits.foundbeacons.utils.LayoutUtils;
 import com.a60circuits.foundbeacons.utils.LocationUtils;
-import com.a60circuits.foundbeacons.utils.PermissionUtils;
 import com.jaalee.sdk.Beacon;
 
 import java.util.Date;

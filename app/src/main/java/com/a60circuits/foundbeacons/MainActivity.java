@@ -1,7 +1,5 @@
 package com.a60circuits.foundbeacons;
 
-import android.Manifest;
-import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -28,11 +25,9 @@ import android.widget.Toast;
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.a60circuits.foundbeacons.cache.CacheVariable;
 import com.a60circuits.foundbeacons.dao.BeaconDao;
-import com.a60circuits.foundbeacons.service.BeaconConnectionService;
 import com.a60circuits.foundbeacons.service.BeaconScannerService;
 import com.a60circuits.foundbeacons.service.NotificationServiceManager;
 import com.a60circuits.foundbeacons.utils.PermissionUtils;
-import com.a60circuits.foundbeacons.utils.SharedPreferencesUtils;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -48,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String SERVICE_INFO = "Service_Info";
     public static final String SERVICE_SUCCESS = "Service_Success";
     public static final String SCANNING = "Scanning";
-    public static final String START_SCAN = "Start_Scan";
+    public static final String START_FIRST_SCAN = "Start_First_Scan";
 
     private Map<ImageButton, List<Class<? extends Fragment>>> map;
     private ImageButton selectedButton;
@@ -103,11 +98,8 @@ public class MainActivity extends AppCompatActivity {
         //starts app on beacon list fragment
         replaceFragment(objectsButton);
 
-        Bundle args = getIntent().getExtras();
-        if(args != null){
-            if(args.getBoolean(START_SCAN)){
-                startScan();
-            }
+        if(CacheVariable.getBoolean(START_FIRST_SCAN)){
+            startScan();
         }
     }
 
@@ -174,15 +166,7 @@ public class MainActivity extends AppCompatActivity {
     private void replaceFragment(ImageButton button, Bundle bundle){
         replaceFragment(button, bundle, false);
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
-            //SharedPreferencesUtils.putBoolean(this,SettingsFragment.GPS_ENABLED, false);
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
+    
     private void replaceFragment(ImageButton button, Bundle bundle, boolean forceReplacement){
         try {
             Fragment fragment = map.get(button).get(0).newInstance();
