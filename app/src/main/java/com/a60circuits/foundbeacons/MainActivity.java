@@ -9,6 +9,8 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -29,6 +31,8 @@ import com.a60circuits.foundbeacons.dao.BeaconDao;
 import com.a60circuits.foundbeacons.service.BeaconConnectionService;
 import com.a60circuits.foundbeacons.service.BeaconScannerService;
 import com.a60circuits.foundbeacons.service.NotificationServiceManager;
+import com.a60circuits.foundbeacons.utils.PermissionUtils;
+import com.a60circuits.foundbeacons.utils.SharedPreferencesUtils;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -38,7 +42,6 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    public static final String PREF_FILE = "prefFile";
     public static final String BUTTON_POSITION = "buttonPosition";
     public static final String SCAN_RESULT = "com.a60circuits.foundbeacons.result";
     public static final String SERVICE_STOP = "Service_Stop";
@@ -52,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton scanButton;
     private int buttonPosition;
 
+    private Handler handler;
     private IntentFilter filter;
     private BroadcastReceiver broadcastReceiver;
 
@@ -74,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         ab.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
         ab.setDisplayShowTitleEnabled(false);
 
+        handler = new Handler();
 
         settingsButton = (ImageButton) findViewById(R.id.b1);
         objectsButton = (ImageButton)findViewById(R.id.b2);
@@ -86,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
         initBeaconCache();
         initBroadcastReceiver();
         initListeners();
-
 
         NotificationServiceManager.getInstance().setActivity(this);
         Object lastPosition = CacheVariable.get(BUTTON_POSITION);
@@ -171,6 +175,14 @@ public class MainActivity extends AppCompatActivity {
         replaceFragment(button, bundle, false);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+            //SharedPreferencesUtils.putBoolean(this,SettingsFragment.GPS_ENABLED, false);
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
     private void replaceFragment(ImageButton button, Bundle bundle, boolean forceReplacement){
         try {
             Fragment fragment = map.get(button).get(0).newInstance();
@@ -244,25 +256,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initPermissions(){
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            if (! ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.ACCESS_COARSE_LOCATION },1);
-                ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION },1);
-            }
-        }
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter == null) {
-            Toast.makeText(getBaseContext(),getResources().getString(R.string.bluetooth_not_supported), Toast.LENGTH_LONG).show();
-        } else {
-            if (!mBluetoothAdapter.isEnabled()) {
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, 1);
-            }
-        }
+        PermissionUtils.requestLocationAndBluetooth(this);
     }
 
     private void initBroadcastReceiver(){
@@ -313,10 +307,16 @@ public class MainActivity extends AppCompatActivity {
         if(! CacheVariable.getBoolean(SCANNING)){
             CacheVariable.put(SCANNING, true);
             replaceFragment(objectsButton, null, true);
-            scanButton.setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.colorSelectionBlue));
-            Intent i = new Intent(MainActivity.this,BeaconScannerService.class);
-            i.putExtra(BeaconScannerService.CONNECTION_MODE, true);
-            MainActivity.this.startService(i);
+
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    scanButton.setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.colorSelectionBlue));
+                    Intent i = new Intent(MainActivity.this,BeaconScannerService.class);
+                    i.putExtra(BeaconScannerService.CONNECTION_MODE, true);
+                    MainActivity.this.startService(i);
+                }
+            });
         }
     }
 

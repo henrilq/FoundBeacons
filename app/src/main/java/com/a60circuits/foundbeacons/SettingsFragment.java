@@ -1,5 +1,6 @@
 package com.a60circuits.foundbeacons;
 
+import android.Manifest;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -17,12 +18,14 @@ import android.widget.Toast;
 
 import com.a60circuits.foundbeacons.service.NotificationServiceManager;
 import com.a60circuits.foundbeacons.utils.LayoutUtils;
+import com.a60circuits.foundbeacons.utils.PermissionUtils;
 import com.a60circuits.foundbeacons.utils.ResourcesUtils;
+import com.a60circuits.foundbeacons.utils.SharedPreferencesUtils;
 
 /**
  * Created by zoz on 17/05/2016.
  */
-public class SettingsFragment extends Fragment{
+public class SettingsFragment extends Fragment {
 
     public static final String GPS_ENABLED = "gpsEnabled";
     public static final String NOTIFICATION_ENABLED = "notificationEnabled";
@@ -40,16 +43,16 @@ public class SettingsFragment extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.settings_fragment,container,false);
+        View view = inflater.inflate(R.layout.settings_fragment, container, false);
         gpsSwitch = (Switch) view.findViewById(R.id.gps_switch);
         notificationSwitch = (Switch) view.findViewById(R.id.notification_switch);
         legalButton = (ImageButton) view.findViewById(R.id.legal_button);
         faqButton = (ImageButton) view.findViewById(R.id.faq_button);
-        LayoutUtils.overLapView(legalButton,faqButton,true);
+        LayoutUtils.overLapView(legalButton, faqButton, true);
         legalButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                legalButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
+                legalButton.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorSelectionBlue));
                 faqButton.setColorFilter(null);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 Bundle bundle = new Bundle();
@@ -65,7 +68,7 @@ public class SettingsFragment extends Fragment{
         faqButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                faqButton.setColorFilter(ContextCompat.getColor(getContext(),R.color.colorSelectionBlue));
+                faqButton.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorSelectionBlue));
                 legalButton.setColorFilter(null);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 Bundle bundle = new Bundle();
@@ -93,34 +96,28 @@ public class SettingsFragment extends Fragment{
         detail1.setTypeface(face);
         detail2.setTypeface(face);
 
-        final SharedPreferences settings = getActivity().getSharedPreferences(MainActivity.PREF_FILE, 0);
-        boolean notificationEnabled = settings.getBoolean(NOTIFICATION_ENABLED, false);
-        notificationSwitch.setChecked(notificationEnabled);
+        notificationSwitch.setChecked(SharedPreferencesUtils.getBoolean(getActivity(), NOTIFICATION_ENABLED, false));
+        gpsSwitch.setChecked(SharedPreferencesUtils.getBoolean(getActivity(), GPS_ENABLED, false));
 
-        boolean gpsEnabled = settings.getBoolean(GPS_ENABLED, false);
-        gpsSwitch.setChecked(gpsEnabled);
+        if(!PermissionUtils.checkPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)){
+            gpsSwitch.setChecked(false);
+            SharedPreferencesUtils.putBoolean(getActivity(), NOTIFICATION_ENABLED, false);
+        }
 
         notificationSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            SharedPreferences.Editor editor = settings.edit();
-            if(notificationSwitch.isChecked()){
-                NotificationServiceManager.getInstance().startNotificationService();
-                editor.putBoolean(NOTIFICATION_ENABLED, true);
-            }else{
-                NotificationServiceManager.getInstance().killNoficationService();
-                editor.putBoolean(NOTIFICATION_ENABLED, false);
-            }
-            editor.commit();
+                SharedPreferencesUtils.putBoolean(getActivity(), NOTIFICATION_ENABLED, notificationSwitch.isChecked());
             }
         });
 
         gpsSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putBoolean(GPS_ENABLED, gpsSwitch.isChecked());
-            editor.commit();
+                SharedPreferencesUtils.putBoolean(getActivity(), GPS_ENABLED, gpsSwitch.isChecked());
+                if(gpsSwitch.isChecked()){
+                    PermissionUtils.requestPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
+                }
             }
         });
 

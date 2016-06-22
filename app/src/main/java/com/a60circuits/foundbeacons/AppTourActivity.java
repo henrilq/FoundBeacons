@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import com.a60circuits.foundbeacons.service.NotificationServiceManager;
+import com.a60circuits.foundbeacons.utils.SharedPreferencesUtils;
 import com.vlonjatg.android.apptourlibrary.AppTour;
 
 /**
@@ -60,11 +61,8 @@ public class AppTourActivity extends CustomAppTour{
     }
 
     private void registerPreferences(){
-        SharedPreferences settings = getApplicationContext().getSharedPreferences(MainActivity.PREF_FILE, 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putBoolean(HIDE_APP_TOUR, true);
-        editor.putBoolean(SettingsFragment.GPS_ENABLED, true);
-        editor.commit();
+        SharedPreferencesUtils.putBoolean(this, HIDE_APP_TOUR, true);
+        SharedPreferencesUtils.putBoolean(this, SettingsFragment.GPS_ENABLED, true);
     }
 
     private CustomSlide createSlide(int id){
@@ -78,7 +76,7 @@ public class AppTourActivity extends CustomAppTour{
     private void startMainActivity(){
         Intent intent = new Intent(AppTourActivity.this, MainActivity.class);
         Bundle args = new Bundle();
-        //args.putBoolean(MainActivity.START_SCAN, true);
+        args.putBoolean(MainActivity.START_SCAN, true);
         intent.putExtras(args);
         startActivity(intent);
     }

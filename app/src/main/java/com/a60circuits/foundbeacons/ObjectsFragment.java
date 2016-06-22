@@ -140,8 +140,7 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
         final boolean scanMode = CacheVariable.getBoolean(MainActivity.SCANNING);
         boolean emptyCache = BeaconCacheManager.getInstance().getData().isEmpty();
         final int firstStepVisibility = emptyCache & !scanMode ? View.VISIBLE : View.INVISIBLE;
-
-        getActivity().runOnUiThread(new Runnable() {
+        handler.post(new Runnable() {
             @Override
             public void run() {
                 if(scanMode){

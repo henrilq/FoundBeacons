@@ -20,6 +20,7 @@ import com.a60circuits.foundbeacons.utils.LayoutUtils;
 import com.a60circuits.foundbeacons.utils.LocationUtils;
 import com.a60circuits.foundbeacons.utils.PermissionUtils;
 import com.a60circuits.foundbeacons.utils.ResourcesUtils;
+import com.a60circuits.foundbeacons.utils.SharedPreferencesUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -60,7 +61,6 @@ public class GMapFragment extends ReplacerFragment implements GoogleMap.OnMarker
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.map_fragment, container,
                 false);
-
         List<Beacon> beacons = BeaconCacheManager.getInstance().getData();
         if(beacons != null && ! beacons.isEmpty()){
             if(getArguments() != null){
@@ -69,8 +69,7 @@ public class GMapFragment extends ReplacerFragment implements GoogleMap.OnMarker
                 beacon = BeaconCacheManager.getInstance().findInCacheLastDetectedBeacon();
             }
         }
-        final SharedPreferences settings = getActivity().getSharedPreferences(MainActivity.PREF_FILE, 0);
-        boolean gpsEnabled = settings.getBoolean(SettingsFragment.GPS_ENABLED, false);
+        boolean gpsEnabled = SharedPreferencesUtils.getBoolean(getActivity(), SettingsFragment.GPS_ENABLED, false);
         if(!gpsEnabled){
             if(getArguments() != null){
                 if (getArguments().get(BEACON_ARGUMENT) != null){
@@ -82,9 +81,9 @@ public class GMapFragment extends ReplacerFragment implements GoogleMap.OnMarker
             Toast.makeText(getActivity().getBaseContext(),getResources().getString(R.string.no_beacon_saved), Toast.LENGTH_SHORT).show();
             goToDetectionScreen();
         }else if(beacon.getLatitude() == 0.0 && beacon.getLongitude() == 0.0){
-                Toast.makeText(getActivity().getBaseContext(),getResources().getString(R.string.no_gps_data), Toast.LENGTH_SHORT).show();
-                goToDetectionScreen();
-            }else{
+            Toast.makeText(getActivity().getBaseContext(),getResources().getString(R.string.no_gps_data), Toast.LENGTH_SHORT).show();
+            goToDetectionScreen();
+        }else{
             mMapView = (MapView) v.findViewById(R.id.mapView);
             detectionButton = (ImageButton) v.findViewById(R.id.detectionButton);
             lastPositionButton = (ImageButton) v.findViewById(R.id.lastPositionButton);
@@ -104,8 +103,8 @@ public class GMapFragment extends ReplacerFragment implements GoogleMap.OnMarker
             try {
                 MapsInitializer.initialize(getActivity().getApplicationContext());
                 googleMap = mMapView.getMap();
-                if (PermissionUtils.checkPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)){
-                    googleMap.setMyLocationEnabled(true);
+                if (PermissionUtils.checkPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)){
+                    //googleMap.setMyLocationEnabled(true);
                 }
                 googleMap.setOnMarkerClickListener(this);
                 googleMap.setPadding(0, 0, 0, 200);//Move up itinerary button
