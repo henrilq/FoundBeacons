@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,23 +64,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        Toolbar tb = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(tb);
-
-        final ActionBar ab = getSupportActionBar();
-        ab.setDisplayShowHomeEnabled(true); // show or hide the default home button
-        ab.setDisplayHomeAsUpEnabled(false);
-        ab.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
-        ab.setDisplayShowTitleEnabled(false);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         handler = new Handler();
 
         settingsButton = (ImageButton) findViewById(R.id.b1);
         objectsButton = (ImageButton)findViewById(R.id.b2);
         mapButton = (ImageButton)findViewById(R.id.b3);
-        scanButton = (ImageButton) tb.findViewById(R.id.scanButton);
-        logo = (View) tb.findViewById(R.id.toolbar_logo);
+        scanButton = (ImageButton) toolbar.findViewById(R.id.scanButton);
+        logo = (View) toolbar.findViewById(R.id.toolbar_logo);
 
+        initToolbar(toolbar);
         initMapButton();
         initBeaconCache();
         initBroadcastReceiver();
@@ -98,6 +95,25 @@ public class MainActivity extends AppCompatActivity {
         if(CacheVariable.getBoolean(START_FIRST_SCAN)){
             startScan();
         }
+    }
+
+    private void initToolbar(final Toolbar toolbar){
+        final ActionBar ab = getSupportActionBar();
+        ab.setDisplayShowHomeEnabled(true); // show or hide the default home button
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
+        ab.setDisplayShowTitleEnabled(false);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                int arrowWidth = 0;
+                if(toolbar.getChildCount() > 1){
+                    arrowWidth = toolbar.getChildAt(1).getWidth();
+                }
+                float leftMargin = (toolbar.getWidth() - logo.getWidth()) /2;
+                logo.setX(leftMargin-arrowWidth);
+            }
+        });
     }
 
     public void initListeners(){

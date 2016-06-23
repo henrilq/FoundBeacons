@@ -7,6 +7,10 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.a60circuits.foundbeacons.utils.SharedPreferencesUtils;
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.ndk.CrashlyticsNdk;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by zoz on 13/05/2016.
@@ -18,7 +22,7 @@ public class SpashScreenActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Fabric.with(this, new Crashlytics(), new CrashlyticsNdk());
+        Fabric.with(this, new Crashlytics(), new CrashlyticsNdk());
         setContentView(R.layout.spash_screen);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
