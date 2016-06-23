@@ -132,7 +132,7 @@ public class DetectionFragment extends ReplacerFragment {
                     Typeface lightFont = Typeface.createFromAsset(getActivity().getAssets(),getResources().getString(R.string.font_brandon_light));
                     textView.setTypeface(lightFont);
                     textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 60);
-                    textView.setTextColor(ContextCompat.getColor(getContext(), R.color.circleBlue));
+                    textView.setTextColor(ContextCompat.getColor(getContext(), R.color.letterGrey));
                     loadingView.setVisibility(View.VISIBLE);
                     startDetectionService();
                 }

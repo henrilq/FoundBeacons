@@ -76,7 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/detection_unit"
-            android:textColor="@color/circleBlue"
+            android:textColor="@color/letterGrey"
             android:textAlignment="center"
             android:textSize="20sp"
             android:layout_centerHorizontal="true"
