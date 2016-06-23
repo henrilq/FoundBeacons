@@ -26,6 +26,7 @@
                 android:textColor="@color/colorSelectionBlue"
                 android:text="@string/close"
                 android:layout_alignParentRight="true"
+                android:visibility="invisible"
                 android:background="@null"/>
 
             <TextView
@@ -33,7 +34,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/close"
-                android:layout_marginTop="20dp"
                 android:textSize="18dp"
                 android:textColor="@color/letterGrey"
                 android:textAlignment="textStart"/>
