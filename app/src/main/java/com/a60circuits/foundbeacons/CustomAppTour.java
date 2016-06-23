@@ -3,6 +3,7 @@ package com.a60circuits.foundbeacons;
 import android.animation.ArgbEvaluator;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
@@ -74,6 +75,7 @@ public abstract class CustomAppTour extends AppCompatActivity {
         doneSlideButton = (Button) findViewById(com.vlonjatg.android.apptourlibrary.R.id.doneSlideButton);
         dotsLayout = (LinearLayout) findViewById(com.vlonjatg.android.apptourlibrary.R.id.viewPagerCountDots);
 
+        doneSlideButton.setTypeface(Typeface.createFromAsset(getAssets(),getResources().getString(R.string.font_brandon_bld)));
         activeDotColor = Color.RED;
         inactiveDocsColor = Color.WHITE;
 
