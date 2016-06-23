@@ -81,6 +81,7 @@
             android:textSize="20sp"
             android:layout_centerHorizontal="true"
             android:visibility="invisible"
+            android:letterSpacing="0.1"
             android:layout_below="@id/nbText"/>
 
         <pl.droidsonroids.gif.GifImageView
