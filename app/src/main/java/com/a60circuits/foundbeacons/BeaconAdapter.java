@@ -78,7 +78,6 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconViewHolder>{
                 if(hasFocus){
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
                 }else{
-                    holder.editText.setText(beacon.getName());
                     holder.editButton.setColorFilter(null);
                     holder.editText.setEnabled(false);
                 }
@@ -108,7 +107,7 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconViewHolder>{
     }
 
     private void redirectToMap(Beacon beacon, Context context){
-        if(beacon != null && ! beacon.getName().isEmpty() && CacheVariable.getBoolean(MainActivity.FIRST_RENAMING, true)){
+        if(beacon != null && ! beacon.getName().isEmpty() && CacheVariable.getBoolean(MainActivity.FIRST_RENAMING)){
             CacheVariable.put(MainActivity.FIRST_RENAMING, false);
             ContextWrapper ctx = (ContextWrapper)context;
             MainActivity mainActivity = (MainActivity) ctx.getBaseContext();
