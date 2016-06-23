@@ -287,18 +287,20 @@ public class MainActivity extends AppCompatActivity {
 
     public void startScan(){
         if(! CacheVariable.getBoolean(SCANNING)){
-            CacheVariable.put(SCANNING, true);
-            replaceFragment(objectsButton, null, true);
+            if(PermissionUtils.requestBluetooth(this)){
+                CacheVariable.put(SCANNING, true);
+                replaceFragment(objectsButton, null, true);
 
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    scanButton.setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.colorSelectionBlue));
-                    Intent i = new Intent(MainActivity.this,BeaconScannerService.class);
-                    i.putExtra(BeaconScannerService.CONNECTION_MODE, true);
-                    MainActivity.this.startService(i);
-                }
-            });
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        scanButton.setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.colorSelectionBlue));
+                        Intent i = new Intent(MainActivity.this,BeaconScannerService.class);
+                        i.putExtra(BeaconScannerService.CONNECTION_MODE, true);
+                        MainActivity.this.startService(i);
+                    }
+                });
+            }
         }
     }
 

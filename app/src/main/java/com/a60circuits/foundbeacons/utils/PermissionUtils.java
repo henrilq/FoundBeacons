@@ -38,6 +38,21 @@ public class PermissionUtils {
         }
     }
 
+    public static boolean requestBluetooth(Activity activity){
+        boolean bluetoothEnabled = false;
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
+            Toast.makeText(activity.getBaseContext(),activity.getResources().getString(R.string.bluetooth_not_supported), Toast.LENGTH_LONG).show();
+        } else {
+            bluetoothEnabled = mBluetoothAdapter.isEnabled();
+            if (!bluetoothEnabled) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                activity.startActivityForResult(enableBtIntent, 1);
+            }
+        }
+        return bluetoothEnabled;
+    }
+
     public static void requestPermission(Activity activity, String permission, boolean forcePermission){
         if (!checkPermission(activity, permission)) {
             if (forcePermission || ! ActivityCompat.shouldShowRequestPermissionRationale(activity,permission)) {

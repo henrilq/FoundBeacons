@@ -29,6 +29,7 @@ import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.a60circuits.foundbeacons.service.BeaconScannerService;
 import com.a60circuits.foundbeacons.utils.LayoutUtils;
 import com.a60circuits.foundbeacons.utils.LocationUtils;
+import com.a60circuits.foundbeacons.utils.PermissionUtils;
 import com.jaalee.sdk.Beacon;
 
 import java.util.Date;
@@ -135,11 +136,13 @@ public class DetectionFragment extends ReplacerFragment {
     }
 
     private void startDetectionService(){
-        Intent i = new Intent(getActivity(),BeaconScannerService.class);
-        i.putExtra(BeaconScannerService.DETECTION_MODE, true);
-        i.putExtra(BeaconScannerService.BEACON_ARGUMENT, beacon);
-        getActivity().startService(i);
-        detectionStarted = true;
+        if(PermissionUtils.requestBluetooth(getActivity())){
+            Intent i = new Intent(getActivity(),BeaconScannerService.class);
+            i.putExtra(BeaconScannerService.DETECTION_MODE, true);
+            i.putExtra(BeaconScannerService.BEACON_ARGUMENT, beacon);
+            getActivity().startService(i);
+            detectionStarted = true;
+        }
     }
 
     private void initBroadcastReceiver(){
