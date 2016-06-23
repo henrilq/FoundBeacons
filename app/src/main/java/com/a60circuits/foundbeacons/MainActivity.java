@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String SERVICE_SUCCESS = "Service_Success";
     public static final String SCANNING = "Scanning";
     public static final String START_FIRST_SCAN = "Start_First_Scan";
+    public static final String FIRST_RENAMING = "First_Renaming";
 
     private Map<ImageButton, List<Class<? extends Fragment>>> map;
     private ImageButton selectedButton;
@@ -265,6 +266,7 @@ public class MainActivity extends AppCompatActivity {
                         message = intent.getStringExtra(SERVICE_SUCCESS);
                         if(message != null && ! message.isEmpty()){
                             success = true;
+                            CacheVariable.put(FIRST_RENAMING, true);
                         }
                     }else{
                         stop = true;
@@ -342,4 +344,15 @@ public class MainActivity extends AppCompatActivity {
         CacheVariable.put(BUTTON_POSITION, buttonPosition);
     }
 
+    public ImageButton getMapButton() {
+        return mapButton;
+    }
+
+    public ImageButton getSettingsButton() {
+        return settingsButton;
+    }
+
+    public ImageButton getObjectsButton() {
+        return objectsButton;
+    }
 }

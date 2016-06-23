@@ -1,5 +1,7 @@
 package com.a60circuits.foundbeacons;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -29,7 +31,7 @@ public class BeaconViewHolder extends RecyclerView.ViewHolder{
         item.setName(editText.getText().toString());
         editButton.setColorFilter(null);
         editText.setEnabled(false);
-        BeaconCacheManager.getInstance().update(item);
+        BeaconCacheManager.getInstance().save(item);
     }
 
     public void setEditMode(boolean editable){

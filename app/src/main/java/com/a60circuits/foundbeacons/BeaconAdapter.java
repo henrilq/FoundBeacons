@@ -1,6 +1,7 @@
 package com.a60circuits.foundbeacons;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -12,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
+import com.a60circuits.foundbeacons.cache.CacheVariable;
 import com.jaalee.sdk.Beacon;
 
 import java.util.List;
@@ -65,9 +67,8 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconViewHolder>{
                     holder.editText.requestFocus();
                     holder.editText.setSelection(holder.editText.getText().length());
                 }else{
-                    beacon.setName(holder.editText.getText().toString());
-                    holder.editButton.setColorFilter(null);
-                    BeaconCacheManager.getInstance().save(beacon);
+                    holder.updateBeacon();
+                    redirectToMap(beacon, holder.editText.getContext());
                 }
             }
         });
@@ -77,7 +78,7 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconViewHolder>{
                 if(hasFocus){
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
                 }else{
-                    beacon.setName(holder.editText.getText().toString());
+                    holder.editText.setText(beacon.getName());
                     holder.editButton.setColorFilter(null);
                     holder.editText.setEnabled(false);
                 }
@@ -91,6 +92,7 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconViewHolder>{
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     holder.updateBeacon();
                     notifyDataSetChanged();
+                    redirectToMap(beacon, holder.editText.getContext());
                     res = true;
                 }
                 return res;
@@ -103,6 +105,15 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconViewHolder>{
     @Override
     public int getItemCount() {
         return beacons.size();
+    }
+
+    private void redirectToMap(Beacon beacon, Context context){
+        if(beacon != null && ! beacon.getName().isEmpty() && CacheVariable.getBoolean(MainActivity.FIRST_RENAMING, true)){
+            CacheVariable.put(MainActivity.FIRST_RENAMING, false);
+            ContextWrapper ctx = (ContextWrapper)context;
+            MainActivity mainActivity = (MainActivity) ctx.getBaseContext();
+            mainActivity.replaceFragment(mainActivity.getMapButton());
+        }
     }
 
 }
