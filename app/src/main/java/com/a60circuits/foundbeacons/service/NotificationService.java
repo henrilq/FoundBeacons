@@ -96,9 +96,9 @@ public class NotificationService extends JobService{
     }
 
     private void sendNotification(List<Beacon> beacons){
-        String title = "Found : accessoire introuvable";
+        String title = "Found : accessoire trop éloigné";
         if(beacons.size() > 1){
-            title = "Found : accessoires introuvables";
+            title = "Found : accessoires trop éloignés";
         }
 
         StringBuilder content = new StringBuilder();
