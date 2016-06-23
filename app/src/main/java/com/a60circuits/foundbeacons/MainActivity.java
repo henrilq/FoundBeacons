@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
         ab.setDisplayShowTitleEnabled(false);
-        handler.post(new Runnable() {
+        toolbar.post(new Runnable() {
             @Override
             public void run() {
                 int arrowWidth = 0;
