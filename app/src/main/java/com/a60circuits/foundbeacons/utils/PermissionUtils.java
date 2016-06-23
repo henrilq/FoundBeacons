@@ -27,15 +27,7 @@ public class PermissionUtils {
 
     public static void requestLocationAndBluetooth(Activity activity){
         requestPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION);
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter == null) {
-            Toast.makeText(activity.getBaseContext(),activity.getResources().getString(R.string.bluetooth_not_supported), Toast.LENGTH_LONG).show();
-        } else {
-            if (!mBluetoothAdapter.isEnabled()) {
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                activity.startActivityForResult(enableBtIntent, 1);
-            }
-        }
+        requestBluetooth(activity);
     }
 
     public static boolean requestBluetooth(Activity activity){

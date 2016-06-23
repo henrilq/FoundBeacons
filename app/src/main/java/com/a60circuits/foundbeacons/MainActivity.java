@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
         logo = (View) tb.findViewById(R.id.toolbar_logo);
 
         initMapButton();
-        initPermissions();
         initBeaconCache();
         initBroadcastReceiver();
         initListeners();
@@ -237,10 +236,6 @@ public class MainActivity extends AppCompatActivity {
         map.put(button, Arrays.asList(fragments));
     }
 
-    private void initPermissions(){
-        PermissionUtils.requestLocationAndBluetooth(this);
-    }
-
     private void initBroadcastReceiver(){
         broadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -287,7 +282,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void startScan(){
         if(! CacheVariable.getBoolean(SCANNING)){
-            if(PermissionUtils.requestBluetooth(this)){
+            if(PermissionUtils.requestBluetooth(this) || CacheVariable.getBoolean(START_FIRST_SCAN)){
                 CacheVariable.put(SCANNING, true);
                 replaceFragment(objectsButton, null, true);
 
