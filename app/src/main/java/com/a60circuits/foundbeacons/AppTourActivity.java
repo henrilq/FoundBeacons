@@ -29,8 +29,8 @@ public class AppTourActivity extends CustomAppTour{
         addSlide(createSlide(R.drawable.tuto_1), customSlideColor);
         addSlide(createSlide(R.drawable.tuto_2), customSlideColor);
         addSlide(createSlide(R.drawable.tuto_3), customSlideColor);
+        addSlide(createSlide(R.drawable.tuto_5), customSlideColor);//switch don't want to change file name
         addSlide(createSlide(R.drawable.tuto_4), customSlideColor);
-        addSlide(createSlide(R.drawable.tuto_5), customSlideColor);
         addSlide(createSlide(R.drawable.tuto_6), customSlideColor);
 
         //Customize tour
