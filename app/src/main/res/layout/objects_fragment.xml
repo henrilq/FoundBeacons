@@ -51,7 +51,8 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textAlignment="center"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="11dp"
+        android:letterSpacing="0.1"
         android:text="@string/new_beacon_instruct"
         android:layout_above="@+id/firstLine"
         android:visibility="invisible"/>
