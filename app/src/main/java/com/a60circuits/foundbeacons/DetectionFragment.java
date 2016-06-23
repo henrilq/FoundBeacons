@@ -78,7 +78,10 @@ public class DetectionFragment extends ReplacerFragment {
         final ImageButton lastPositionButton = (ImageButton) view.findViewById(R.id.lastPositionButton);
         LayoutUtils.overLapView(detectionButton,lastPositionButton,false);
         Typeface medFont = Typeface.createFromAsset(getActivity().getAssets(),getResources().getString(R.string.font_brandon_med));
+        textView.setTypeface(medFont);
         unitView.setTypeface(medFont);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
+
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -131,8 +134,7 @@ public class DetectionFragment extends ReplacerFragment {
                     textView.setText("");
                     Typeface lightFont = Typeface.createFromAsset(getActivity().getAssets(),getResources().getString(R.string.font_brandon_light));
                     textView.setTypeface(lightFont);
-                    textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 60);
-                    textView.setTextColor(ContextCompat.getColor(getContext(), R.color.letterGrey));
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 50);
                     loadingView.setVisibility(View.VISIBLE);
                     startDetectionService();
                 }
@@ -245,8 +247,7 @@ public class DetectionFragment extends ReplacerFragment {
                     unitView.setVisibility(View.INVISIBLE);
                     textView.setText(getResources().getString(R.string.run_detection));
                     textView.setTypeface(Typeface.createFromAsset(getActivity().getAssets(),getResources().getString(R.string.font_brandon_med)));
-                    textView.setTextColor(ContextCompat.getColor(getContext(), R.color.circleGrey));
-                    textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 35);
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
                     detectionStarted = false;
                 }
             }
