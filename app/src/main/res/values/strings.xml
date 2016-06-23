@@ -16,6 +16,7 @@
     <string name="default_beacon_name">NOUVEL ACCESSOIRE</string>
 
     <string name="run_detection">LOCALISER</string>
+    <string name="detection_unit">MÈTRES</string>
     <string name="no_beacon_saved">Aucun accessoire enregistré</string>
     <string name="no_gps_data">L\'accessoire n\'a pas de coordonnées gps enregistrées</string>
     <string name="detection_started">Recherche Activée</string>
@@ -28,6 +29,7 @@
 
     <string name="font_brandon_bld">fonts/Brandon_bld.otf</string>
     <string name="font_brandon_med">fonts/Brandon_med.otf</string>
+    <string name="font_brandon_light">fonts/Brandon_light.otf</string>
 
     <string name="settings_title">PARAMÈTRES</string>
     <string name="settings_location">LOCALISATION GPS</string>

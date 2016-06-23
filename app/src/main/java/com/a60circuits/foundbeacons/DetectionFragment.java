@@ -15,6 +15,7 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,7 @@ public class DetectionFragment extends ReplacerFragment {
     private ProgressBar progressBar;
     private TextView beaconName;
     private TextView textView;
+    private TextView unitView;
     private int animationDuration = 300;
 
     private int currentPosition;
@@ -69,13 +71,14 @@ public class DetectionFragment extends ReplacerFragment {
         View view = inflater.inflate(R.layout.detection_fragment,container,false);
         progressBar = (ProgressBar) view.findViewById(R.id.circleProgress);
         textView = (TextView) view.findViewById(R.id.nbText);
+        unitView = (TextView) view.findViewById(R.id.unitText);
         loadingView = (ImageView) view.findViewById(R.id.loading);
 
         final ImageButton detectionButton = (ImageButton) view.findViewById(R.id.detectionButton);
         final ImageButton lastPositionButton = (ImageButton) view.findViewById(R.id.lastPositionButton);
         LayoutUtils.overLapView(detectionButton,lastPositionButton,false);
-        Typeface face = Typeface.createFromAsset(getActivity().getAssets(),getResources().getString(R.string.font_brandon_med));
-
+        Typeface medFont = Typeface.createFromAsset(getActivity().getAssets(),getResources().getString(R.string.font_brandon_med));
+        unitView.setTypeface(medFont);
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -89,7 +92,7 @@ public class DetectionFragment extends ReplacerFragment {
         }
         if(beacon != null){
             beaconName = (TextView) view.findViewById(R.id.beaconName);
-            beaconName.setTypeface(face);
+            beaconName.setTypeface(medFont);
             beaconName.setText(beacon.getName());
         }
         initBroadcastReceiver();
@@ -126,6 +129,10 @@ public class DetectionFragment extends ReplacerFragment {
                     Toast.makeText(getActivity().getBaseContext(),getResources().getString(R.string.no_beacon_saved), Toast.LENGTH_SHORT).show();
                 }else if(!detectionStarted){
                     textView.setText("");
+                    Typeface lightFont = Typeface.createFromAsset(getActivity().getAssets(),getResources().getString(R.string.font_brandon_light));
+                    textView.setTypeface(lightFont);
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 60);
+                    textView.setTextColor(ContextCompat.getColor(getContext(), R.color.circleBlue));
                     loadingView.setVisibility(View.VISIBLE);
                     startDetectionService();
                 }
@@ -205,15 +212,8 @@ public class DetectionFragment extends ReplacerFragment {
 
     private void updateTextView(String distance, String unit){
         loadingView.setVisibility(View.INVISIBLE);
-        String textValue = distance + "\n"+unit;
-        SpannableString ss1=  new SpannableString(textValue);
-        ss1.setSpan(new RelativeSizeSpan(2f), 0,distance.length(), 0); // set size
-        Context context = getContext();
-        if(context != null){
-            ss1.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context,R.color.circleGrey)), 0, textValue.length(), 0);// set color
-        }
-        ss1.setSpan(new RelativeSizeSpan(0.7f), distance.length(),textValue.length(), 0);
-        textView.setText(ss1);
+        unitView.setVisibility(View.VISIBLE);
+        textView.setText(distance);
     }
 
     private String roundToString(double val, int nbDecimals){
@@ -242,7 +242,11 @@ public class DetectionFragment extends ReplacerFragment {
                 if(isAdded()){
                     loadingView.setVisibility(View.INVISIBLE);
                     updateValue(MAX_DISTANCE);
+                    unitView.setVisibility(View.INVISIBLE);
                     textView.setText(getResources().getString(R.string.run_detection));
+                    textView.setTypeface(Typeface.createFromAsset(getActivity().getAssets(),getResources().getString(R.string.font_brandon_med)));
+                    textView.setTextColor(ContextCompat.getColor(getContext(), R.color.circleGrey));
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 35);
                     detectionStarted = false;
                 }
             }
