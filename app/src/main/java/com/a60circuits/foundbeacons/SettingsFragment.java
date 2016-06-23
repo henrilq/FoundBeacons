@@ -108,6 +108,11 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 SharedPreferencesUtils.putBoolean(getActivity(), NOTIFICATION_ENABLED, notificationSwitch.isChecked());
+                if(notificationSwitch.isChecked()){
+                    NotificationServiceManager.getInstance().startNotificationService();
+                }else{
+                    NotificationServiceManager.getInstance().killNoficationService();
+                }
             }
         });
 
