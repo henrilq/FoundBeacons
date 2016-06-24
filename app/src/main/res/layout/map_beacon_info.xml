@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/mapInfoFontColor"
-            android:background="@color/colorLightBlue" />
+            android:background="@null" />
 
     </RelativeLayout>
 
