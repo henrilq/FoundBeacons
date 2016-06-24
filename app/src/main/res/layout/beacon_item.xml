@@ -16,7 +16,7 @@
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:textColor="@color/colorTextItemBlue"
-        android:background="@color/colorLightBlue"
+        android:background="@null"
         android:singleLine="true"
         android:letterSpacing="0.1"
         android:textSize="17dp"
