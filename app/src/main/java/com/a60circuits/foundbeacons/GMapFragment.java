@@ -1,7 +1,8 @@
 package com.a60circuits.foundbeacons;
 
 import android.Manifest;
-import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
@@ -161,14 +162,9 @@ public class GMapFragment extends ReplacerFragment implements GoogleMap.OnMarker
         Date date = beacon.getDate();
         String dateformated = "LE "+DATE_FORMAT.format(date)+" A "+HOUR_FORMAT.format(date);
         LatLng latLng = new LatLng(beacon.getLatitude(), beacon.getLongitude());
-
-        /*LevelListDrawable d=(LevelListDrawable) getResources().getDrawable(R.drawable.pin2x, null);
-        d.setLevel(1234);
-        BitmapDrawable bd=(BitmapDrawable) d.getCurrent();
-        Bitmap b=bd.getBitmap();
-        Bitmap bhalfsize=Bitmap.createScaledBitmap(b, b.getWidth()/2,b.getHeight()/2, false);*/
-        BitmapDescriptor descriptor = BitmapDescriptorFactory.fromResource(R.drawable.pin);
-        BitmapDescriptor imageMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
+        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.pin3x);
+        Bitmap reduced=Bitmap.createScaledBitmap(bitmap, bitmap.getWidth()/3,bitmap.getHeight()/3, false);
+        BitmapDescriptor descriptor = BitmapDescriptorFactory.fromBitmap(reduced);
         MarkerOptions marker = new MarkerOptions().title(beacon.getName()).snippet(dateformated).icon(descriptor).position(latLng);
         return marker;
     }
