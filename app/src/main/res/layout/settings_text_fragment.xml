@@ -26,7 +26,7 @@
                 android:textColor="@color/colorSelectionBlue"
                 android:text="@string/close"
                 android:layout_alignParentRight="true"
-                android:visibility="invisible"
+                android:visibility="gone"
                 android:background="@null"/>
 
             <TextView
