@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -28,6 +29,7 @@ import com.a60circuits.foundbeacons.dao.BeaconDao;
 import com.a60circuits.foundbeacons.service.BeaconScannerService;
 import com.a60circuits.foundbeacons.service.NotificationServiceManager;
 import com.a60circuits.foundbeacons.utils.PermissionUtils;
+import com.google.android.gms.maps.MapView;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton mapButton;
     private ImageButton objectsButton;
     private View logo;
+    private View arrow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         initBeaconCache();
         initBroadcastReceiver();
         initListeners();
+        initMap();
 
         NotificationServiceManager.getInstance().setActivity(this);
         Object lastPosition = CacheVariable.get(BUTTON_POSITION);
@@ -99,17 +103,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initToolbar(final Toolbar toolbar){
-        final ActionBar ab = getSupportActionBar();
-        ab.setDisplayShowHomeEnabled(true); // show or hide the default home button
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
-        ab.setDisplayShowTitleEnabled(false);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(true); // show or hide the default home button
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
+        actionBar.setDisplayShowTitleEnabled(false);
         toolbar.post(new Runnable() {
             @Override
             public void run() {
                 int arrowWidth = 0;
                 if(toolbar.getChildCount() > 1){
-                    arrowWidth = toolbar.getChildAt(1).getWidth();
+                    arrow = toolbar.getChildAt(1);
+                    arrowWidth = arrow.getWidth();
+                    arrow.setVisibility(View.INVISIBLE);
                 }
                 float leftMargin = (toolbar.getWidth() - logo.getWidth()) /2;
                 logo.setX(leftMargin-arrowWidth);
@@ -139,6 +145,23 @@ public class MainActivity extends AppCompatActivity {
                 replaceFragment(objectsButton);
             }
         });
+    }
+
+    private void initMap(){
+        //ugly but fix first loading map slowness
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    MapView mv = new MapView(getApplicationContext());
+                    mv.onCreate(null);
+                    mv.onPause();
+                    mv.onDestroy();
+                }catch (Exception ignored){
+                    Log.w(TAG, ignored);
+                }
+            }
+        }).start();
     }
 
     @Override
@@ -354,5 +377,9 @@ public class MainActivity extends AppCompatActivity {
 
     public ImageButton getObjectsButton() {
         return objectsButton;
+    }
+
+    public View getArrow() {
+        return arrow;
     }
 }

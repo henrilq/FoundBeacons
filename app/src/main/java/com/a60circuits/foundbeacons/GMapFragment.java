@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -22,10 +23,13 @@ import com.a60circuits.foundbeacons.utils.LocationUtils;
 import com.a60circuits.foundbeacons.utils.PermissionUtils;
 import com.a60circuits.foundbeacons.utils.ResourcesUtils;
 import com.a60circuits.foundbeacons.utils.SharedPreferencesUtils;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.internal.IGoogleMapDelegate;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -43,7 +47,6 @@ public class GMapFragment extends ReplacerFragment implements GoogleMap.OnMarker
 
     public static final String BEACON_ARGUMENT = "beacon";
     private MapView mMapView;
-    private GoogleMap googleMap;
     private Beacon beacon;
     private Map<Marker, Beacon> markerToBeacon = new HashMap<>();
     private Marker selectedMarker;
@@ -102,51 +105,66 @@ public class GMapFragment extends ReplacerFragment implements GoogleMap.OnMarker
             mMapView.onResume();// needed to get the map to display immediately
             try {
                 MapsInitializer.initialize(getActivity().getApplicationContext());
-                googleMap = mMapView.getMap();
-                if (PermissionUtils.checkPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)){
-                    //googleMap.setMyLocationEnabled(true);
-                }
-                googleMap.setOnMarkerClickListener(this);
-                googleMap.setPadding(0, 0, 0, 200);//Move up itinerary button
-                googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                mMapView.getMapAsync(new OnMapReadyCallback() {
                     @Override
-                    public View getInfoWindow(Marker marker) {
-                        View view = getLayoutInflater(new Bundle()).inflate(R.layout.map_beacon_info, null);
-                        TextView textView = (TextView) view.findViewById(R.id.text);
-                        textView.setText(marker.getTitle()+"\n"+marker.getSnippet());
-                        Typeface face = ResourcesUtils.getTypeFace(getActivity(),R.string.font_brandon_bld);
-                        textView.setTypeface(face);
-                        return view;
-                    }
+                    public void onMapReady(final GoogleMap googleMap) {
+                        googleMap.getUiSettings().setScrollGesturesEnabled(true);
+                        googleMap.setOnMarkerClickListener(GMapFragment.this);
+                        googleMap.setPadding(0, 0, 0, 200);//Move up itinerary button
+                        googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                            @Override
+                            public View getInfoWindow(Marker marker) {
+                                View view = getLayoutInflater(new Bundle()).inflate(R.layout.map_beacon_info, null);
+                                TextView textView = (TextView) view.findViewById(R.id.text);
+                                textView.setText(marker.getTitle()+"\n"+marker.getSnippet());
+                                Typeface face = ResourcesUtils.getTypeFace(getActivity(),R.string.font_brandon_bld);
+                                textView.setTypeface(face);
+                                return view;
+                            }
 
-                    @Override
-                    public View getInfoContents(Marker marker) {
-                        return null;
+                            @Override
+                            public View getInfoContents(Marker marker) {
+                                return null;
+                            }
+                        });
+                        addMarker(googleMap, beacon);
+
                     }
                 });
-
-                LatLng myPosition = null;
-                Location location = LocationUtils.getLastKnownLocation(getActivity());
-                if(location != null){
-                    myPosition = new LatLng(location.getLatitude(), location.getLongitude());
-                }
-
-                if(beacon != null){
-                    googleMap.addMarker(createMarker(beacon));
-                    myPosition = new LatLng(beacon.getLatitude(), beacon.getLongitude());
-                }else{
-                    Toast.makeText(getActivity().getBaseContext(),getResources().getString(R.string.no_beacon_saved), Toast.LENGTH_SHORT).show();
-                }
-                if(myPosition != null){
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
-                    googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-                }
             } catch (Exception e) {
                 Log.e("","",e);
             }
         }
         return v;
     }
+
+    private void addMarker(final GoogleMap googleMap, final Beacon beacon){
+        AsyncTask<String, Void, String> asyncTask = new AsyncTask<String, Void, String>() {
+            private BitmapDescriptor descriptor;
+
+            @Override
+            protected String doInBackground(String... params) {
+                Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.pin3x);
+                Bitmap reduced=Bitmap.createScaledBitmap(bitmap, bitmap.getWidth()/3,bitmap.getHeight()/3, false);
+                descriptor = BitmapDescriptorFactory.fromBitmap(reduced);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                Date date = beacon.getDate();
+                LatLng latLng = new LatLng(beacon.getLatitude(), beacon.getLongitude());
+                String dateformated = "LE "+DATE_FORMAT.format(date)+" A "+HOUR_FORMAT.format(date);
+                MarkerOptions marker = new MarkerOptions().title(beacon.getName()).snippet(dateformated).icon(descriptor).position(latLng);
+                googleMap.addMarker(marker);
+                LatLng myPosition = new LatLng(beacon.getLatitude(), beacon.getLongitude());
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
+                googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+            }
+        };
+        asyncTask.execute();
+    }
+
 
     private void goToDetectionScreen(){
         DetectionFragment detectionFragment = new DetectionFragment();
@@ -156,17 +174,6 @@ public class GMapFragment extends ReplacerFragment implements GoogleMap.OnMarker
             detectionFragment.setArguments(bundle);
         }
         GMapFragment.super.replaceFragment(detectionFragment);
-    }
-
-    private MarkerOptions createMarker(Beacon beacon){
-        Date date = beacon.getDate();
-        String dateformated = "LE "+DATE_FORMAT.format(date)+" A "+HOUR_FORMAT.format(date);
-        LatLng latLng = new LatLng(beacon.getLatitude(), beacon.getLongitude());
-        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.pin3x);
-        Bitmap reduced=Bitmap.createScaledBitmap(bitmap, bitmap.getWidth()/3,bitmap.getHeight()/3, false);
-        BitmapDescriptor descriptor = BitmapDescriptorFactory.fromBitmap(reduced);
-        MarkerOptions marker = new MarkerOptions().title(beacon.getName()).snippet(dateformated).icon(descriptor).position(latLng);
-        return marker;
     }
 
     @Override
@@ -203,10 +210,12 @@ public class GMapFragment extends ReplacerFragment implements GoogleMap.OnMarker
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Beacon beacon = markerToBeacon.get(marker);
+        /*Beacon beacon = markerToBeacon.get(marker);
         if(beacon != null){
             this.beacon = beacon;
-        }
+        }*/
         return false;
     }
+
+
 }
