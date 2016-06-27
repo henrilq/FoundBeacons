@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -21,6 +22,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
@@ -61,7 +64,9 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton mapButton;
     private ImageButton objectsButton;
     private View logo;
-    private View arrow;
+    private View backButton;
+    private ImageView backButtonArrow;
+    private TextView backButtonText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        backButton = toolbar.findViewById(R.id.back_button);
+        backButtonArrow = (ImageView) toolbar.findViewById(R.id.back_button_arrow);
+        backButtonText = (TextView) toolbar.findViewById(R.id.back_button_text);
         setSupportActionBar(toolbar);
 
         handler = new Handler();
@@ -105,10 +113,13 @@ public class MainActivity extends AppCompatActivity {
     private void initToolbar(final Toolbar toolbar){
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(true); // show or hide the default home button
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(false);
         actionBar.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
         actionBar.setDisplayShowTitleEnabled(false);
-        toolbar.post(new Runnable() {
+        backButtonArrow.setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.colorFoundLogo));
+        backButtonText.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.colorFoundLogo));
+        backButtonText.setTypeface(Typeface.createFromAsset(getAssets(),getResources().getString(R.string.font_brandon_med)));
+        /*toolbar.post(new Runnable() {
             @Override
             public void run() {
                 int arrowWidth = 0;
@@ -120,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 float leftMargin = (toolbar.getWidth() - logo.getWidth()) /2;
                 logo.setX(leftMargin-arrowWidth);
             }
-        });
+        });*/
     }
 
     public void initListeners(){
@@ -143,6 +154,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 replaceFragment(objectsButton);
+            }
+        });
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replaceFragment(settingsButton, null, true);
             }
         });
     }
@@ -215,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void replaceFragment(ImageButton button, Fragment fragment, Bundle bundle, boolean forceReplacement){
         if(selectedButton == null || ! button.equals(selectedButton) || forceReplacement){
+            showArrow(false);
             if(bundle != null){
                 fragment.setArguments(bundle);
             }
@@ -379,7 +397,11 @@ public class MainActivity extends AppCompatActivity {
         return objectsButton;
     }
 
-    public View getArrow() {
-        return arrow;
+    public void showArrow(boolean show) {
+        if(show){
+            backButton.setVisibility(View.VISIBLE);
+        }else{
+            backButton.setVisibility(View.INVISIBLE);
+        }
     }
 }

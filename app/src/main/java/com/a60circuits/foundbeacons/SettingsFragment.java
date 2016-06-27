@@ -125,11 +125,6 @@ public class SettingsFragment extends Fragment {
                 }
             }
         });
-
-        MainActivity mainActivity = (MainActivity) getActivity();
-        if(mainActivity.getArrow() != null){
-            mainActivity.getArrow().setVisibility(View.VISIBLE);
-        }
         return view;
     }
 }

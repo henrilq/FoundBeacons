@@ -4,21 +4,51 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
+    android:layout_height="?attr/colorPrimary"
     android:background="?attr/colorPrimary"
     app:theme="@style/ToolbarColoredArrow"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
     <android.support.percent.PercentRelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@null">
 
+        <LinearLayout
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:visibility="invisible">
+            <ImageButton
+                android:id="@+id/back_button_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:src="@drawable/arrow"
+                android:text="Retour"
+                android:minHeight="0dp"
+                android:padding="5dp"
+                android:scaleType="fitStart"
+                android:adjustViewBounds="true"
+                android:background="@null"/>
+
+            <TextView
+                android:id="@+id/back_button_text"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:textSize="17sp"
+                android:gravity="center"
+                android:text="Retour"/>
+        </LinearLayout>
+
+        
         <!-- This is a centered logo -->
         <ImageView
             android:id="@+id/toolbar_logo"
             app:layout_widthPercent="60%"
             android:src="@drawable/found3x"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_centerInParent="true"
             android:layout_width="0dp"/>
 
         <ImageButton

@@ -31,6 +31,8 @@ public class SettingsTextFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settings_text_fragment,container,false);
+        MainActivity activity = (MainActivity) getActivity();
+        activity.showArrow(true);
         Bundle args = getArguments();
         if(args != null){
             boolean isFaq = args.getBoolean(FAQ);
