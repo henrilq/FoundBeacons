@@ -45,7 +45,7 @@
         <!-- This is a centered logo -->
         <ImageView
             android:id="@+id/toolbar_logo"
-            app:layout_widthPercent="60%"
+            app:layout_widthPercent="55%"
             android:src="@drawable/found3x"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
