@@ -5,11 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
-import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -17,7 +15,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -119,19 +116,6 @@ public class MainActivity extends AppCompatActivity {
         backButtonArrow.setColorFilter(ContextCompat.getColor(getApplicationContext(),R.color.colorFoundLogo));
         backButtonText.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.colorFoundLogo));
         backButtonText.setTypeface(Typeface.createFromAsset(getAssets(),getResources().getString(R.string.font_brandon_med)));
-        /*toolbar.post(new Runnable() {
-            @Override
-            public void run() {
-                int arrowWidth = 0;
-                if(toolbar.getChildCount() > 1){
-                    arrow = toolbar.getChildAt(1);
-                    arrowWidth = arrow.getWidth();
-                    arrow.setVisibility(View.INVISIBLE);
-                }
-                float leftMargin = (toolbar.getWidth() - logo.getWidth()) /2;
-                logo.setX(leftMargin-arrowWidth);
-            }
-        });*/
     }
 
     public void initListeners(){
@@ -159,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                replaceFragment(settingsButton, null, true);
+                getSupportFragmentManager().popBackStack();
             }
         });
     }
@@ -198,6 +182,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+            if(fragment != null){
+                showArrow(fragment.getClass().isAssignableFrom(SettingsTextFragment.class));
+            }
+
             if(fragment != null){
                 for(Map.Entry<ImageButton, List<Class<? extends Fragment>>> entry: map.entrySet()){
                     for(Class<?> clazz: entry.getValue()){
