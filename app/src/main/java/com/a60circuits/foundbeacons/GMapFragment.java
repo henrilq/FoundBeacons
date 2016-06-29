@@ -87,6 +87,7 @@ public class GMapFragment extends ReplacerFragment implements GoogleMap.OnMarker
         }else if(beacon.getLatitude() == 0.0 && beacon.getLongitude() == 0.0){
             goToDetectionScreen();
         }else{
+            LocationUtils.removeListeners();
             mMapView = (MapView) v.findViewById(R.id.mapView);
             detectionButton = (ImageButton) v.findViewById(R.id.detectionButton);
             lastPositionButton = (ImageButton) v.findViewById(R.id.lastPositionButton);
