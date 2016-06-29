@@ -13,6 +13,7 @@ import com.a60circuits.foundbeacons.MainActivity;
 import com.a60circuits.foundbeacons.R;
 import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.a60circuits.foundbeacons.cache.CacheVariable;
+import com.a60circuits.foundbeacons.factory.BeaconManagerFactory;
 import com.jaalee.sdk.Beacon;
 import com.jaalee.sdk.BeaconManager;
 import com.jaalee.sdk.RangingListener;
@@ -66,7 +67,7 @@ public class BeaconScannerService extends Service {
         this.startTime = System.currentTimeMillis();
         boolean isDetectionMode = intent.getBooleanExtra(DETECTION_MODE, false);
         boolean isConnectionMode = intent.getBooleanExtra(CONNECTION_MODE, false);
-        beaconManager = new BeaconManager(getApplicationContext());
+        beaconManager = BeaconManagerFactory.getBeaconManager(getApplicationContext());
         if(isConnectionMode){
             beaconManager.setRangingListener(createConnectionRangingListener());
             broadcastIntent = new Intent();
