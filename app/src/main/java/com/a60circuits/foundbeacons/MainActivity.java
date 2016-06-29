@@ -28,6 +28,7 @@ import com.a60circuits.foundbeacons.cache.CacheVariable;
 import com.a60circuits.foundbeacons.dao.BeaconDao;
 import com.a60circuits.foundbeacons.service.BeaconScannerService;
 import com.a60circuits.foundbeacons.service.NotificationServiceManager;
+import com.a60circuits.foundbeacons.utils.LocationUtils;
 import com.a60circuits.foundbeacons.utils.PermissionUtils;
 import com.google.android.gms.maps.MapView;
 
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        LocationUtils.requestLocationUpdates(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -159,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                     mv.onPause();
                     mv.onDestroy();
                 }catch (Exception ignored){
-                    Log.w(TAG, ignored);
+                    //Log.w(TAG, ignored);
                 }
             }
         }).start();

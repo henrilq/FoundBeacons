@@ -1,7 +1,6 @@
 package com.a60circuits.foundbeacons;
 
 import android.Manifest;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,10 +13,10 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.a60circuits.foundbeacons.service.NotificationServiceManager;
 import com.a60circuits.foundbeacons.utils.LayoutUtils;
+import com.a60circuits.foundbeacons.utils.LocationUtils;
 import com.a60circuits.foundbeacons.utils.PermissionUtils;
 import com.a60circuits.foundbeacons.utils.ResourcesUtils;
 import com.a60circuits.foundbeacons.utils.SharedPreferencesUtils;
@@ -121,7 +120,9 @@ public class SettingsFragment extends Fragment {
             public void onClick(View v) {
                 SharedPreferencesUtils.putBoolean(getActivity(), GPS_ENABLED, gpsSwitch.isChecked());
                 if(gpsSwitch.isChecked()){
-                    PermissionUtils.requestPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
+                    LocationUtils.requestLocationUpdates(getActivity());
+                }else{
+                    LocationUtils.removeListeners();
                 }
             }
         });

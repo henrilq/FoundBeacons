@@ -40,6 +40,7 @@ import java.util.Date;
  */
 public class DetectionFragment extends ReplacerFragment {
 
+    private static final String TAG = "DetectionFragment";
     public static final String BEACON_ARGUMENT = "Beacon";
     public static final String DETECTION_RESULT = "detectionResult";
 
@@ -257,17 +258,22 @@ public class DetectionFragment extends ReplacerFragment {
     @Override
     public void onPause() {
         reset();
+        LocationUtils.removeListeners();
         super.onPause();
     }
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
-        MainActivity mainActivity = (MainActivity)getActivity();
-        mainActivity.unregisterReceiver(broadcastReceiver);
-        if(beacon != null){
-            mainActivity.stopScan();
+        try{
+            MainActivity mainActivity = (MainActivity)getActivity();
+            if(beacon != null){
+                mainActivity.stopScan();
+            }
+            mainActivity.unregisterReceiver(broadcastReceiver);
+        }catch (Exception e){
+            Log.e(TAG,"", e);
         }
+        super.onDestroyView();
     }
 
 }
