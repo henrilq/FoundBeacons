@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.a60circuits.foundbeacons">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -20,7 +21,9 @@
 
     <uses-sdk android:minSdkVersion="21" />
     <!-- Declaration that this app is usable on phones with Bluetooth Low Energy. -->
-    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -33,13 +36,15 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBhvGa1347CRkGyo6JJvVPKgJ7nYWZJk3E"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBhvGa1347CRkGyo6JJvVPKgJ7nYWZJk3E" />
 
         <activity
             android:name=".SpashScreenActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -49,62 +54,30 @@
         <activity
             android:name=".AppTourActivity"
             android:label="@string/app_name"
-            android:theme="@style/CustomFullScreenTheme">
-        </activity>
+            android:theme="@style/CustomFullScreenTheme"></activity>
 
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:windowSoftInputMode="adjustPan"
-            >
-        </activity>
+            android:windowSoftInputMode="adjustPan"></activity>
 
         <!-- Jaalee service responsible for scanning beacons.-->
-        <service android:name="com.jaalee.sdk.service.BeaconService"
-            android:exported="false"/>
-        <!--
-                <service
-        android:name=".service.NotificationService"
-        android:label="Notifications" >
-    </service>-->
-
-                <service android:name=".service.NotificationService"
-                    android:permission="android.permission.BIND_JOB_SERVICE"
-                    android:exported="true"
-                    ></service>
+        <service
+            android:name="com.jaalee.sdk.service.BeaconService"
+            android:exported="false" />
+        <service
+            android:name=".service.NotificationService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"></service>
 
         <service
             android:name=".service.BeaconScannerService"
-            android:label="BeaconsScannerService" >
-        </service>
+            android:label="BeaconsScannerService"></service>
 
         <service
             android:name=".service.BeaconConnectionService"
-            android:label="BeaconConnectionService" >
-        </service>
-                <!--
-                     The API key for Google Maps-based APIs is defined as a string resource.
-                     (See the file "res/values/google_maps_api.xml").
-                     Note that the API key is linked to the encryption key used to sign the APK.
-                     You need a different API key for each encryption key, including the release key that is used to
-                     sign the APK for publishing.
-                     You can define the keys for the debug and release targets in src/debug/ and src/release/.
-                -->
+            android:label="BeaconConnectionService"></service>
 
-        <!--
-                <activity
-                    android:name=".Map"
-                    android:label="@string/title_activity_maps">
-                    <intent-filter>
-                        <action android:name="android.intent.action.MAIN" />
-
-                        <category android:name="android.intent.category.LAUNCHER" />
-                    </intent-filter>
-                </activity>-->
-
-                <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="93f7e49ea4a0dc7a7d4d399c8c44d2f67dc896e8" />
     </application>
 
-        </manifest>
+</manifest>
