@@ -2,12 +2,13 @@ package com.a60circuits.foundbeacons.cache;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by zoz on 28/05/2016.
  */
 public class CacheVariable {
-    private Map<String, Object> map = new HashMap<>();
+    private Map<String, Object> map = new ConcurrentHashMap<>();
 
     public static CacheVariable getInstance(){
         return CacheVariableHolder.instance;
