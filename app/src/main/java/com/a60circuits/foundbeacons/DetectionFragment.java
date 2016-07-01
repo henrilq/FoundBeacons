@@ -242,14 +242,18 @@ public class DetectionFragment extends ReplacerFragment {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                if(isAdded()){
-                    loadingView.setVisibility(View.INVISIBLE);
-                    updateValue(MAX_DISTANCE);
-                    unitView.setVisibility(View.INVISIBLE);
-                    textView.setText(getResources().getString(R.string.run_detection));
-                    textView.setTypeface(Typeface.createFromAsset(getActivity().getAssets(),getResources().getString(R.string.font_brandon_med)));
-                    textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
-                    detectionStarted = false;
+                try{
+                    if(isAdded()){
+                        loadingView.setVisibility(View.INVISIBLE);
+                        updateValue(MAX_DISTANCE);
+                        unitView.setVisibility(View.INVISIBLE);
+                        textView.setText(getResources().getString(R.string.run_detection));
+                        textView.setTypeface(Typeface.createFromAsset(getActivity().getAssets(),getResources().getString(R.string.font_brandon_med)));
+                        textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
+                        detectionStarted = false;
+                    }
+                }catch(Exception e){
+                    Log.e(TAG, "", e);
                 }
             }
         });

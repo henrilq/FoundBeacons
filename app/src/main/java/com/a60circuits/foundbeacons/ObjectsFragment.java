@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,9 +31,10 @@ import pl.droidsonroids.gif.GifImageView;
 /**
  * Created by zoz on 17/05/2016.
  */
-public class ObjectsFragment extends ReplacerFragment implements Observer{
+public class ObjectsFragment extends ReplacerFragment implements Observer {
 
     private static final Region ALL_BEACONS_REGION = new Region("rid", null, null, null);
+    private static final String TAG = "ObjectsFragment";
     public final static String SCANNING = "Scanning";
 
     private RecyclerView beaconsView;
@@ -58,28 +60,28 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.objects_fragment,container,false);
+        View view = inflater.inflate(R.layout.objects_fragment, container, false);
         BeaconCacheManager.getInstance().addObserver(this);
-        mainActivity = (MainActivity)getActivity();
+        mainActivity = (MainActivity) getActivity();
         beacons = new ArrayList<>();
         adapter = new BeaconAdapter(beacons);
         beaconsView = (RecyclerView) view.findViewById(R.id.beaconsView);
         beaconsView.setHasFixedSize(true);
-        loader = (GifImageView)view.findViewById(R.id.loader);
+        loader = (GifImageView) view.findViewById(R.id.loader);
 
-        Typeface face = Typeface.createFromAsset(getActivity().getAssets(),getResources().getString(R.string.font_brandon_med));
-        text = (TextView)view.findViewById(R.id.text);
+        Typeface face = Typeface.createFromAsset(getActivity().getAssets(), getResources().getString(R.string.font_brandon_med));
+        text = (TextView) view.findViewById(R.id.text);
         text.setTypeface(face);
 
-        line = (View)view.findViewById(R.id.firstLine);
-        scanButton = (ImageButton)view.findViewById(R.id.scanButton);
+        line = (View) view.findViewById(R.id.firstLine);
+        scanButton = (ImageButton) view.findViewById(R.id.scanButton);
 
         layoutManager = new LinearLayoutManager(this.getContext());
         beaconsView.setLayoutManager(layoutManager);
         beaconsView.setAdapter(adapter);
 
         List<Beacon> savedBeacons = BeaconCacheManager.getInstance().getData();
-        if(savedBeacons != null && ! savedBeacons.isEmpty()){
+        if (savedBeacons != null && !savedBeacons.isEmpty()) {
             setBeacons(savedBeacons);
         }
         initListeners();
@@ -88,15 +90,22 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
         return view;
     }
 
-    private void initListeners(){
+    private void initListeners() {
         beaconsView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
-            @Override public void onItemClick(View view, int position) {
-                Beacon selectedBeacon = beacons.get(position);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(DetectionFragment.BEACON_ARGUMENT, selectedBeacon);
-                DetectionFragment fragment = new DetectionFragment();
-                fragment.setArguments(bundle);
-                ObjectsFragment.super.replaceFragment(fragment);
+            @Override
+            public void onItemClick(View view, int position) {
+                try{
+                    if(position < beacons.size()){
+                        Beacon selectedBeacon = beacons.get(position);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(DetectionFragment.BEACON_ARGUMENT, selectedBeacon);
+                        DetectionFragment fragment = new DetectionFragment();
+                        fragment.setArguments(bundle);
+                        ObjectsFragment.super.replaceFragment(fragment);
+                    }
+                }catch (Exception e){
+                    Log.e(TAG,"",e);
+                }
             }
         }));
         scanButton.setOnClickListener(new View.OnClickListener() {
@@ -108,61 +117,76 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
         });
     }
 
-    private void setBeacons(List<Beacon> newBeacons){
-        beacons.clear();
-        beaconsAddress.clear();
-        addBeacons(newBeacons);
-        reset();
+    private void setBeacons(List<Beacon> newBeacons) {
+        try{
+            beacons.clear();
+            beaconsAddress.clear();
+            addBeacons(newBeacons);
+            reset();
+        }catch(Exception e){
+            Log.e(TAG,"",e);
+        }
     }
 
 
-    private void addBeacons(final List<Beacon> newBeacons){
+    private void addBeacons(final List<Beacon> newBeacons) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                boolean changed = false;
-                for (Beacon beacon: newBeacons){
-                    String mac = beacon.getMacAddress();
-                    if(! beaconsAddress.contains(mac)){
-                        beacons.add(beacon);
-                        beaconsAddress.add(mac);
-                        changed = true;
+                try{
+                    boolean changed = false;
+                    for (Beacon beacon : newBeacons) {
+                        String mac = beacon.getMacAddress();
+                        if (!beaconsAddress.contains(mac)) {
+                            beacons.add(beacon);
+                            beaconsAddress.add(mac);
+                            changed = true;
+                        }
                     }
-                }
-                if(changed){
-                    adapter.notifyDataSetChanged();
+                    if (changed) {
+                        adapter.notifyDataSetChanged();
+                    }
+                }catch (Exception e){
+                    Log.e(TAG,"",e);
                 }
             }
         });
     }
-    public void reset(){
+
+    public void reset() {
         reset(false);
     }
 
-    public void reset(final boolean firstScan){
+    public void reset(final boolean firstScan) {
         final boolean scanMode = CacheVariable.getBoolean(MainActivity.SCANNING);
         boolean emptyCache = BeaconCacheManager.getInstance().getData().isEmpty();
         final int firstStepVisibility = (emptyCache && !scanMode) || firstScan ? View.VISIBLE : View.INVISIBLE;
         handler.post(new Runnable() {
             @Override
             public void run() {
-                if(scanMode){
-                    loader.setVisibility(View.VISIBLE);
-                }else{
-                    loader.setVisibility(View.INVISIBLE);
-                }
-                if(firstScan){
-                    text.setText(getResources().getString(R.string.first_scan_instruc));
-                }else{
-                    text.setText(getResources().getString(R.string.new_beacon_instruct));
-                }
-                text.setVisibility(firstStepVisibility);
-                line.setVisibility(firstStepVisibility);
-                if(firstScan){
-                    CacheVariable.put(MainActivity.START_FIRST_SCAN, false);
-                    scanButton.setVisibility(View.INVISIBLE);
-                }else{
-                    scanButton.setVisibility(firstStepVisibility);
+                try {
+                    if (getActivity() != null) {
+                        if (scanMode) {
+                            loader.setVisibility(View.VISIBLE);
+                        } else {
+                            loader.setVisibility(View.INVISIBLE);
+                        }
+                        if (firstScan) {
+                            text.setText(getResources().getString(R.string.first_scan_instruc));
+                        } else {
+                            text.setText(getResources().getString(R.string.new_beacon_instruct));
+                        }
+                        text.setVisibility(firstStepVisibility);
+                        line.setVisibility(firstStepVisibility);
+                        if (firstScan) {
+                            CacheVariable.put(MainActivity.START_FIRST_SCAN, false);
+                            scanButton.setVisibility(View.INVISIBLE);
+                        } else {
+                            scanButton.setVisibility(firstStepVisibility);
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "", e);
                 }
             }
         });
@@ -187,7 +211,7 @@ public class ObjectsFragment extends ReplacerFragment implements Observer{
 
     @Override
     public void update(Observable observable, Object data) {
-        setBeacons((List<Beacon>)data);
+        setBeacons((List<Beacon>) data);
     }
 }
 

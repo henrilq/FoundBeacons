@@ -141,8 +141,13 @@ public class LocationUtils {
                 getInstance().locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
             }
             removeListeners();
-            getInstance().locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0,getInstance().networkLocationListener);
-            getInstance().locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 0, getInstance().gpsLocationListener);
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    getInstance().locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0,getInstance().networkLocationListener);
+                    getInstance().locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 0, getInstance().gpsLocationListener);
+                }
+            });
         }catch (Exception e){
             Log.e(TAG,"",e);
         }
