@@ -12,7 +12,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
-import com.a60circuits.foundbeacons.cache.BeaconCacheManager;
 import com.a60circuits.foundbeacons.cache.CacheVariable;
 import com.jaalee.sdk.Beacon;
 
@@ -57,7 +56,8 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconViewHolder>{
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean enabled = !holder.editText.isEnabled();
+                int textLength = holder.editText.getText().length();
+                boolean enabled = !holder.editText.isEnabled() || textLength == 0;
                 holder.editText.setEnabled(enabled);
                 holder.editText.setFocusable(enabled);
                 holder.editText.setFocusableInTouchMode(enabled);
@@ -65,7 +65,7 @@ public class BeaconAdapter extends RecyclerView.Adapter<BeaconViewHolder>{
                     int selectionColor = ContextCompat.getColor(context,R.color.colorSelectionBlue);
                     holder.editButton.setColorFilter(selectionColor); // Blue Tint
                     holder.editText.requestFocus();
-                    holder.editText.setSelection(holder.editText.getText().length());
+                    holder.editText.setSelection(textLength);
                 }else{
                     holder.updateBeacon();
                     redirectToMap(beacon, holder.editText.getContext());

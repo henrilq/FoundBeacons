@@ -22,8 +22,6 @@ import com.jaalee.sdk.Region;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Set;
 
 import pl.droidsonroids.gif.GifImageView;
@@ -31,7 +29,7 @@ import pl.droidsonroids.gif.GifImageView;
 /**
  * Created by zoz on 17/05/2016.
  */
-public class ObjectsFragment extends ReplacerFragment implements Observer {
+public class ObjectsFragment extends ReplacerFragment {
 
     private static final Region ALL_BEACONS_REGION = new Region("rid", null, null, null);
     private static final String TAG = "ObjectsFragment";
@@ -61,7 +59,6 @@ public class ObjectsFragment extends ReplacerFragment implements Observer {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.objects_fragment, container, false);
-        BeaconCacheManager.getInstance().addObserver(this);
         mainActivity = (MainActivity) getActivity();
         beacons = new ArrayList<>();
         adapter = new BeaconAdapter(beacons);
@@ -119,9 +116,16 @@ public class ObjectsFragment extends ReplacerFragment implements Observer {
 
     private void setBeacons(List<Beacon> newBeacons) {
         try{
-            beacons.clear();
             beaconsAddress.clear();
             addBeacons(newBeacons);
+            int index = 0;
+            for(Beacon beacon: newBeacons){
+                if(beacon.getName().isEmpty()){
+                    beaconsView.scrollToPosition(index);
+                    break;
+                }
+                index++;
+            }
             reset();
         }catch(Exception e){
             Log.e(TAG,"",e);
@@ -201,7 +205,6 @@ public class ObjectsFragment extends ReplacerFragment implements Observer {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        BeaconCacheManager.getInstance().deleteObserver(this);
     }
 
     @Override
@@ -209,9 +212,5 @@ public class ObjectsFragment extends ReplacerFragment implements Observer {
         super.onDestroy();
     }
 
-    @Override
-    public void update(Observable observable, Object data) {
-        setBeacons((List<Beacon>) data);
-    }
 }
 

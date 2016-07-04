@@ -307,7 +307,7 @@ public class MainActivity extends AppCompatActivity {
                         //reload objects fragment
                         Bundle bundle = new Bundle();
                         bundle.putBoolean(ObjectsFragment.SCANNING, false);
-                        replaceFragment(objectsButton, bundle, stop);
+                        replaceFragment(objectsButton, bundle, true);
                     }
 
                 }
