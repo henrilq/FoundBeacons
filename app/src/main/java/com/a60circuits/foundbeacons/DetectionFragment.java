@@ -197,7 +197,7 @@ public class DetectionFragment extends ReplacerFragment {
         Long resInt = Math.abs(Math.round(res) - progressBar.getMax());
         changeToPosition(resInt.intValue());
         sleep(animationDuration);
-        updateTextView(roundToString(distance,2), "METRES");
+        updateTextView(roundToString(Math.min(distance, MAX_DISTANCE),2), "METRES");
     }
 
     private void changeToPosition(final int newPosition){
