@@ -5,7 +5,7 @@
     <string name="tuto_start">Démarrer</string>
     <string name="settings_message">Autoriser l\'application à m\'alerter dès que mon accessoire dépasse la distance de détection</string>
     <string name="scanning_beacon">Recherche accessoire...</string>
-    <string name="connecting_beacon">Accessoire détecté...</string>
+    <string name="connecting_beacon">Connexion en cours...</string>
     <string name="scanning_time_out">Délai de recherche dépassé</string>
     <string name="scanned_beacon_saved">Accessoire enregistré avec succès</string>
     <string name="scanned_beacon_already_saved">L\'accessoire à proximité déjà enregistré</string>

@@ -18,6 +18,10 @@ public class CacheVariable {
         getInstance().map.put(key, value);
     }
 
+    public static void remove(String key){
+        getInstance().map.remove(key);
+    }
+
     public static boolean getBoolean(String key){
         return getBoolean(key, false);
     }

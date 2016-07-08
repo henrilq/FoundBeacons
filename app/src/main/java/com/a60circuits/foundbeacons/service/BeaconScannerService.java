@@ -47,6 +47,8 @@ public class BeaconScannerService extends Service {
 
     public static final String BEACON_ARGUMENT = "beacon";
 
+    public static final String LAST_CONNECTION = "lastConnection";
+
     private BeaconManager beaconManager;
 
     private BeaconConnection connection;
@@ -68,6 +70,7 @@ public class BeaconScannerService extends Service {
         boolean isDetectionMode = intent.getBooleanExtra(DETECTION_MODE, false);
         boolean isConnectionMode = intent.getBooleanExtra(CONNECTION_MODE, false);
         beaconManager = BeaconManagerFactory.getBeaconManager(getApplicationContext());
+        disconnectLastConnection();
         if(isConnectionMode){
             beaconManager.setRangingListener(createConnectionRangingListener());
             broadcastIntent = new Intent();
@@ -207,6 +210,7 @@ public class BeaconScannerService extends Service {
             public void run() {
                 connection = new BeaconConnection(getApplicationContext(), beacon, createConnectionCallback());
                 connection.connectBeaconWithPassword("666666");
+                CacheVariable.put(LAST_CONNECTION, connection);
             }
         });
 
@@ -235,6 +239,19 @@ public class BeaconScannerService extends Service {
             stopSelf();
         }
         return stopped;
+    }
+
+    private void disconnectLastConnection(){
+        try{
+            Object lastConnectionObject = CacheVariable.get(LAST_CONNECTION);
+            if(lastConnectionObject != null){
+                BeaconConnection lastConnection = (BeaconConnection) lastConnectionObject;
+                lastConnection.disconnect();
+                CacheVariable.remove(LAST_CONNECTION);
+            }
+        }catch(Exception e){
+            Log.e(TAG,"", e);
+        }
     }
 
     private void sendStopBroadcastMessage(String message){
