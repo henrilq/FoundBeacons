@@ -180,7 +180,7 @@ public class DetectionFragment extends ReplacerFragment {
         int absRssi = Math.abs(rssi);
         int measuredPower = 59;
         if (absRssi == 0.0D) {
-            return 0.0D;
+            return absRssi;
         }
 
         double ratio = absRssi * 1.0D / measuredPower;
