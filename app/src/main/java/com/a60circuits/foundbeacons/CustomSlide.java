@@ -27,9 +27,8 @@ public class CustomSlide extends Fragment {
         ImageView imageView = (ImageView) rootView.findViewById(R.id.imageView);
         int key = getArguments().getInt(KEY);
         //if(key > 0){
-            imageView.setBackground(ContextCompat.getDrawable(getActivity(), key));
+            imageView.setImageResource(key);
         //}
-
         return rootView;
     }
 }
