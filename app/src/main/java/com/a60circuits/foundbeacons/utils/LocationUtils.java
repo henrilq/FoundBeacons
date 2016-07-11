@@ -112,13 +112,14 @@ public class LocationUtils {
                         locationManager = getInstance().locationManager;
                     }
                     List<String> providers = locationManager.getProviders(true);
+                    long lastTime = 0;
                     for (String provider : providers) {
-                        Location l = locationManager.getLastKnownLocation(provider);
-                        if (l == null) {
-                            continue;
-                        }
-                        if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                            bestLocation = l;
+                        Location location = locationManager.getLastKnownLocation(provider);
+                        if(location != null){
+                            if(location.getTime() > lastTime){
+                                lastTime = location.getTime();
+                                bestLocation = location;
+                            }
                         }
                     }
                 }
@@ -140,7 +141,7 @@ public class LocationUtils {
             if(getInstance().locationManager == null){
                 getInstance().locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
             }
-            removeListeners();
+            //removeListeners();
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
