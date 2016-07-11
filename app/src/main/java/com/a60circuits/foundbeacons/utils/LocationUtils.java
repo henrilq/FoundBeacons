@@ -30,7 +30,7 @@ public class LocationUtils {
         @Override
         public void onLocationChanged(Location location) {
             Log.i(TAG,"remove GPS listener");
-            locationManager.removeUpdates(gpsLocationListener);
+            removeListeners();
         }
 
         @Override
@@ -64,7 +64,7 @@ public class LocationUtils {
         @Override
         public void onLocationChanged(Location location) {
             Log.i(TAG,"remove Network listener");
-            locationManager.removeUpdates(networkLocationListener);
+            removeListeners();
         }
 
         @Override
@@ -155,9 +155,13 @@ public class LocationUtils {
     }
 
     public static void removeListeners(){
-        if(getInstance().locationManager != null){
-            getInstance().locationManager.removeUpdates(getInstance().networkLocationListener);
-            getInstance().locationManager.removeUpdates(getInstance().gpsLocationListener);
+        try{
+            if(getInstance().locationManager != null){
+                getInstance().locationManager.removeUpdates(getInstance().networkLocationListener);
+                getInstance().locationManager.removeUpdates(getInstance().gpsLocationListener);
+            }
+        }catch(Exception e){
+            Log.e(TAG,"",e);
         }
     }
 
