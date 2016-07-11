@@ -362,17 +362,24 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        stopScan();
+        stopScanOnPause();
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(broadcastReceiver);
-        stopScan();
         BeaconCacheManager.getInstance().deleteObservers();
         CacheVariable.put(BUTTON_POSITION, buttonPosition);
+    }
+
+    private void stopScanOnPause(){
+        try{
+            unregisterReceiver(broadcastReceiver);
+            stopScan();
+        }catch(Exception e){
+            Log.e(TAG,"",e);
+        }
     }
 
     public ImageButton getMapButton() {
